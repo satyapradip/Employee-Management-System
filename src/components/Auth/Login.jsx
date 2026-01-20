@@ -1,14 +1,17 @@
 import React from "react";
 import { useState } from "react";
 
-const Login = () => {
+const Login = ({ handleLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log(email, password);
-    // Add login logic here
+    // Call the login function passed from App.jsx
+    handleLogin(email, password);
+    // Clear form after submission
+    setEmail("");
+    setPassword("");
   };
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-linear-to-br from-gray-900 via-black to-gray-900">
