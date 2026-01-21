@@ -12,3 +12,7 @@
 #tasklist::-webkit-scrollbar{
   display: none;
 }
+
+#employeedashboard::-webkit-scrollbar{
+  display: none;
+}

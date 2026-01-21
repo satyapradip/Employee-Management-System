@@ -2,41 +2,67 @@ import React, { useMemo } from "react";
 
 /**
  * Task Statistics Cards
- * Displays counts for different task statuses
+ * Displays counts for different task statuses with visual hierarchy
+ * Primary metric (Active) is highlighted, secondary metrics are more subtle
  */
 const TaskListNumber = ({ data }) => {
   // Calculate task statistics from employee data
   const stats = useMemo(() => {
     if (!data?.tasks) {
-      return { newTask: 0, active: 0, completed: 0, failed: 0 };
+      return { newTask: 0, active: 0, completed: 0, failed: 0, total: 0 };
     }
 
-    return data.tasks.reduce(
+    const result = data.tasks.reduce(
       (acc, task) => {
         if (task.newTask) acc.newTask++;
         if (task.active) acc.active++;
         if (task.completed) acc.completed++;
         if (task.failed) acc.failed++;
+        acc.total++;
         return acc;
       },
-      { newTask: 0, active: 0, completed: 0, failed: 0 },
+      { newTask: 0, active: 0, completed: 0, failed: 0, total: 0 },
     );
+    return result;
   }, [data?.tasks]);
 
-  const statCards = [
+  // Primary metric - Active tasks (most actionable)
+  const primaryMetric = {
+    label: "In Progress",
+    value: stats.active,
+    subtext:
+      stats.active === 1 ? "task needs attention" : "tasks need attention",
+    color: "amber",
+    icon: (
+      <svg
+        className="w-6 h-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    ),
+  };
+
+  // Secondary metrics - Less visual weight
+  const secondaryMetrics = [
     {
-      label: "New Tasks",
+      label: "New",
       value: stats.newTask,
-      gradient: "from-blue-500 to-indigo-600",
-      shadow: "shadow-blue-500/20 hover:shadow-blue-500/40",
-      border: "border-blue-400/20",
+      color: "violet",
       icon: (
         <svg
-          className="w-8 h-8 opacity-80"
+          className="w-4 h-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          strokeWidth={1.5}
+          strokeWidth={2}
         >
           <path
             strokeLinecap="round"
@@ -47,40 +73,16 @@ const TaskListNumber = ({ data }) => {
       ),
     },
     {
-      label: "Active",
-      value: stats.active,
-      gradient: "from-amber-500 to-orange-600",
-      shadow: "shadow-amber-500/20 hover:shadow-amber-500/40",
-      border: "border-amber-400/20",
-      icon: (
-        <svg
-          className="w-8 h-8 opacity-80"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={1.5}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-      ),
-    },
-    {
       label: "Completed",
       value: stats.completed,
-      gradient: "from-emerald-500 to-teal-600",
-      shadow: "shadow-emerald-500/20 hover:shadow-emerald-500/40",
-      border: "border-emerald-400/20",
+      color: "emerald",
       icon: (
         <svg
-          className="w-8 h-8 opacity-80"
+          className="w-4 h-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          strokeWidth={1.5}
+          strokeWidth={2}
         >
           <path
             strokeLinecap="round"
@@ -93,16 +95,14 @@ const TaskListNumber = ({ data }) => {
     {
       label: "Failed",
       value: stats.failed,
-      gradient: "from-rose-500 to-pink-600",
-      shadow: "shadow-rose-500/20 hover:shadow-rose-500/40",
-      border: "border-rose-400/20",
+      color: "rose",
       icon: (
         <svg
-          className="w-8 h-8 opacity-80"
+          className="w-4 h-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          strokeWidth={1.5}
+          strokeWidth={2}
         >
           <path
             strokeLinecap="round"
@@ -114,65 +114,128 @@ const TaskListNumber = ({ data }) => {
     },
   ];
 
-  return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-10">
-      {statCards.map((card, index) => (
-        <div
-          key={card.label}
-          className={`
-            relative overflow-hidden
-            bg-linear-to-br ${card.gradient}
-            py-6 px-6 rounded-2xl
-            shadow-lg ${card.shadow}
-            hover:shadow-2xl hover:scale-[1.03] hover:-translate-y-2
-            transition-all duration-500 ease-out
-            cursor-pointer backdrop-blur-sm
-            border ${card.border}
-            group
-            animate-slideUp
-          `}
-          style={{ animationDelay: `${index * 100}ms` }}
-        >
-          {/* Background decoration */}
-          <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-          <div className="absolute -left-4 -bottom-4 w-16 h-16 bg-black/10 rounded-full blur-xl" />
+  const colorMap = {
+    amber: {
+      bg: "bg-amber-500/10",
+      border: "border-amber-500/30",
+      text: "text-amber-400",
+      accent: "bg-amber-500",
+    },
+    violet: {
+      bg: "bg-violet-500/10",
+      border: "border-violet-500/20",
+      text: "text-violet-400",
+      accent: "bg-violet-500",
+    },
+    emerald: {
+      bg: "bg-emerald-500/10",
+      border: "border-emerald-500/20",
+      text: "text-emerald-400",
+      accent: "bg-emerald-500",
+    },
+    rose: {
+      bg: "bg-rose-500/10",
+      border: "border-rose-500/20",
+      text: "text-rose-400",
+      accent: "bg-rose-500",
+    },
+  };
 
-          {/* Content */}
-          <div className="relative flex items-center justify-between">
+  return (
+    <div className="mt-6 animate-fadeIn" style={{ animationDelay: "150ms" }}>
+      {/* Section label */}
+      <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">
+        Task Overview
+      </h3>
+
+      <div className="flex flex-col lg:flex-row gap-4">
+        {/* Primary Metric Card - Larger and more prominent */}
+        <div
+          className={`
+            relative flex-1 lg:flex-2 p-5 rounded-xl
+            ${colorMap[primaryMetric.color].bg}
+            border ${colorMap[primaryMetric.color].border}
+            transition-all duration-300 hover:border-amber-500/50
+          `}
+        >
+          <div className="flex items-start justify-between">
             <div>
-              <h2 className="text-4xl font-bold tracking-tight group-hover:scale-110 transition-transform duration-300 origin-left">
-                {card.value}
-              </h2>
-              <h3 className="text-base font-medium opacity-90 mt-1">
-                {card.label}
-              </h3>
+              <div className="flex items-center gap-2 mb-1">
+                <span
+                  className={`w-2 h-2 rounded-full ${colorMap[primaryMetric.color].accent}`}
+                />
+                <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                  {primaryMetric.label}
+                </span>
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span
+                  className={`text-4xl font-bold ${colorMap[primaryMetric.color].text}`}
+                >
+                  {primaryMetric.value}
+                </span>
+                <span className="text-sm text-zinc-500">
+                  {primaryMetric.subtext}
+                </span>
+              </div>
             </div>
-            <div className="transform group-hover:rotate-12 group-hover:scale-110 transition-transform duration-300">
-              {card.icon}
+            <div
+              className={`p-2.5 rounded-lg ${colorMap[primaryMetric.color].bg} ${colorMap[primaryMetric.color].text}`}
+            >
+              {primaryMetric.icon}
             </div>
           </div>
 
-          {/* Shine effect on hover */}
-          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-linear-to-r from-transparent via-white/20 to-transparent" />
+          {/* Progress indicator */}
+          {stats.total > 0 && (
+            <div className="mt-4">
+              <div className="flex items-center justify-between text-xs text-zinc-500 mb-1.5">
+                <span>Progress</span>
+                <span className="text-zinc-400">
+                  {Math.round((stats.completed / stats.total) * 100)}% complete
+                </span>
+              </div>
+              <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-linear-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-500"
+                  style={{
+                    width: `${stats.total > 0 ? (stats.completed / stats.total) * 100 : 0}%`,
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </div>
-      ))}
 
-      <style>{`
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-slideUp {
-          animation: slideUp 0.6s ease-out forwards;
-          opacity: 0;
-        }
-      `}</style>
+        {/* Secondary Metrics - Compact row */}
+        <div className="flex lg:flex-col gap-3 flex-1">
+          {secondaryMetrics.map((metric) => {
+            const colors = colorMap[metric.color];
+            return (
+              <div
+                key={metric.label}
+                className={`
+                  flex-1 flex items-center gap-3 p-3 rounded-xl
+                  bg-zinc-800/50 border border-zinc-700/50
+                  hover:border-zinc-600/50 transition-colors duration-200
+                `}
+              >
+                <div className={`p-2 rounded-lg ${colors.bg} ${colors.text}`}>
+                  {metric.icon}
+                </div>
+                <div className="min-w-0">
+                  <span className={`block text-xl font-semibold text-white`}>
+                    {metric.value}
+                  </span>
+                  <span className="block text-xs text-zinc-500 truncate">
+                    {metric.label}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };
