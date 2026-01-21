@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 /**
  * Get card styling based on task status
@@ -6,41 +6,46 @@ import React from "react";
 const getTaskStyle = (task) => {
   if (task.completed) {
     return {
-      gradient: "from-emerald-500 to-teal-600",
-      shadow: "shadow-emerald-500/25 hover:shadow-emerald-500/50",
-      badge: "bg-emerald-900/50 border-emerald-400/30",
+      bg: "bg-zinc-800/60",
+      border: "border-emerald-500/30",
+      badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
       badgeText: "Completed",
+      accent: "emerald",
     };
   }
   if (task.failed) {
     return {
-      gradient: "from-rose-500 to-red-600",
-      shadow: "shadow-rose-500/25 hover:shadow-rose-500/50",
-      badge: "bg-rose-900/50 border-rose-400/30",
+      bg: "bg-zinc-800/60",
+      border: "border-rose-500/30",
+      badge: "bg-rose-500/15 text-rose-400 border-rose-500/30",
       badgeText: "Failed",
+      accent: "rose",
     };
   }
   if (task.newTask) {
     return {
-      gradient: "from-blue-500 to-indigo-600",
-      shadow: "shadow-blue-500/25 hover:shadow-blue-500/50",
-      badge: "bg-blue-900/50 border-blue-400/30",
+      bg: "bg-zinc-800/60",
+      border: "border-violet-500/30",
+      badge: "bg-violet-500/15 text-violet-400 border-violet-500/30",
       badgeText: "New",
+      accent: "violet",
     };
   }
   if (task.active) {
     return {
-      gradient: "from-amber-500 to-orange-600",
-      shadow: "shadow-amber-500/25 hover:shadow-amber-500/50",
-      badge: "bg-amber-900/50 border-amber-400/30",
+      bg: "bg-zinc-800/60",
+      border: "border-amber-500/30",
+      badge: "bg-amber-500/15 text-amber-400 border-amber-500/30",
       badgeText: "In Progress",
+      accent: "amber",
     };
   }
   return {
-    gradient: "from-slate-500 to-gray-600",
-    shadow: "shadow-slate-500/25 hover:shadow-slate-500/50",
-    badge: "bg-slate-900/50 border-slate-400/30",
+    bg: "bg-zinc-800/60",
+    border: "border-zinc-600/30",
+    badge: "bg-zinc-500/15 text-zinc-400 border-zinc-500/30",
     badgeText: "Pending",
+    accent: "zinc",
   };
 };
 
@@ -52,122 +57,185 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
-    year: "numeric",
   });
 };
 
 /**
- * Task Card Component
+ * Task Card Component - Clean, accessible design with actions
  */
-const TaskCard = ({ task, index }) => {
+const TaskCard = ({
+  task,
+  index,
+  onAcceptTask,
+  onCompleteTask,
+  onFailTask,
+}) => {
   const style = getTaskStyle(task);
+  const [showFailModal, setShowFailModal] = useState(false);
+  const [failReason, setFailReason] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleAccept = async (e) => {
+    e.stopPropagation();
+    if (onAcceptTask) {
+      setIsLoading(true);
+      await onAcceptTask(task._id);
+      setIsLoading(false);
+    }
+  };
+
+  const handleComplete = async (e) => {
+    e.stopPropagation();
+    if (onCompleteTask) {
+      setIsLoading(true);
+      await onCompleteTask(task._id);
+      setIsLoading(false);
+    }
+  };
+
+  const handleFail = async (e) => {
+    e.stopPropagation();
+    if (!failReason.trim()) {
+      alert("Please provide a reason");
+      return;
+    }
+    if (onFailTask) {
+      setIsLoading(true);
+      await onFailTask(task._id, failReason);
+      setIsLoading(false);
+      setShowFailModal(false);
+      setFailReason("");
+    }
+  };
 
   return (
-    <div
-      className={`
-        shrink-0 h-56 w-[320px] p-5 rounded-2xl
-        bg-linear-to-br ${style.gradient}
-        shadow-lg ${style.shadow}
-        hover:shadow-2xl hover:scale-[1.03] hover:-translate-y-3
-        transition-all duration-500 ease-out
-        cursor-pointer border border-white/10
-        backdrop-blur-sm group
-        relative overflow-hidden
-        animate-cardSlide
-      `}
-      style={{ animationDelay: `${index * 80}ms` }}
-    >
-      {/* Background decoration */}
-      <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-      <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-black/10 rounded-full blur-xl" />
-
-      {/* Header */}
-      <div className="relative flex justify-between items-center">
-        <span
-          className={`
-            text-xs font-semibold backdrop-blur-sm px-3 py-1.5 rounded-full
-            border ${style.badge}
-            group-hover:scale-105 transition-transform duration-300
-          `}
-        >
-          {style.badgeText}
-        </span>
-        <span className="text-sm opacity-80 font-medium flex items-center gap-1.5">
-          <svg
-            className="w-3.5 h-3.5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
+    <>
+      <div
+        className={`
+          shrink-0 h-56 w-75 p-4 rounded-xl
+          ${style.bg} ${style.border}
+          border
+          hover:border-zinc-500/50
+          transition-all duration-300 ease-out
+          cursor-pointer group
+          relative overflow-hidden
+          animate-cardSlide
+        `}
+        style={{ animationDelay: `${index * 60}ms` }}
+        role="article"
+        aria-label={`Task: ${task.title}`}
+      >
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <span
+            className={`
+              text-xs font-medium px-2.5 py-1 rounded-md
+              border ${style.badge}
+            `}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
-          {formatDate(task.date)}
-        </span>
+            {style.badgeText}
+          </span>
+          <span className="text-xs text-zinc-500 font-medium">
+            {formatDate(task.date)}
+          </span>
+        </div>
+
+        {/* Category */}
+        <div className="mt-2">
+          <span className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
+            {task.category}
+          </span>
+        </div>
+
+        {/* Title */}
+        <h3 className="mt-1 text-base font-semibold text-white leading-snug line-clamp-2">
+          {task.title}
+        </h3>
+
+        {/* Description */}
+        <p className="text-sm mt-1.5 text-zinc-400 leading-relaxed line-clamp-2">
+          {task.description}
+        </p>
+
+        {/* Action Buttons */}
+        <div className="absolute bottom-3 left-4 right-4 flex gap-2">
+          {task.newTask && (
+            <button
+              onClick={handleAccept}
+              disabled={isLoading}
+              className="flex-1 bg-violet-600 hover:bg-violet-500 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors disabled:opacity-50"
+            >
+              {isLoading ? "..." : "Accept Task"}
+            </button>
+          )}
+          {task.active && (
+            <>
+              <button
+                onClick={handleComplete}
+                disabled={isLoading}
+                className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors disabled:opacity-50"
+              >
+                {isLoading ? "..." : "Complete"}
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowFailModal(true);
+                }}
+                disabled={isLoading}
+                className="bg-rose-600 hover:bg-rose-500 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors disabled:opacity-50"
+              >
+                Fail
+              </button>
+            </>
+          )}
+          {(task.completed || task.failed) && (
+            <span className="text-xs text-zinc-500 py-2">
+              {task.completed ? "✓ Completed" : "✗ Failed"}
+            </span>
+          )}
+        </div>
       </div>
 
-      {/* Category Badge */}
-      <div className="relative mt-3">
-        <span className="text-xs font-medium opacity-70 uppercase tracking-wider">
-          {task.category}
-        </span>
-      </div>
-
-      {/* Title */}
-      <h2 className="relative mt-2 text-lg font-bold leading-tight group-hover:text-white transition-colors line-clamp-2">
-        {task.title}
-      </h2>
-
-      {/* Description */}
-      <p className="relative text-sm mt-2 opacity-75 leading-relaxed line-clamp-2">
-        {task.description}
-      </p>
-
-      {/* Action hint on hover */}
-      <div className="absolute bottom-4 left-5 right-5 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-        <span className="text-xs font-medium flex items-center gap-1">
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-            />
-          </svg>
-          View Details
-        </span>
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
+      {/* Fail Modal */}
+      {showFailModal && (
+        <div
+          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+          onClick={() => setShowFailModal(false)}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M13 7l5 5m0 0l-5 5m5-5H6"
-          />
-        </svg>
-      </div>
-
-      {/* Shine effect on hover */}
-      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-linear-to-r from-transparent via-white/15 to-transparent" />
-    </div>
+          <div
+            className="bg-zinc-800 p-6 rounded-xl w-full max-w-md mx-4 border border-zinc-700"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Why did this task fail?
+            </h3>
+            <textarea
+              value={failReason}
+              onChange={(e) => setFailReason(e.target.value)}
+              className="w-full bg-zinc-900 text-white border border-zinc-700 rounded-lg p-3 text-sm resize-none focus:outline-none focus:border-violet-500"
+              rows={3}
+              placeholder="Enter the reason..."
+            />
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={() => setShowFailModal(false)}
+                className="flex-1 bg-zinc-700 hover:bg-zinc-600 text-white py-2 rounded-lg text-sm transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleFail}
+                disabled={isLoading}
+                className="flex-1 bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-lg text-sm transition-colors disabled:opacity-50"
+              >
+                {isLoading ? "Submitting..." : "Mark as Failed"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
@@ -175,10 +243,10 @@ const TaskCard = ({ task, index }) => {
  * Empty State Component
  */
 const EmptyState = () => (
-  <div className="flex flex-col items-center justify-center py-16 px-8 text-center animate-fadeIn">
-    <div className="w-20 h-20 rounded-full bg-zinc-700/50 flex items-center justify-center mb-4">
+  <div className="flex flex-col items-center justify-center py-12 px-8 text-center">
+    <div className="w-14 h-14 rounded-xl bg-zinc-800 flex items-center justify-center mb-3">
       <svg
-        className="w-10 h-10 text-zinc-500"
+        className="w-7 h-7 text-zinc-500"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -191,10 +259,9 @@ const EmptyState = () => (
         />
       </svg>
     </div>
-    <h3 className="text-xl font-semibold text-white mb-2">No Tasks Yet</h3>
-    <p className="text-zinc-400 max-w-sm">
-      You don't have any tasks assigned yet. Tasks will appear here once
-      assigned by your admin.
+    <h3 className="text-lg font-medium text-white mb-1">No Tasks Yet</h3>
+    <p className="text-sm text-zinc-500 max-w-xs">
+      Tasks will appear here once assigned by your admin.
     </p>
   </div>
 );
@@ -203,42 +270,25 @@ const EmptyState = () => (
  * Task List Component
  * Displays employee tasks in a horizontal scrollable list
  */
-const TaskList = ({ data }) => {
+const TaskList = ({ data, onAcceptTask, onCompleteTask, onFailTask }) => {
   const tasks = data?.tasks || [];
 
   return (
-    <div className="mt-10">
+    <div className="mt-8">
       {/* Section Header */}
-      <div className="flex items-center justify-between mb-6 animate-fadeIn">
-        <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-            <span className="w-10 h-10 rounded-xl bg-linear-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/25">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-                />
-              </svg>
-            </span>
-            My Tasks
-          </h2>
-          <p className="text-zinc-400 mt-1 ml-13">
-            {tasks.length} task{tasks.length !== 1 ? "s" : ""} assigned to you
-          </p>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <h2 className="text-lg font-semibold text-white">My Tasks</h2>
+          <span className="text-xs text-zinc-500 bg-zinc-800 px-2 py-0.5 rounded-md">
+            {tasks.length}
+          </span>
         </div>
 
-        {tasks.length > 0 && (
-          <div className="flex items-center gap-2 text-zinc-400 text-sm">
-            <span>Scroll to see more</span>
+        {tasks.length > 3 && (
+          <span className="text-xs text-zinc-500 flex items-center gap-1">
+            Scroll for more
             <svg
-              className="w-5 h-5 animate-bounce-x"
+              className="w-4 h-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -247,10 +297,10 @@ const TaskList = ({ data }) => {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
+                d="M9 5l7 7-7 7"
               />
             </svg>
-          </div>
+          </span>
         )}
       </div>
 
@@ -258,55 +308,52 @@ const TaskList = ({ data }) => {
       {tasks.length > 0 ? (
         <div
           className="
-            py-4 -mx-2 px-2
-            flex gap-5 overflow-x-auto
+            py-2 -mx-2 px-2
+            flex gap-4 overflow-x-auto
             scroll-smooth snap-x snap-mandatory
-            [&::-webkit-scrollbar]:h-2
-            [&::-webkit-scrollbar-track]:bg-white/5
-            [&::-webkit-scrollbar-track]:rounded-full
-            [&::-webkit-scrollbar-thumb]:bg-white/20
-            [&::-webkit-scrollbar-thumb]:rounded-full
-            hover:[&::-webkit-scrollbar-thumb]:bg-white/30
+            scrollbar-none
           "
         >
           {tasks.map((task, index) => (
-            <div key={index} className="snap-start">
-              <TaskCard task={task} index={index} />
+            <div key={task._id || index} className="snap-start">
+              <TaskCard
+                task={task}
+                index={index}
+                onAcceptTask={onAcceptTask}
+                onCompleteTask={onCompleteTask}
+                onFailTask={onFailTask}
+              />
             </div>
           ))}
         </div>
       ) : (
-        <EmptyState />
+        <div className="rounded-xl border border-zinc-800 bg-zinc-800/30">
+          <EmptyState />
+        </div>
       )}
 
       <style>{`
+        /* Hide scrollbar */
+        .scrollbar-none::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-none {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
         @keyframes cardSlide {
           from {
             opacity: 0;
-            transform: translateX(40px) scale(0.95);
+            transform: translateX(20px);
           }
           to {
             opacity: 1;
-            transform: translateX(0) scale(1);
+            transform: translateX(0);
           }
         }
         .animate-cardSlide {
-          animation: cardSlide 0.5s ease-out forwards;
+          animation: cardSlide 0.4s ease-out forwards;
           opacity: 0;
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.4s ease-out forwards;
-        }
-        @keyframes bounce-x {
-          0%, 100% { transform: translateX(0); }
-          50% { transform: translateX(5px); }
-        }
-        .animate-bounce-x {
-          animation: bounce-x 1s infinite;
         }
       `}</style>
     </div>
