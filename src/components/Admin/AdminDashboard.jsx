@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import Header from "../others/Header";
 import { TabNavigation, TasksTab, CreateTaskTab, Sidebar } from "./components";
+import Toast from "./components/Toast";
+import { FullPageLoader, ErrorState } from "./components/LoadingStates";
 import { useTaskManager } from "./hooks/useTaskManager";
+import { useEmployees } from "./hooks/useEmployees";
 import "./styles/animations.css";
 
 /**
  * Admin Dashboard Component
  * Main dashboard for admin users with task management
+ * Connected to backend API for real-time data
  */
 const AdminDashboard = ({ user, onLogout }) => {
   const [activeTab, setActiveTab] = useState("tasks");
 
-  // Use custom hook for task management
+  // Use custom hooks for data management
   const {
     filteredTasks,
     stats,
@@ -20,11 +24,62 @@ const AdminDashboard = ({ user, onLogout }) => {
     activeFilter,
     setActiveFilter,
     addTask,
+    updateTask,
+    deleteTask,
+    refreshTasks,
+    isLoading,
+    isSubmitting,
+    error,
+    toast,
+    dismissToast,
   } = useTaskManager();
+
+  // Fetch employees for task assignment
+  const {
+    employees,
+    employeeOptions,
+    isLoading: employeesLoading,
+  } = useEmployees();
+
+  // Handle task creation with employee ID
+  const handleCreateTask = async (taskData) => {
+    const result = await addTask(taskData);
+    if (result?.success) {
+      setActiveTab("tasks");
+    }
+    return result;
+  };
+
+  // Show loading state while initial data loads
+  if (isLoading && !filteredTasks.length) {
+    return (
+      <div className="min-h-screen w-full p-6 md:p-10 bg-linear-to-br from-zinc-950 via-zinc-900 to-zinc-950">
+        <Header userName={user?.name || "Admin"} onLogout={onLogout} />
+        <div className="mt-8">
+          <FullPageLoader message="Loading tasks..." />
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state if fetch failed
+  if (error && !filteredTasks.length) {
+    return (
+      <div className="min-h-screen w-full p-6 md:p-10 bg-linear-to-br from-zinc-950 via-zinc-900 to-zinc-950">
+        <Header userName={user?.name || "Admin"} onLogout={onLogout} />
+        <div className="mt-8 bg-zinc-900/80 backdrop-blur-xl rounded-2xl border border-zinc-800 shadow-2xl">
+          <ErrorState message={error} onRetry={refreshTasks} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full p-6 md:p-10 bg-linear-to-br from-zinc-950 via-zinc-900 to-zinc-950">
       <Header userName={user?.name || "Admin"} onLogout={onLogout} />
+
+      {/* Toast Notifications */}
+      <Toast toast={toast} onDismiss={dismissToast} />
 
       {/* Main Content Grid */}
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -51,14 +106,21 @@ const AdminDashboard = ({ user, onLogout }) => {
                 setSearchQuery={setSearchQuery}
                 activeFilter={activeFilter}
                 setActiveFilter={setActiveFilter}
+                onUpdateTask={updateTask}
+                onDeleteTask={deleteTask}
+                isSubmitting={isSubmitting}
+                employees={employees}
               />
             )}
 
             {/* Create Task Tab */}
             {activeTab === "create" && (
               <CreateTaskTab
-                onCreateTask={addTask}
+                onCreateTask={handleCreateTask}
                 onTabChange={setActiveTab}
+                employees={employeeOptions}
+                isLoading={employeesLoading}
+                isSubmitting={isSubmitting}
               />
             )}
           </div>
@@ -66,7 +128,12 @@ const AdminDashboard = ({ user, onLogout }) => {
 
         {/* Right Sidebar */}
         <div className="lg:col-span-1">
-          <Sidebar stats={stats} onCreateTask={() => setActiveTab("create")} />
+          <Sidebar
+            stats={stats}
+            onCreateTask={() => setActiveTab("create")}
+            onRefresh={refreshTasks}
+            isLoading={isLoading}
+          />
         </div>
       </div>
     </div>
