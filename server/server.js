@@ -11,14 +11,15 @@ const startServer = async () => {
 
     // Start Express server
     const server = app.listen(env.PORT, () => {
+      const serverUrl = `http://localhost:${env.PORT}`;
       console.log(`
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
 ║   🚀 Employee Management System API                       ║
 ║                                                           ║
-║   Server:     http://localhost:${env.PORT}                     ║
-║   Environment: ${env.NODE_ENV.padEnd(10)}                           ║
-║   Database:   MongoDB Connected                           ║
+║   Server:      ${serverUrl.padEnd(40)}║
+║   Environment: ${env.NODE_ENV.padEnd(40)}║
+║   Database:    MongoDB Connected                          ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
       `);
