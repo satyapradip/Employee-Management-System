@@ -43,7 +43,7 @@ const Header = ({ userName = "Admin", onLogout }) => {
         {/* Right Section - Actions */}
         <div className="flex items-center gap-3">
           {/* Notification Bell */}
-          <button className="relative p-3 rounded-xl bg-zinc-800/80 border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-600 transition-all duration-300">
+          <button className="relative p-3 rounded-xl bg-zinc-800/80 border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-600 transition-all duration-300 cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -65,7 +65,7 @@ const Header = ({ userName = "Admin", onLogout }) => {
           {/* Logout Button */}
           <button
             onClick={onLogout}
-            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 transition-all duration-300"
+            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 transition-all duration-300 cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -81,7 +81,7 @@ const Header = ({ userName = "Admin", onLogout }) => {
                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
               />
             </svg>
-            <span className="font-medium hidden sm:inline">Logout</span>
+            <span className="font-medium hidden sm:inline cursor-pointer">Logout</span>
           </button>
         </div>
       </div>
