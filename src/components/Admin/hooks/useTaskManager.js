@@ -1,23 +1,112 @@
-import { useState, useMemo } from "react";
-import { sampleTasks } from "../data/sampleTasks";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import api from "../../../services/api";
+
+/**
+ * Task status mapping between backend and frontend
+ */
+const STATUS_MAP = {
+  new: "pending",
+  active: "in-progress",
+  completed: "completed",
+  failed: "failed",
+};
+
+/**
+ * Transform backend task to frontend format
+ */
+const transformTask = (task) => ({
+  id: task._id,
+  _id: task._id,
+  title: task.title,
+  description: task.description,
+  date: task.dueDate?.split("T")[0] || "",
+  dueDate: task.dueDate,
+  category: task.category,
+  assignedTo: task.assignedTo?.name || "Unassigned",
+  assignedToId: task.assignedTo?._id || task.assignedTo,
+  assignedBy: task.assignedBy?.name || "",
+  status: STATUS_MAP[task.status] || task.status,
+  priority: task.priority || "medium",
+  createdAt: task.createdAt,
+  updatedAt: task.updatedAt,
+});
 
 /**
  * Custom Hook: useTaskManager
- * Manages task state, filtering, and CRUD operations
+ * Production-grade task management with API integration
+ *
+ * Features:
+ * - Async data fetching with loading states
+ * - Optimistic updates for better UX
+ * - Error handling with rollback
+ * - Memoized filtering and stats
  */
 export const useTaskManager = () => {
-  const [tasks, setTasks] = useState(sampleTasks);
+  // ============================================
+  // STATE
+  // ============================================
+  const [tasks, setTasks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
 
-  // Filter tasks based on search and status
+  // Toast notification state
+  const [toast, setToast] = useState(null);
+
+  // ============================================
+  // TOAST HELPER
+  // ============================================
+  const showToast = useCallback((message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4000);
+  }, []);
+
+  const dismissToast = useCallback(() => setToast(null), []);
+
+  // ============================================
+  // FETCH TASKS
+  // ============================================
+  const fetchTasks = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const response = await api.tasks.getAll();
+
+      if (response.success) {
+        const transformedTasks = response.data.tasks.map(transformTask);
+        setTasks(transformedTasks);
+      }
+    } catch (err) {
+      setError(err.message || "Failed to fetch tasks");
+      showToast(err.message || "Failed to fetch tasks", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [showToast]);
+
+  // Initial fetch
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
+  // ============================================
+  // FILTERED TASKS (Memoized)
+  // ============================================
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
+      // Search filter
+      const searchLower = searchQuery.toLowerCase();
       const matchesSearch =
-        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.assignedTo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.category.toLowerCase().includes(searchQuery.toLowerCase());
+        !searchQuery ||
+        task.title.toLowerCase().includes(searchLower) ||
+        task.assignedTo.toLowerCase().includes(searchLower) ||
+        task.category.toLowerCase().includes(searchLower) ||
+        task.description?.toLowerCase().includes(searchLower);
 
+      // Status filter
       const matchesFilter =
         activeFilter === "all" || task.status === activeFilter;
 
@@ -25,7 +114,9 @@ export const useTaskManager = () => {
     });
   }, [tasks, searchQuery, activeFilter]);
 
-  // Calculate stats
+  // ============================================
+  // STATS (Memoized)
+  // ============================================
   const stats = useMemo(() => {
     return {
       total: tasks.length,
@@ -36,39 +127,175 @@ export const useTaskManager = () => {
     };
   }, [tasks]);
 
-  // Add new task
-  const addTask = (taskData) => {
-    const newTask = {
-      ...taskData,
-      id: Date.now(),
-      status: "pending",
-    };
-    setTasks((prev) => [newTask, ...prev]);
-  };
+  // ============================================
+  // CREATE TASK
+  // ============================================
+  const addTask = useCallback(
+    async (taskData) => {
+      try {
+        setIsSubmitting(true);
+        setError(null);
 
-  // Update task
-  const updateTask = (taskId, updates) => {
-    setTasks((prev) =>
-      prev.map((task) => (task.id === taskId ? { ...task, ...updates } : task)),
-    );
-  };
+        // Prepare API payload
+        const payload = {
+          title: taskData.title,
+          description: taskData.description,
+          category: taskData.category,
+          priority: taskData.priority || "medium",
+          assignedTo: taskData.assignedTo, // Employee ID
+          dueDate: taskData.date,
+        };
 
-  // Delete task
-  const deleteTask = (taskId) => {
-    setTasks((prev) => prev.filter((task) => task.id !== taskId));
-  };
+        const response = await api.tasks.create(payload);
 
+        if (response.success) {
+          // Add new task to state
+          const newTask = transformTask(response.data.task);
+          setTasks((prev) => [newTask, ...prev]);
+          showToast("Task created successfully!", "success");
+          return { success: true, task: newTask };
+        }
+      } catch (err) {
+        const errorMsg = err.message || "Failed to create task";
+        setError(errorMsg);
+        showToast(errorMsg, "error");
+        return { success: false, error: errorMsg };
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [showToast],
+  );
+
+  // ============================================
+  // UPDATE TASK
+  // ============================================
+  const updateTask = useCallback(
+    async (taskId, updates) => {
+      const previousTasks = [...tasks];
+
+      try {
+        setIsSubmitting(true);
+        setError(null);
+
+        // Optimistic update
+        setTasks((prev) =>
+          prev.map((task) =>
+            task.id === taskId || task._id === taskId
+              ? { ...task, ...updates }
+              : task,
+          ),
+        );
+
+        // Prepare API payload
+        const payload = {
+          ...(updates.title && { title: updates.title }),
+          ...(updates.description && { description: updates.description }),
+          ...(updates.category && { category: updates.category }),
+          ...(updates.priority && { priority: updates.priority }),
+          ...(updates.assignedTo && { assignedTo: updates.assignedTo }),
+          ...(updates.date && { dueDate: updates.date }),
+        };
+
+        const response = await api.tasks.update(taskId, payload);
+
+        if (response.success) {
+          const updatedTask = transformTask(response.data.task);
+          setTasks((prev) =>
+            prev.map((task) =>
+              task.id === taskId || task._id === taskId ? updatedTask : task,
+            ),
+          );
+          showToast("Task updated successfully!", "success");
+          return { success: true, task: updatedTask };
+        }
+      } catch (err) {
+        // Rollback on error
+        setTasks(previousTasks);
+        const errorMsg = err.message || "Failed to update task";
+        setError(errorMsg);
+        showToast(errorMsg, "error");
+        return { success: false, error: errorMsg };
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [tasks, showToast],
+  );
+
+  // ============================================
+  // DELETE TASK
+  // ============================================
+  const deleteTask = useCallback(
+    async (taskId) => {
+      const previousTasks = [...tasks];
+
+      try {
+        setIsSubmitting(true);
+        setError(null);
+
+        // Optimistic delete
+        setTasks((prev) =>
+          prev.filter((task) => task.id !== taskId && task._id !== taskId),
+        );
+
+        const response = await api.tasks.delete(taskId);
+
+        if (response.success) {
+          showToast("Task deleted successfully!", "success");
+          return { success: true };
+        }
+      } catch (err) {
+        // Rollback on error
+        setTasks(previousTasks);
+        const errorMsg = err.message || "Failed to delete task";
+        setError(errorMsg);
+        showToast(errorMsg, "error");
+        return { success: false, error: errorMsg };
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [tasks, showToast],
+  );
+
+  // ============================================
+  // REFRESH TASKS
+  // ============================================
+  const refreshTasks = useCallback(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
+  // ============================================
+  // RETURN
+  // ============================================
   return {
+    // Data
     tasks,
     filteredTasks,
     stats,
+
+    // Loading states
+    isLoading,
+    isSubmitting,
+    error,
+
+    // Search & Filter
     searchQuery,
     setSearchQuery,
     activeFilter,
     setActiveFilter,
+
+    // CRUD Operations
     addTask,
     updateTask,
     deleteTask,
+    refreshTasks,
+
+    // Toast
+    toast,
+    showToast,
+    dismissToast,
   };
 };
 
