@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Icons } from "./Icons.jsx";
 import SearchBar from "./SearchBar";
 import FilterPills from "./FilterPills";
 import TaskCard from "./TaskCard";
 import EmptyState from "./EmptyState";
+import DeleteConfirmModal from "./DeleteConfirmModal";
+import { TaskListSkeleton } from "./LoadingStates";
 
 /**
  * Tasks Tab Component
- * Displays all tasks with search and filter functionality
+ * Displays all tasks with search, filter, and CRUD functionality
  */
 const TasksTab = ({
   filteredTasks,
@@ -16,7 +18,40 @@ const TasksTab = ({
   setSearchQuery,
   activeFilter,
   setActiveFilter,
+  onUpdateTask,
+  onDeleteTask,
+  isSubmitting = false,
+  employees = [],
 }) => {
+  // Delete modal state
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    taskId: null,
+    taskTitle: "",
+  });
+
+  // Handle delete click
+  const handleDeleteClick = (task) => {
+    setDeleteModal({
+      isOpen: true,
+      taskId: task._id || task.id,
+      taskTitle: task.title,
+    });
+  };
+
+  // Confirm delete
+  const handleConfirmDelete = async () => {
+    if (deleteModal.taskId) {
+      await onDeleteTask(deleteModal.taskId);
+      setDeleteModal({ isOpen: false, taskId: null, taskTitle: "" });
+    }
+  };
+
+  // Close delete modal
+  const handleCloseDeleteModal = () => {
+    setDeleteModal({ isOpen: false, taskId: null, taskTitle: "" });
+  };
+
   return (
     <>
       {/* Header with Search & Filters */}
@@ -47,17 +82,34 @@ const TasksTab = ({
       </div>
 
       {/* Task List */}
-      <div className="p-6 `max-h-[600px]` overflow-y-auto custom-scrollbar">
+      <div className="p-6 max-h-150 overflow-y-auto custom-scrollbar">
         {filteredTasks.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredTasks.map((task, index) => (
-              <TaskCard key={task.id} task={task} index={index} />
+              <TaskCard
+                key={task._id || task.id}
+                task={task}
+                index={index}
+                onEdit={onUpdateTask}
+                onDelete={() => handleDeleteClick(task)}
+                employees={employees}
+              />
             ))}
           </div>
         ) : (
           <EmptyState filter={activeFilter} />
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        title="Delete Task"
+        message={`Are you sure you want to delete "${deleteModal.taskTitle}"? This action cannot be undone.`}
+        isLoading={isSubmitting}
+      />
     </>
   );
 };
