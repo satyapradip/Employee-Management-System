@@ -24,6 +24,34 @@ const AuthProvider = ({ children }) => {
   const lastActivityRef = useRef(Date.now());
 
   // ============================================
+  // LOGOUT FUNCTION (defined first to avoid circular dependency)
+  // ============================================
+
+  /**
+   * Logout user and clear session
+   */
+  const logout = useCallback((message = null) => {
+    // Clear timeouts first to prevent any callbacks
+    if (sessionTimeoutRef.current) {
+      clearTimeout(sessionTimeoutRef.current);
+      sessionTimeoutRef.current = null;
+    }
+    if (activityTimeoutRef.current) {
+      clearTimeout(activityTimeoutRef.current);
+      activityTimeoutRef.current = null;
+    }
+
+    // Clear localStorage
+    localStorage.removeItem("loggedInUser");
+
+    // Clear state - set isAuthenticated to false FIRST, then clear user
+    // This prevents the edge case where isAuthenticated is true but user is null
+    setIsAuthenticated(false);
+    setUser(null);
+    setError(message);
+  }, []);
+
+  // ============================================
   // SESSION MANAGEMENT
   // ============================================
 
@@ -45,7 +73,7 @@ const AuthProvider = ({ children }) => {
         logout("Session expired due to inactivity");
       }, SESSION_TIMEOUT);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, logout]);
 
   /**
    * Track user activity for session management
@@ -146,7 +174,7 @@ const AuthProvider = ({ children }) => {
     }, ACTIVITY_CHECK_INTERVAL);
 
     return () => clearInterval(checkInterval);
-  }, [isAuthenticated, checkTokenExpiry, isTokenExpired]);
+  }, [isAuthenticated, checkTokenExpiry, isTokenExpired, logout]);
 
   // ============================================
   // INITIAL AUTH CHECK
@@ -229,27 +257,6 @@ const AuthProvider = ({ children }) => {
       setIsLoading(false);
     }
   };
-
-  /**
-   * Logout user and clear session
-   */
-  const logout = useCallback((message = null) => {
-    // Clear state
-    setUser(null);
-    setIsAuthenticated(false);
-    setError(message);
-
-    // Clear localStorage
-    localStorage.removeItem("loggedInUser");
-
-    // Clear timeouts
-    if (sessionTimeoutRef.current) {
-      clearTimeout(sessionTimeoutRef.current);
-    }
-    if (activityTimeoutRef.current) {
-      clearTimeout(activityTimeoutRef.current);
-    }
-  }, []);
 
   /**
    * Update user profile

@@ -59,6 +59,18 @@ const App = () => {
     );
   }
 
+  // Handle edge case: authenticated but no user data yet (shouldn't happen, but safety check)
+  if (isAuthenticated && !user) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-white text-lg">Loading user data...</div>
+        </div>
+      </div>
+    );
+  }
+
   // Render auth views when not authenticated
   const renderAuthView = () => {
     switch (authView) {
@@ -117,9 +129,11 @@ const App = () => {
         </>
       )}
       {/* If logged in as ADMIN → Show Admin Dashboard */}
-      {isAuthenticated && user?.role === "admin" && <AdminDashboard />}
+      {isAuthenticated && user && user.role === "admin" && <AdminDashboard />}
       {/* If logged in as EMPLOYEE → Show Employee Dashboard */}
-      {isAuthenticated && user?.role === "employee" && <EmployeeDashboard />}
+      {isAuthenticated && user && user.role === "employee" && (
+        <EmployeeDashboard />
+      )}
     </>
   );
 };

@@ -46,7 +46,7 @@ const seedData = async () => {
     // Create Admin
     const admin = await User.create({
       name: "Satyapradip",
-      email: "satyapradip.colleg@mail.com",
+      email: "satyapradip.colleg@gmail.com",
       password: "admin123",
       role: "admin",
     });
@@ -197,7 +197,7 @@ const seedData = async () => {
 ║                                                           ║
 ║   Login Credentials:                                      ║
 ║   ─────────────────────────────────────────               ║
-║   Admin:    satyapradip.colleg@mail.com / admin123        ║
+║   Admin:    satyapradip.colleg@gmail.com / admin123        ║
 ║   Employee: supritimaity59@gmail.com / 123456             ║
 ║   Employee: jane@company.com / 123456                     ║
 ║                                                           ║
