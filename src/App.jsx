@@ -21,7 +21,7 @@ const AUTH_VIEWS = {
  * Uses AuthProvider context for all auth logic
  */
 const App = () => {
-  const { user, isAuthenticated, isLoading, error } = useAuth();
+  const { user, isAuthenticated, isLoading, error, clearError } = useAuth();
   const [authView, setAuthView] = useState(AUTH_VIEWS.LOGIN);
   const [resetToken, setResetToken] = useState(null);
 
@@ -39,13 +39,22 @@ const App = () => {
     }
   }, []);
 
-  // Reset to login view when user logs in
+  // Reset to login view when authentication state changes
   useEffect(() => {
-    if (isAuthenticated) {
-      setAuthView(AUTH_VIEWS.LOGIN);
-      setResetToken(null);
-    }
+    // Always reset to login view when auth state changes (login or logout)
+    setAuthView(AUTH_VIEWS.LOGIN);
+    setResetToken(null);
   }, [isAuthenticated]);
+
+  // Auto-dismiss error toast after 5 seconds
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        clearError();
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, clearError]);
 
   // Show loading state while checking session
   if (isLoading) {
@@ -80,7 +89,7 @@ const App = () => {
         return (
           <ResetPassword
             token={resetToken}
-            onBack={() => {
+            onBackToLogin={() => {
               setResetToken(null);
               setAuthView(AUTH_VIEWS.LOGIN);
             }}
@@ -107,10 +116,10 @@ const App = () => {
           {renderAuthView()}
           {/* Show error toast if there's a session error */}
           {error && (
-            <div className="fixed bottom-4 right-4 bg-amber-500/90 text-white px-4 py-3 rounded-lg shadow-lg z-50">
+            <div className="fixed bottom-4 right-4 bg-amber-500/90 text-white px-4 py-3 rounded-lg shadow-lg z-50 max-w-md">
               <div className="flex items-center gap-2">
                 <svg
-                  className="w-5 h-5"
+                  className="w-5 h-5 shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -122,7 +131,26 @@ const App = () => {
                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                   />
                 </svg>
-                <span>{error}</span>
+                <span className="flex-1">{error}</span>
+                <button
+                  onClick={clearError}
+                  className="ml-2 text-white/80 hover:text-white transition-colors"
+                  aria-label="Close"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
               </div>
             </div>
           )}
