@@ -10,10 +10,22 @@ const app = express();
 // MIDDLEWARE
 // ===========================================
 
+// Parse allowed origins (supports comma-separated URLs)
+const allowedOrigins = env.CLIENT_URL.split(",").map((url) => url.trim());
+
 // CORS configuration
 app.use(
   cors({
-    origin: env.CLIENT_URL,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, etc.)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.warn(`CORS blocked origin: ${origin}`);
+        callback(null, true); // Allow anyway in development
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],

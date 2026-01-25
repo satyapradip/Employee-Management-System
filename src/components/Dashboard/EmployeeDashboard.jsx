@@ -3,6 +3,7 @@ import Header from "../others/Header";
 import TaskListNumber from "../others/TaskListNumber";
 import TaskList from "../TaskList/TaskList";
 import api from "../../services/api.js";
+import { useAuth } from "../../hooks/useAuth";
 
 /**
  * Welcome Banner Component - Compact version with better contrast
@@ -203,8 +204,12 @@ const NextBestAction = ({ data }) => {
 
 /**
  * Employee Dashboard Component
+ * Uses AuthContext for user data and logout
  */
-const EmployeeDashboard = ({ data, onLogout }) => {
+const EmployeeDashboard = () => {
+  // Get user and logout from AuthContext
+  const { user, logout } = useAuth();
+
   const [tasks, setTasks] = useState([]);
   const [stats, setStats] = useState({
     new: 0,
@@ -316,7 +321,7 @@ const EmployeeDashboard = ({ data, onLogout }) => {
   const taskData = {
     tasks,
     stats,
-    name: data?.name,
+    name: user?.name,
   };
 
   if (isLoading) {
@@ -338,9 +343,9 @@ const EmployeeDashboard = ({ data, onLogout }) => {
       {/* Main content wrapper - removes right scrollbar */}
       <div className="relative z-10 h-screen overflow-y-auto overflow-x-hidden scrollbar-none">
         <div className="p-6 md:p-8 lg:px-12 text-white max-w-7xl mx-auto">
-          <Header userName={data?.name || data?.email} onLogout={onLogout} />
+          <Header userName={user?.name || user?.email} onLogout={logout} />
 
-          <WelcomeBanner name={data?.name} />
+          <WelcomeBanner name={user?.name} />
 
           <NextBestAction data={taskData} onAcceptTask={handleAcceptTask} />
 

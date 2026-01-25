@@ -1,16 +1,41 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import { User, Task } from "../models/index.js";
 
-dotenv.config();
+// Get the directory name for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env from server folder (2 levels up from seeders folder)
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 /**
  * Seed Database with initial data
  */
 const seedData = async () => {
   try {
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI);
+    // Validate MongoDB URI exists
+    if (!process.env.MONGODB_URI) {
+      console.error("❌ Error: MONGODB_URI is not defined in .env file");
+      console.error("📁 Expected .env location: server/.env");
+      console.error("\n💡 Make sure your server/.env file contains:");
+      console.error(
+        "   MONGODB_URI=mongodb://localhost:27017/employee_management",
+      );
+      process.exit(1);
+    }
+
+    console.log("🔄 Connecting to MongoDB...");
+    console.log(
+      `📍 URI: ${process.env.MONGODB_URI.replace(/\/\/[^:]+:[^@]+@/, "//***:***@")}`,
+    );
+
+    // Connect to MongoDB with timeout
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000, // 10 second timeout
+    });
     console.log("✅ Connected to MongoDB");
 
     // Clear existing data
@@ -20,8 +45,8 @@ const seedData = async () => {
 
     // Create Admin
     const admin = await User.create({
-      name: "Admin User",
-      email: "admin@company.com",
+      name: "Satyapradip",
+      email: "satyapradip.colleg@mail.com",
       password: "admin123",
       role: "admin",
     });
@@ -30,8 +55,8 @@ const seedData = async () => {
     // Create Employees
     const employees = await User.insertMany([
       {
-        name: "John Doe",
-        email: "john@company.com",
+        name: "Pradipta Kumar",
+        email: "supritimaity59@gmail.com",
         password: "123456",
         role: "employee",
       },
@@ -174,7 +199,28 @@ const seedData = async () => {
 
     process.exit(0);
   } catch (error) {
-    console.error("❌ Seeding failed:", error.message);
+    console.error("\n❌ Seeding failed!");
+    console.error("─".repeat(50));
+
+    // Provide helpful error messages based on error type
+    if (error.name === "MongoServerSelectionError") {
+      console.error("🔌 Could not connect to MongoDB server.");
+      console.error("\n💡 Possible solutions:");
+      console.error("   1. Make sure MongoDB is running locally");
+      console.error("   2. Check if your MongoDB Atlas IP is whitelisted");
+      console.error("   3. Verify your connection string in server/.env");
+    } else if (error.name === "MongooseServerSelectionError") {
+      console.error("🔐 Authentication or network error.");
+      console.error(
+        "\n💡 Check your MongoDB credentials and network connection.",
+      );
+    } else if (error.code === "ENOTFOUND") {
+      console.error("🌐 DNS lookup failed - cannot reach MongoDB host.");
+    } else {
+      console.error(`Error: ${error.message}`);
+    }
+
+    console.error("─".repeat(50));
     process.exit(1);
   }
 };

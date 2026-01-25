@@ -1,18 +1,33 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
 
-const Login = ({ handleLogin }) => {
+const Login = ({ onForgotPassword }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loginError, setLoginError] = useState(null);
 
-  const submitHandler = (e) => {
+  const { login, clearError } = useAuth();
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    // Call the login function passed from App.jsx
-    handleLogin(email, password);
-    // Clear form after submission
-    setEmail("");
-    setPassword("");
+    setLoginError(null);
+    setIsSubmitting(true);
+
+    const result = await login(email, password);
+
+    if (!result.success) {
+      setLoginError(result.error);
+    }
+
+    setIsSubmitting(false);
+    // Only clear form on successful login
+    if (result.success) {
+      setEmail("");
+      setPassword("");
+    }
   };
+
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-linear-to-br from-gray-900 via-black to-gray-900">
       <div className="relative backdrop-blur-xl bg-white/5 border border-emerald-500/30 p-10 rounded-2xl shadow-2xl shadow-emerald-500/10 w-full max-w-md mx-4">
@@ -27,13 +42,55 @@ const Login = ({ handleLogin }) => {
           <p className="text-gray-400 mt-2">Sign in to your account</p>
         </div>
 
+        {/* Error Message */}
+        {loginError && (
+          <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 text-sm flex items-center gap-2">
+            <svg
+              className="w-5 h-5 shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>{loginError}</span>
+            <button
+              onClick={() => {
+                setLoginError(null);
+                clearError();
+              }}
+              className="ml-auto text-red-400 hover:text-red-300"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
+
         <form onSubmit={submitHandler} className="flex flex-col gap-5">
           <div className="relative group">
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full bg-white/5 text-white outline-none border border-gray-700 focus:border-emerald-500 py-4 px-5 rounded-xl placeholder:text-gray-500 transition-all duration-300 focus:shadow-lg focus:shadow-emerald-500/20"
+              disabled={isSubmitting}
+              className="w-full bg-white/5 text-white outline-none border border-gray-700 focus:border-emerald-500 py-4 px-5 rounded-xl placeholder:text-gray-500 transition-all duration-300 focus:shadow-lg focus:shadow-emerald-500/20 disabled:opacity-50"
               type="email"
               placeholder="Enter your email"
             />
@@ -45,7 +102,8 @@ const Login = ({ handleLogin }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full bg-white/5 text-white outline-none border border-gray-700 focus:border-emerald-500 py-4 px-5 rounded-xl placeholder:text-gray-500 transition-all duration-300 focus:shadow-lg focus:shadow-emerald-500/20"
+              disabled={isSubmitting}
+              className="w-full bg-white/5 text-white outline-none border border-gray-700 focus:border-emerald-500 py-4 px-5 rounded-xl placeholder:text-gray-500 transition-all duration-300 focus:shadow-lg focus:shadow-emerald-500/20 disabled:opacity-50"
               type="password"
               placeholder="Enter your password"
             />
@@ -53,19 +111,49 @@ const Login = ({ handleLogin }) => {
           </div>
 
           <div className="flex justify-end">
-            <a
-              href="#"
-              className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors duration-200"
+            <button
+              type="button"
+              onClick={onForgotPassword}
+              className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors duration-200 bg-transparent border-none cursor-pointer"
             >
               Forgot password?
-            </a>
+            </button>
           </div>
 
           <button
-            className="relative mt-2 bg-linear-to-r from-emerald-600 to-teal-600 text-white font-semibold py-4 px-6 rounded-xl overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98]"
+            className="relative mt-2 bg-linear-to-r from-emerald-600 to-teal-600 text-white font-semibold py-4 px-6 rounded-xl overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             type="submit"
+            disabled={isSubmitting}
           >
-            <span className="relative z-10">Sign In</span>
+            <span className="relative z-10 flex items-center justify-center gap-2">
+              {isSubmitting ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Signing in...
+                </>
+              ) : (
+                "Sign In"
+              )}
+            </span>
             <div className="absolute inset-0 bg-linear-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-linear-to-r from-transparent via-white/20 to-transparent"></div>
           </button>

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import env from "../config/env.js";
 
 const userSchema = new mongoose.Schema(
@@ -39,6 +40,15 @@ const userSchema = new mongoose.Schema(
     },
     lastLogin: {
       type: Date,
+    },
+    // Password reset fields
+    resetPasswordToken: {
+      type: String,
+      select: false,
+    },
+    resetPasswordExpire: {
+      type: Date,
+      select: false,
     },
   },
   {
@@ -91,8 +101,46 @@ userSchema.methods.generateAuthToken = function () {
 userSchema.methods.toJSON = function () {
   const user = this.toObject();
   delete user.password;
+  delete user.resetPasswordToken;
+  delete user.resetPasswordExpire;
   delete user.__v;
   return user;
+};
+
+/**
+ * Generate password reset token
+ * Returns the unhashed token to send via email
+ */
+userSchema.methods.generateResetPasswordToken = function () {
+  // Generate random token
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  // Hash token and save to database
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // Set expiry (10 minutes)
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+  // Return unhashed token (to send via email)
+  return resetToken;
+};
+
+/**
+ * Verify reset token
+ * @param {string} token - Unhashed token from email
+ */
+userSchema.statics.findByResetToken = async function (token) {
+  // Hash the token to compare with stored hash
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  // Find user with matching token that hasn't expired
+  return this.findOne({
+    resetPasswordToken: hashedToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  }).select("+resetPasswordToken +resetPasswordExpire");
 };
 
 const User = mongoose.model("User", userSchema);

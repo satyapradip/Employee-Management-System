@@ -5,15 +5,20 @@ import Toast from "./components/Toast";
 import { FullPageLoader, ErrorState } from "./components/LoadingStates";
 import { useTaskManager } from "./hooks/useTaskManager";
 import { useEmployees } from "./hooks/useEmployees";
+import { useAuth } from "../../hooks/useAuth";
 import "./styles/animations.css";
 
 /**
  * Admin Dashboard Component
  * Main dashboard for admin users with task management
  * Connected to backend API for real-time data
+ * Uses AuthContext for user data and logout
  */
-const AdminDashboard = ({ user, onLogout }) => {
+const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("tasks");
+
+  // Get user and logout from AuthContext
+  const { user, logout } = useAuth();
 
   // Use custom hooks for data management
   const {
@@ -54,7 +59,7 @@ const AdminDashboard = ({ user, onLogout }) => {
   if (isLoading && !filteredTasks.length) {
     return (
       <div className="min-h-screen w-full p-6 md:p-10 bg-linear-to-br from-zinc-950 via-zinc-900 to-zinc-950">
-        <Header userName={user?.name || "Admin"} onLogout={onLogout} />
+        <Header userName={user?.name || "Admin"} onLogout={logout} />
         <div className="mt-8">
           <FullPageLoader message="Loading tasks..." />
         </div>
@@ -66,7 +71,7 @@ const AdminDashboard = ({ user, onLogout }) => {
   if (error && !filteredTasks.length) {
     return (
       <div className="min-h-screen w-full p-6 md:p-10 bg-linear-to-br from-zinc-950 via-zinc-900 to-zinc-950">
-        <Header userName={user?.name || "Admin"} onLogout={onLogout} />
+        <Header userName={user?.name || "Admin"} onLogout={logout} />
         <div className="mt-8 bg-zinc-900/80 backdrop-blur-xl rounded-2xl border border-zinc-800 shadow-2xl">
           <ErrorState message={error} onRetry={refreshTasks} />
         </div>
@@ -76,7 +81,7 @@ const AdminDashboard = ({ user, onLogout }) => {
 
   return (
     <div className="min-h-screen w-full p-6 md:p-10 bg-linear-to-br from-zinc-950 via-zinc-900 to-zinc-950">
-      <Header userName={user?.name || "Admin"} onLogout={onLogout} />
+      <Header userName={user?.name || "Admin"} onLogout={logout} />
 
       {/* Toast Notifications */}
       <Toast toast={toast} onDismiss={dismissToast} />

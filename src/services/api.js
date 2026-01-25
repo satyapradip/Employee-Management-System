@@ -96,6 +96,31 @@ const api = {
       });
       return handleResponse(response);
     },
+
+    forgotPassword: async (email) => {
+      const response = await fetch(`${API_URL}/auth/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      return handleResponse(response);
+    },
+
+    verifyResetToken: async (token) => {
+      const response = await fetch(`${API_URL}/auth/reset-password/${token}`, {
+        headers: { "Content-Type": "application/json" },
+      });
+      return handleResponse(response);
+    },
+
+    resetPassword: async (token, password) => {
+      const response = await fetch(`${API_URL}/auth/reset-password/${token}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      return handleResponse(response);
+    },
   },
 
   // ============================================
