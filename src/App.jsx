@@ -121,6 +121,8 @@ const App = () => {
     <>
       {/* If NOT logged in → Show Auth Views */}
       {!isAuthenticated && renderAuthView()}
+      {/* If logged in as ADMIN → Show Admin Dashboard */}
+      {isAuthenticated && user?.role === "admin" && <AdminDashboard />}
       {/* If logged in as EMPLOYEE → Show Employee Dashboard */}
       {isAuthenticated && user?.role === "employee" && <EmployeeDashboard />}
     </>
