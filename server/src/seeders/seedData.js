@@ -52,8 +52,8 @@ const seedData = async () => {
     });
     console.log("👤 Admin created:", admin.email);
 
-    // Create Employees
-    const employees = await User.insertMany([
+    // Create Employees (using create() to ensure password hashing via pre-save hook)
+    const employeeData = [
       {
         name: "Pradipta Kumar",
         email: "supritimaity59@gmail.com",
@@ -84,7 +84,14 @@ const seedData = async () => {
         password: "123456",
         role: "employee",
       },
-    ]);
+    ];
+
+    // Create employees one by one to trigger password hashing
+    const employees = [];
+    for (const data of employeeData) {
+      const employee = await User.create(data);
+      employees.push(employee);
+    }
     console.log(`👥 ${employees.length} employees created`);
 
     // Create Sample Tasks
@@ -190,8 +197,8 @@ const seedData = async () => {
 ║                                                           ║
 ║   Login Credentials:                                      ║
 ║   ─────────────────────────────────────────               ║
-║   Admin:    admin@company.com / admin123                  ║
-║   Employee: john@company.com / 123456                     ║
+║   Admin:    satyapradip.colleg@mail.com / admin123        ║
+║   Employee: supritimaity59@gmail.com / 123456             ║
 ║   Employee: jane@company.com / 123456                     ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
