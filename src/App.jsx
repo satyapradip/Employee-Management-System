@@ -59,36 +59,6 @@ const App = () => {
     );
   }
 
-  // Show session expired message if there's an error
-  if (error && !isAuthenticated) {
-    return (
-      <>
-        <Login
-          onForgotPassword={() => setAuthView(AUTH_VIEWS.FORGOT_PASSWORD)}
-        />
-        {/* Toast notification for session expiry */}
-        <div className="fixed bottom-4 right-4 bg-amber-500/90 text-white px-4 py-3 rounded-lg shadow-lg animate-slideUp z-50">
-          <div className="flex items-center gap-2">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-            <span>{error}</span>
-          </div>
-        </div>
-      </>
-    );
-  }
-
   // Render auth views when not authenticated
   const renderAuthView = () => {
     switch (authView) {
@@ -120,7 +90,32 @@ const App = () => {
   return (
     <>
       {/* If NOT logged in → Show Auth Views */}
-      {!isAuthenticated && renderAuthView()}
+      {!isAuthenticated && (
+        <>
+          {renderAuthView()}
+          {/* Show error toast if there's a session error */}
+          {error && (
+            <div className="fixed bottom-4 right-4 bg-amber-500/90 text-white px-4 py-3 rounded-lg shadow-lg z-50">
+              <div className="flex items-center gap-2">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+                <span>{error}</span>
+              </div>
+            </div>
+          )}
+        </>
+      )}
       {/* If logged in as ADMIN → Show Admin Dashboard */}
       {isAuthenticated && user?.role === "admin" && <AdminDashboard />}
       {/* If logged in as EMPLOYEE → Show Employee Dashboard */}
