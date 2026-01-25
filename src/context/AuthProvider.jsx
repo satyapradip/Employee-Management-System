@@ -44,8 +44,8 @@ const AuthProvider = ({ children }) => {
     // Clear localStorage
     localStorage.removeItem("loggedInUser");
 
-    // Clear state - set isAuthenticated to false FIRST, then clear user
-    // This prevents the edge case where isAuthenticated is true but user is null
+    // Clear state - IMPORTANT: Set isLoading to false to ensure login screen shows
+    setIsLoading(false);
     setIsAuthenticated(false);
     setUser(null);
     setError(message);
