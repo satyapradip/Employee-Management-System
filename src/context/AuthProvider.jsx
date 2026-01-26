@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import { flushSync } from "react-dom";
 import { AuthContext } from "./contexts";
 import api from "../services/api";
 
@@ -30,7 +31,11 @@ const AuthProvider = ({ children }) => {
   /**
    * Logout user and clear session
    */
-  const logout = useCallback((message = null) => {
+  const logout = useCallback((messageOrEvent = null) => {
+    // Check if first argument is an event object (from onClick)
+    // If so, ignore it. Only use actual string messages.
+    const message = typeof messageOrEvent === "string" ? messageOrEvent : null;
+
     // Clear timeouts first to prevent any callbacks
     if (sessionTimeoutRef.current) {
       clearTimeout(sessionTimeoutRef.current);
@@ -41,14 +46,24 @@ const AuthProvider = ({ children }) => {
       activityTimeoutRef.current = null;
     }
 
-    // Clear localStorage
+    // Clear localStorage immediately
     localStorage.removeItem("loggedInUser");
 
-    // Clear state - IMPORTANT: Set isLoading to false to ensure login screen shows
-    setIsLoading(false);
-    setIsAuthenticated(false);
-    setUser(null);
-    setError(message);
+    // Use flushSync to force immediate synchronous state updates
+    // This prevents black screen by ensuring React re-renders immediately
+    flushSync(() => {
+      setIsLoading(false);
+      setIsAuthenticated(false);
+      setUser(null);
+      if (message) {
+        setError(message);
+      }
+    });
+
+    // Call backend logout in background (don't wait for it)
+    api.auth.logout().catch((err) => {
+      console.warn("Backend logout failed:", err);
+    });
   }, []);
 
   // ============================================
@@ -181,6 +196,8 @@ const AuthProvider = ({ children }) => {
   // ============================================
 
   useEffect(() => {
+    let isMounted = true; // Track if component is still mounted
+
     const initializeAuth = async () => {
       const savedUser = localStorage.getItem("loggedInUser");
 
@@ -191,30 +208,43 @@ const AuthProvider = ({ children }) => {
           // Check if token is expired before making API call
           if (isTokenExpired()) {
             localStorage.removeItem("loggedInUser");
-            setIsLoading(false);
+            if (isMounted) {
+              setIsLoading(false);
+            }
             return;
           }
 
           // Verify token is still valid by calling /me
           const response = await api.auth.getMe();
 
-          const userData = {
-            ...response.data.user,
-            token: parsed.token,
-          };
+          // Only update state if component is still mounted
+          if (isMounted) {
+            const userData = {
+              ...response.data.user,
+              token: parsed.token,
+            };
 
-          setUser(userData);
-          setIsAuthenticated(true);
+            setUser(userData);
+            setIsAuthenticated(true);
+          }
         } catch (err) {
           console.error("Auth verification failed:", err.message);
           localStorage.removeItem("loggedInUser");
+          // Don't update state if unmounted
         }
       }
 
-      setIsLoading(false);
+      if (isMounted) {
+        setIsLoading(false);
+      }
     };
 
     initializeAuth();
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+    };
   }, [isTokenExpired]);
 
   // ============================================

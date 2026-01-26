@@ -5,6 +5,9 @@
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
+// Flag to prevent auto-redirect during manual logout
+let isLoggingOut = false;
+
 /**
  * Get auth token from localStorage
  */
@@ -36,7 +39,8 @@ const handleResponse = async (response) => {
 
   if (!response.ok) {
     // Handle 401 - Unauthorized
-    if (response.status === 401) {
+    // Only auto-redirect if not already in logout process
+    if (response.status === 401 && !isLoggingOut) {
       localStorage.removeItem("loggedInUser");
       window.location.href = "/";
     }
@@ -120,6 +124,31 @@ const api = {
         body: JSON.stringify({ password }),
       });
       return handleResponse(response);
+    },
+
+    logout: async () => {
+      // Set flag to prevent race condition with 401 handler
+      isLoggingOut = true;
+      try {
+        const response = await fetch(`${API_URL}/auth/logout`, {
+          method: "POST",
+          headers: getHeaders(),
+        });
+        // Don't throw on error - logout should always succeed client-side
+        return handleResponse(response).catch(() => ({ success: true }));
+      } catch (error) {
+        // Always succeed logout on client even if server call fails
+        console.warn(
+          "Logout API call failed, but proceeding with client logout:",
+          error,
+        );
+        return { success: true };
+      } finally {
+        // Reset flag after a delay to allow cleanup
+        setTimeout(() => {
+          isLoggingOut = false;
+        }, 1000);
+      }
     },
   },
 
