@@ -58,6 +58,7 @@ const App = () => {
 
   // Show loading state while checking session
   if (isLoading) {
+    console.log("🔄 App: isLoading = true");
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
@@ -70,6 +71,7 @@ const App = () => {
 
   // Handle edge case: authenticated but no user data yet (shouldn't happen, but safety check)
   if (isAuthenticated && !user) {
+    console.log("⚠️ App: isAuthenticated but no user data");
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
@@ -79,6 +81,13 @@ const App = () => {
       </div>
     );
   }
+
+  // Debug: Log current state
+  console.log("🎯 App render state:", {
+    isAuthenticated,
+    hasUser: !!user,
+    userRole: user?.role,
+  });
 
   // Render auth views when not authenticated
   const renderAuthView = () => {
@@ -161,6 +170,12 @@ const App = () => {
       {/* If logged in as EMPLOYEE → Show Employee Dashboard */}
       {isAuthenticated && user && user.role === "employee" && (
         <EmployeeDashboard />
+      )}
+      {/* Safety fallback - if authenticated but no role matches, show error */}
+      {isAuthenticated && user && !user.role && (
+        <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+          <div className="text-white text-lg">Invalid user role</div>
+        </div>
       )}
     </>
   );
