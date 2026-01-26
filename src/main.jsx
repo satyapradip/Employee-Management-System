@@ -4,13 +4,18 @@ import "./index.css";
 import App from "./App.jsx";
 import AuthProvider from "./context/AuthProvider.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
+import { ToastProvider } from "./context/ToastProvider.jsx";
+import ToastContainer from "./components/ToastContainer.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ErrorBoundary>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </ErrorBoundary>
+    <ToastProvider>
+      <ErrorBoundary>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+        <ToastContainer />
+      </ErrorBoundary>
+    </ToastProvider>
   </StrictMode>,
 );
