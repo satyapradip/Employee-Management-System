@@ -5,6 +5,8 @@ import ResetPassword from "./components/Auth/ResetPassword.jsx";
 import AdminDashboard from "./components/Admin";
 import EmployeeDashboard from "./components/Dashboard/EmployeeDashboard.jsx";
 import { useAuth } from "./hooks/useAuth.js";
+// Development demo toast (lazy import placeholder)
+const DemoToastPlaceholder = React.lazy(() => import("./components/DemoToastButton.jsx"));
 
 /**
  * Auth Views
@@ -176,6 +178,13 @@ const App = () => {
         <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
           <div className="text-white text-lg">Invalid user role</div>
         </div>
+      )}
+      {/* Development-only demo toast buttons */}
+      {process.env.NODE_ENV === "development" && (
+        <React.Suspense fallback={null}>
+          {/* Lazy-load demo button to avoid shipping to production */}
+          <DemoToastPlaceholder />
+        </React.Suspense>
       )}
     </>
   );
