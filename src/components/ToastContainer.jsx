@@ -1,6 +1,6 @@
 import React from "react";
-import Toast from "./Toast";
-import { useToastContext } from "./ToastProvider";
+import Toast from "./Toast.jsx";
+import { useToastContext } from "../context/ToastProvider.jsx";
 
 function ToastContainer() {
   const { toasts, removeToast } = useToastContext();
