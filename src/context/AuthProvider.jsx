@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { flushSync } from "react-dom";
 import { AuthContext } from "./contexts";
 import api from "../services/api";
+import useToast from "../hooks/useToast";
 
 // Session timeout in milliseconds (30 minutes)
 const SESSION_TIMEOUT = 30 * 60 * 1000;
@@ -19,6 +20,8 @@ const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const showToast = useToast();
+
   // Refs for timers
   const sessionTimeoutRef = useRef(null);
   const activityTimeoutRef = useRef(null);
@@ -31,40 +34,51 @@ const AuthProvider = ({ children }) => {
   /**
    * Logout user and clear session
    */
-  const logout = useCallback((messageOrEvent = null) => {
-    // Check if first argument is an event object (from onClick)
-    // If so, ignore it. Only use actual string messages.
-    const message = typeof messageOrEvent === "string" ? messageOrEvent : null;
+  const logout = useCallback(
+    (messageOrEvent = null) => {
+      // Check if first argument is an event object (from onClick)
+      // If so, ignore it. Only use actual string messages.
+      const message =
+        typeof messageOrEvent === "string" ? messageOrEvent : null;
 
-    // Clear timeouts first to prevent any callbacks
-    if (sessionTimeoutRef.current) {
-      clearTimeout(sessionTimeoutRef.current);
-      sessionTimeoutRef.current = null;
-    }
-    if (activityTimeoutRef.current) {
-      clearTimeout(activityTimeoutRef.current);
-      activityTimeoutRef.current = null;
-    }
-
-    // Clear localStorage immediately
-    localStorage.removeItem("loggedInUser");
-
-    // Use flushSync to force immediate synchronous state updates
-    // This prevents black screen by ensuring React re-renders immediately
-    flushSync(() => {
-      setIsLoading(false);
-      setIsAuthenticated(false);
-      setUser(null);
-      if (message) {
-        setError(message);
+      // Clear timeouts first to prevent any callbacks
+      if (sessionTimeoutRef.current) {
+        clearTimeout(sessionTimeoutRef.current);
+        sessionTimeoutRef.current = null;
       }
-    });
+      if (activityTimeoutRef.current) {
+        clearTimeout(activityTimeoutRef.current);
+        activityTimeoutRef.current = null;
+      }
 
-    // Call backend logout in background (don't wait for it)
-    api.auth.logout().catch((err) => {
-      console.warn("Backend logout failed:", err);
-    });
-  }, []);
+      // Clear localStorage immediately
+      localStorage.removeItem("loggedInUser");
+
+      // Use flushSync to force immediate synchronous state updates
+      // This prevents black screen by ensuring React re-renders immediately
+      flushSync(() => {
+        setIsLoading(false);
+        setIsAuthenticated(false);
+        setUser(null);
+        if (message) {
+          setError(message);
+        }
+      });
+
+      // Display a toast to inform user they have been logged out
+      try {
+        showToast(message || "You've been signed out", "info");
+      } catch {
+        // In case toast system is unavailable, silently ignore
+      }
+
+      // Call backend logout in background (don't wait for it)
+      api.auth.logout().catch((err) => {
+        console.warn("Backend logout failed:", err);
+      });
+    },
+    [showToast],
+  );
 
   // ============================================
   // SESSION MANAGEMENT
