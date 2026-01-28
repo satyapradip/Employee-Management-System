@@ -12,10 +12,31 @@ export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
   // Add toast
-  const showToast = useCallback((message, type = "info", duration = 5000) => {
-    const id = crypto.randomUUID();
-    setToasts((prev) => [...prev, { id, type, message, duration }]);
-  }, []);
+  // Supports two signatures:
+  //  - showToast(message: string, type?: string, duration?: number)
+  //  - showToast(options: { message, type?, duration?, action? })
+  const showToast = useCallback(
+    (messageOrOptions, type = "info", duration = 5000) => {
+      const id = crypto.randomUUID();
+
+      let toast = null;
+      if (messageOrOptions && typeof messageOrOptions === "object") {
+        const {
+          message,
+          type: t = "info",
+          duration: d = 5000,
+          action,
+        } = messageOrOptions;
+        toast = { id, type: t, message, duration: d, action };
+      } else {
+        toast = { id, type, message: messageOrOptions, duration };
+      }
+
+      setToasts((prev) => [...prev, toast]);
+      return id;
+    },
+    [],
+  );
 
   // Remove toast
   const removeToast = useCallback((id) => {

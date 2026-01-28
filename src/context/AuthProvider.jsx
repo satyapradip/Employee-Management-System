@@ -3,6 +3,7 @@ import { flushSync } from "react-dom";
 import { AuthContext } from "./contexts";
 import api from "../services/api";
 import useToast from "../hooks/useToast";
+import { useToastContext } from "../context/ToastProvider.jsx";
 
 // Session timeout in milliseconds (30 minutes)
 const SESSION_TIMEOUT = 30 * 60 * 1000;
@@ -20,7 +21,12 @@ const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const showToast = useToast();
+  // Prefers direct context here so we can remove warning toasts by id
+  const { showToast, removeToast } = useToastContext();
+
+  // Ref to store warning toast id and its timer so we can clear it
+  const warningToastRef = useRef(null);
+  const warningTimeoutRef = useRef(null);
 
   // Refs for timers
   const sessionTimeoutRef = useRef(null);
@@ -97,8 +103,58 @@ const AuthProvider = ({ children }) => {
 
     // Set new timeout only if user is authenticated
     if (isAuthenticated) {
+      // Clear previous warning timer and toast
+      if (warningTimeoutRef.current) {
+        clearTimeout(warningTimeoutRef.current);
+        warningTimeoutRef.current = null;
+      }
+      if (warningToastRef.current) {
+        try {
+          removeToast(warningToastRef.current);
+        } catch {}
+        warningToastRef.current = null;
+      }
+
+      // Schedule warning toast 1 minute before session expiry
+      const warningBefore = 60 * 1000; // 1 minute
+      if (SESSION_TIMEOUT > warningBefore) {
+        warningTimeoutRef.current = setTimeout(() => {
+          try {
+            // show a persistent warning (duration = 0 -> stays until removed)
+            const id = showToast({
+              message: "Session expiring soon — click to stay signed in",
+              type: "warning",
+              duration: 0,
+              action: {
+                label: "Stay signed in",
+                onClick: (toastId) => {
+                  try {
+                    // Extend session
+                    resetSessionTimeout();
+                    // Remove the warning toast
+                    removeToast(toastId);
+                    // Notify user
+                    showToast("Session extended", "success");
+                  } catch {}
+                },
+              },
+            });
+            warningToastRef.current = id;
+          } catch {
+            /* ignore */
+          }
+        }, SESSION_TIMEOUT - warningBefore);
+      }
+
       sessionTimeoutRef.current = setTimeout(() => {
         console.log("⏰ Session expired due to inactivity");
+        // Ensure warning toast is removed when session actually expires
+        if (warningToastRef.current) {
+          try {
+            removeToast(warningToastRef.current);
+          } catch {}
+          warningToastRef.current = null;
+        }
         logout("Session expired due to inactivity");
       }, SESSION_TIMEOUT);
     }
