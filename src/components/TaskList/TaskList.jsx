@@ -163,7 +163,8 @@ const TaskCard = ({
             <button
               onClick={handleAccept}
               disabled={isLoading}
-              className="flex-1 bg-violet-600 hover:bg-violet-500 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors disabled:opacity-50"
+              className="flex-1 bg-violet-600 hover:bg-violet-500 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              aria-label="Accept this task"
             >
               {isLoading ? "..." : "Accept Task"}
             </button>
@@ -173,7 +174,8 @@ const TaskCard = ({
               <button
                 onClick={handleComplete}
                 disabled={isLoading}
-                className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors disabled:opacity-50"
+                className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                aria-label="Mark task as completed"
               >
                 {isLoading ? "..." : "Complete"}
               </button>
@@ -183,7 +185,8 @@ const TaskCard = ({
                   setShowFailModal(true);
                 }}
                 disabled={isLoading}
-                className="bg-rose-600 hover:bg-rose-500 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors disabled:opacity-50"
+                className="bg-rose-600 hover:bg-rose-500 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                aria-label="Mark task as failed"
               >
                 Fail
               </button>
@@ -200,8 +203,14 @@ const TaskCard = ({
       {/* Fail Modal */}
       {showFailModal && (
         <div
-          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 cursor-pointer"
           onClick={() => setShowFailModal(false)}
+          role="button"
+          tabIndex={0}
+          aria-label="Close fail modal"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") setShowFailModal(false);
+          }}
         >
           <div
             className="bg-zinc-800 p-6 rounded-xl w-full max-w-md mx-4 border border-zinc-700"
