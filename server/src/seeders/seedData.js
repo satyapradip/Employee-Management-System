@@ -43,10 +43,10 @@ const seedData = async () => {
     await Task.deleteMany({});
     console.log("🗑️  Cleared existing data");
 
-    // Create Admin
+    // Create Admin (matching README credentials)
     const admin = await User.create({
-      name: "Satyapradip",
-      email: "satyapradip.colleg@gmail.com",
+      name: "Admin User",
+      email: "admin@company.com",
       password: "admin123",
       role: "admin",
     });
@@ -197,9 +197,11 @@ const seedData = async () => {
 ║                                                           ║
 ║   Login Credentials:                                      ║
 ║   ─────────────────────────────────────────               ║
-║   Admin:    satyapradip.colleg@gmail.com / admin123        ║
-║   Employee: supritimaity59@gmail.com / 123456             ║
+║   Admin:    admin@company.com / admin123                  ║
+║   Employee: john@company.com / 123456                     ║
 ║   Employee: jane@company.com / 123456                     ║
+║   Employee: mike@company.com / 123456                     ║
+║   Employee: sarah@company.com / 123456                    ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
     `);

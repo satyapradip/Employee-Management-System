@@ -11,8 +11,11 @@ import env from "../config/env.js";
 export const register = asyncHandler(async (req, res) => {
   const { name, email, password, role } = req.body;
 
+  // Normalize email to lowercase for case-insensitive lookup
+  const normalizedEmail = email.toLowerCase().trim();
+
   // Check if user already exists
-  const existingUser = await User.findOne({ email });
+  const existingUser = await User.findOne({ email: normalizedEmail });
   if (existingUser) {
     throw ApiError.conflict("User with this email already exists");
   }
@@ -22,7 +25,7 @@ export const register = asyncHandler(async (req, res) => {
 
   const user = await User.create({
     name,
-    email,
+    email: normalizedEmail, // Use normalized email
     password,
     role: userRole,
   });
@@ -53,7 +56,9 @@ export const login = asyncHandler(async (req, res) => {
   }
 
   // Find user and include password for comparison
-  const user = await User.findOne({ email }).select("+password");
+  // Normalize email to lowercase for case-insensitive lookup
+  const normalizedEmail = email.toLowerCase().trim();
+  const user = await User.findOne({ email: normalizedEmail }).select("+password");
 
   if (!user) {
     throw ApiError.unauthorized("Invalid credentials");
