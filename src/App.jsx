@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
 import Login from "./components/Auth/Login.jsx";
+import Signup from "./components/Auth/Signup.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 import ResetPassword from "./components/Auth/ResetPassword.jsx";
 import AdminDashboard from "./components/Admin";
 import EmployeeDashboard from "./components/Dashboard/EmployeeDashboard.jsx";
 import { useAuth } from "./hooks/useAuth.js";
-// Development demo toast (lazy import placeholder)
-const DemoToastPlaceholder = React.lazy(() => import("./components/DemoToastButton.jsx"));
+import useToast from "./hooks/useToast.js";
+import logger from "./utils/logger.js";
+import RouteErrorBoundary from "./components/ErrorBoundary/RouteErrorBoundary.jsx";
+
 
 /**
  * Auth Views
  */
 const AUTH_VIEWS = {
   LOGIN: "login",
+  SIGNUP: "signup",
   FORGOT_PASSWORD: "forgot_password",
   RESET_PASSWORD: "reset_password",
 };
@@ -24,6 +28,7 @@ const AUTH_VIEWS = {
  */
 const App = () => {
   const { user, isAuthenticated, isLoading, error, clearError } = useAuth();
+  const showToast = useToast();
   const [authView, setAuthView] = useState(AUTH_VIEWS.LOGIN);
   const [resetToken, setResetToken] = useState(null);
 
@@ -48,19 +53,21 @@ const App = () => {
     setResetToken(null);
   }, [isAuthenticated]);
 
-  // Auto-dismiss error toast after 5 seconds
+  // Show error toast when there's an auth error
   useEffect(() => {
     if (error) {
+      showToast(error, "error");
+      // Auto-dismiss error after 5 seconds
       const timer = setTimeout(() => {
         clearError();
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [error, clearError]);
+  }, [error, clearError, showToast]);
 
   // Show loading state while checking session
   if (isLoading) {
-    console.log("🔄 App: isLoading = true");
+    logger.log("🔄 App: isLoading = true");
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
@@ -73,7 +80,7 @@ const App = () => {
 
   // Handle edge case: authenticated but no user data yet (shouldn't happen, but safety check)
   if (isAuthenticated && !user) {
-    console.log("⚠️ App: isAuthenticated but no user data");
+    logger.warn("⚠️ App: isAuthenticated but no user data");
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
@@ -84,16 +91,22 @@ const App = () => {
     );
   }
 
-  // Debug: Log current state
-  console.log("🎯 App render state:", {
+  // Debug: Log current state (only in development)
+  logger.debug("🎯 App render state:", {
     isAuthenticated,
     hasUser: !!user,
     userRole: user?.role,
+    userEmail: user?.email,
+    userId: user?._id || user?.id,
   });
 
   // Render auth views when not authenticated
   const renderAuthView = () => {
     switch (authView) {
+      case AUTH_VIEWS.SIGNUP:
+        return (
+          <Signup onBackToLogin={() => setAuthView(AUTH_VIEWS.LOGIN)} />
+        );
       case AUTH_VIEWS.FORGOT_PASSWORD:
         return <ForgotPassword onBack={() => setAuthView(AUTH_VIEWS.LOGIN)} />;
       case AUTH_VIEWS.RESET_PASSWORD:
@@ -113,6 +126,7 @@ const App = () => {
       default:
         return (
           <Login
+            onSignup={() => setAuthView(AUTH_VIEWS.SIGNUP)}
             onForgotPassword={() => setAuthView(AUTH_VIEWS.FORGOT_PASSWORD)}
           />
         );
@@ -123,68 +137,51 @@ const App = () => {
     <>
       {/* If NOT logged in → Show Auth Views */}
       {!isAuthenticated && (
-        <>
+        <RouteErrorBoundary fallbackMessage="An error occurred in the authentication section.">
           {renderAuthView()}
-          {/* Show error toast if there's a session error */}
-          {error && (
-            <div className="fixed bottom-4 right-4 bg-amber-500/90 text-white px-4 py-3 rounded-lg shadow-lg z-50 max-w-md">
-              <div className="flex items-center gap-2">
-                <svg
-                  className="w-5 h-5 shrink-0"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-                <span className="flex-1">{error}</span>
-                <button
-                  onClick={clearError}
-                  className="ml-2 text-white/80 hover:text-white transition-colors"
-                  aria-label="Close"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          )}
-        </>
+        </RouteErrorBoundary>
       )}
       {/* If logged in as ADMIN → Show Admin Dashboard */}
-      {isAuthenticated && user && user.role === "admin" && <AdminDashboard />}
+      {isAuthenticated && user && user.role === "admin" && (
+        <RouteErrorBoundary
+          fallbackMessage="An error occurred in the admin dashboard."
+          showDetails={true}
+        >
+          <AdminDashboard />
+        </RouteErrorBoundary>
+      )}
       {/* If logged in as EMPLOYEE → Show Employee Dashboard */}
       {isAuthenticated && user && user.role === "employee" && (
-        <EmployeeDashboard />
+        <RouteErrorBoundary
+          fallbackMessage="An error occurred in the employee dashboard."
+          showDetails={true}
+        >
+          <EmployeeDashboard />
+        </RouteErrorBoundary>
       )}
-      {/* Safety fallback - if authenticated but no role matches, show error */}
-      {isAuthenticated && user && !user.role && (
+      {/* Safety fallback - if authenticated but no role matches, show helpful error */}
+      {isAuthenticated && user && user.role !== "admin" && user.role !== "employee" && (
         <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-          <div className="text-white text-lg">Invalid user role</div>
+          <div className="text-center p-8 bg-zinc-900/80 rounded-2xl border border-red-500/50 max-w-md">
+            <h1 className="text-2xl font-bold text-red-400 mb-4">Access Error</h1>
+            <p className="text-gray-300 mb-2">
+              Invalid user role detected: <span className="font-mono text-yellow-400">{user.role || "undefined"}</span>
+            </p>
+            <p className="text-gray-400 text-sm mb-6">
+              Please contact support or try logging out and back in.
+            </p>
+            <button
+              onClick={() => {
+                localStorage.removeItem("loggedInUser");
+                window.location.reload();
+              }}
+              className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer"
+              aria-label="Clear session and reload page"
+            >
+              Clear Session & Reload
+            </button>
+          </div>
         </div>
-      )}
-      {/* Development-only demo toast buttons */}
-      {process.env.NODE_ENV === "development" && (
-        <React.Suspense fallback={null}>
-          {/* Lazy-load demo button to avoid shipping to production */}
-          <DemoToastPlaceholder />
-        </React.Suspense>
       )}
     </>
   );

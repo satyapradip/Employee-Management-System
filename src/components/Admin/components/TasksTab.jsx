@@ -55,10 +55,10 @@ const TasksTab = ({
   return (
     <>
       {/* Header with Search & Filters */}
-      <div className="bg-linear-to-r from-blue-500/10 to-purple-500/10 border-b border-zinc-800 p-6">
+      <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b border-zinc-800 p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
               <Icons.Tasks className="h-5 w-5 text-white" />
             </div>
             <div>

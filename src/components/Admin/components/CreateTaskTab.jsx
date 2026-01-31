@@ -94,9 +94,9 @@ const CreateTaskTab = ({
   return (
     <>
       {/* Form Header */}
-      <div className="bg-linear-to-r from-emerald-500/10 to-blue-500/10 border-b border-zinc-800 p-6">
+      <div className="bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border-b border-zinc-800 p-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-linear-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
             <Icons.Plus className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -234,7 +234,9 @@ const CreateTaskTab = ({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full mt-6 px-6 py-4 bg-linear-to-r from-emerald-500 to-emerald-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="w-full mt-6 px-6 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
+          aria-label={isSubmitting ? "Creating task..." : "Create new task"}
+          aria-busy={isSubmitting}
         >
           {isSubmitting ? (
             <>

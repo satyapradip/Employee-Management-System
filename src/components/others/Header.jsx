@@ -14,7 +14,7 @@ const Header = ({ userName = "Admin", onLogout }) => {
   };
 
   return (
-    <div className="relative overflow-hidden bg-linear-to-br from-zinc-900 via-zinc-800 to-zinc-900 rounded-2xl border border-zinc-700/50 p-6 shadow-2xl">
+    <div className="relative overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 rounded-2xl border border-zinc-700/50 p-6 shadow-2xl">
       {/* Background Glow Effect */}
       <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl" />
       <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl" />
@@ -23,7 +23,7 @@ const Header = ({ userName = "Admin", onLogout }) => {
         {/* Left Section - Greeting */}
         <div className="flex items-center gap-4">
           {/* Avatar */}
-          <div className="w-14 h-14 rounded-xl bg-linear-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-emerald-500/25">
+          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-emerald-500/25">
             {userName.charAt(0).toUpperCase()}
           </div>
 
@@ -43,7 +43,11 @@ const Header = ({ userName = "Admin", onLogout }) => {
         {/* Right Section - Actions */}
         <div className="flex items-center gap-3">
           {/* Notification Bell */}
-          <button className="relative p-3 rounded-xl bg-zinc-800/80 border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-600 transition-all duration-300 cursor-pointer">
+          <button
+            type="button"
+            className="relative p-3 rounded-xl bg-zinc-800/80 border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-600 transition-all duration-300 cursor-pointer"
+            aria-label="View notifications"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -51,6 +55,7 @@ const Header = ({ userName = "Admin", onLogout }) => {
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -59,13 +64,18 @@ const Header = ({ userName = "Admin", onLogout }) => {
               />
             </svg>
             {/* Notification Badge */}
-            <span className="absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full" />
+            <span
+              className="absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full"
+              aria-label="You have new notifications"
+            />
           </button>
 
           {/* Logout Button */}
           <button
+            type="button"
             onClick={onLogout}
             className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 transition-all duration-300 cursor-pointer"
+            aria-label="Log out of your account"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

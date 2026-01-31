@@ -44,10 +44,12 @@ const QuickActions = ({ onCreateTask }) => {
         {actions.map((action) => (
           <button
             key={action.label}
+            type="button"
             onClick={action.onClick}
-            className={`w-full flex items-center gap-3 p-3 rounded-lg border border-zinc-700/50 text-zinc-400 transition-all duration-200 ${colorClasses[action.color]}`}
+            className={`w-full flex items-center gap-3 p-3 rounded-lg border border-zinc-700/50 text-zinc-400 transition-all duration-200 cursor-pointer ${colorClasses[action.color]}`}
+            aria-label={action.label}
           >
-            <action.icon className="h-4 w-4" />
+            <action.icon className="h-4 w-4" aria-hidden="true" />
             <span className="text-sm font-medium">{action.label}</span>
           </button>
         ))}

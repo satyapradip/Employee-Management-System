@@ -19,8 +19,16 @@ const DeleteConfirmModal = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
         onClick={onClose}
+        aria-label="Close modal"
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "Escape" || e.key === "Enter") {
+            onClose();
+          }
+        }}
       />
 
       {/* Modal */}
@@ -46,16 +54,21 @@ const DeleteConfirmModal = ({
         {/* Actions */}
         <div className="p-6 pt-0 flex gap-3">
           <button
+            type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="flex-1 px-5 py-3 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-medium transition-colors disabled:opacity-50"
+            className="flex-1 px-5 py-3 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            aria-label="Cancel deletion"
           >
             Cancel
           </button>
           <button
+            type="button"
             onClick={onConfirm}
             disabled={isLoading}
-            className="flex-1 px-5 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 px-5 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
+            aria-label={isLoading ? "Deleting..." : "Confirm deletion"}
+            aria-busy={isLoading}
           >
             {isLoading ? (
               <>

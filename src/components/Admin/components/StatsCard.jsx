@@ -16,7 +16,7 @@ const StatsCard = ({ icon: Icon, label, value, color }) => {
     <div className="bg-zinc-800/50 rounded-xl p-4 border border-zinc-700/50 hover:border-zinc-600 transition-all duration-300">
       <div className="flex items-center gap-3">
         <div
-          className={`w-10 h-10 rounded-lg bg-linear-to-br ${colorClasses[color]} flex items-center justify-center shadow-lg`}
+          className={`w-10 h-10 rounded-lg bg-gradient-to-br ${colorClasses[color]} flex items-center justify-center shadow-lg`}
         >
           <Icon className="h-5 w-5 text-white" />
         </div>

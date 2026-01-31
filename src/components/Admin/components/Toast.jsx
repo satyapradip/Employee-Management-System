@@ -47,7 +47,7 @@ const Toast = ({ toast, onDismiss }) => {
       <div
         className={`
           flex items-center gap-3 px-5 py-4 rounded-xl border backdrop-blur-xl
-          shadow-2xl shadow-black/20 min-w-[320px] max-w-112.5
+          shadow-2xl shadow-black/20 min-w-[320px] max-w-md
           ${style.bg}
         `}
       >

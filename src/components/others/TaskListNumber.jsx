@@ -197,7 +197,7 @@ const TaskListNumber = ({ data }) => {
               </div>
               <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-linear-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-500"
                   style={{
                     width: `${stats.total > 0 ? (stats.completed / stats.total) * 100 : 0}%`,
                   }}

@@ -1,4 +1,5 @@
 import React from "react";
+import logger from "../utils/logger.js";
 
 function Toast({ id, type, message, onClose, action }) {
   const styles = {
@@ -17,7 +18,7 @@ function Toast({ id, type, message, onClose, action }) {
 
   return (
     <div
-      className={`${styles[type] || styles.info} p-4 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px] max-w-[400px] animate-slideInRight`}
+      className={`${styles[type] || styles.info} p-4 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px] max-w-md animate-slideInRight`}
     >
       <span className="text-2xl">{icons[type]}</span>
       <p className="flex-1">{message}</p>
@@ -26,7 +27,10 @@ function Toast({ id, type, message, onClose, action }) {
           onClick={() => {
             try {
               if (typeof action.onClick === "function") action.onClick(id);
-            } catch {}
+            } catch (error) {
+              // Log the error for debugging purposes
+              logger.error("Toast action error:", error);
+            }
             onClose();
           }}
           className="mr-2 px-3 py-1 bg-white/10 rounded text-sm"

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Header from "../others/Header";
 import { TabNavigation, TasksTab, CreateTaskTab, Sidebar } from "./components";
-import Toast from "./components/Toast";
 import { FullPageLoader, ErrorState } from "./components/LoadingStates";
 import { useTaskManager } from "./hooks/useTaskManager";
 import { useEmployees } from "./hooks/useEmployees";
@@ -35,8 +34,6 @@ const AdminDashboard = () => {
     isLoading,
     isSubmitting,
     error,
-    toast,
-    dismissToast,
   } = useTaskManager();
 
   // Fetch employees for task assignment
@@ -58,7 +55,7 @@ const AdminDashboard = () => {
   // Show loading state while initial data loads
   if (isLoading && !filteredTasks.length) {
     return (
-      <div className="min-h-screen w-full p-6 md:p-10 bg-linear-to-br from-zinc-950 via-zinc-900 to-zinc-950">
+      <div className="min-h-screen w-full p-6 md:p-10 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
         <Header userName={user?.name || "Admin"} onLogout={logout} />
         <div className="mt-8">
           <FullPageLoader message="Loading tasks..." />
@@ -70,7 +67,7 @@ const AdminDashboard = () => {
   // Show error state if fetch failed
   if (error && !filteredTasks.length) {
     return (
-      <div className="min-h-screen w-full p-6 md:p-10 bg-linear-to-br from-zinc-950 via-zinc-900 to-zinc-950">
+      <div className="min-h-screen w-full p-6 md:p-10 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
         <Header userName={user?.name || "Admin"} onLogout={logout} />
         <div className="mt-8 bg-zinc-900/80 backdrop-blur-xl rounded-2xl border border-zinc-800 shadow-2xl">
           <ErrorState message={error} onRetry={refreshTasks} />
@@ -80,11 +77,8 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen w-full p-6 md:p-10 bg-linear-to-br from-zinc-950 via-zinc-900 to-zinc-950">
+    <div className="min-h-screen w-full p-6 md:p-10 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
       <Header userName={user?.name || "Admin"} onLogout={logout} />
-
-      {/* Toast Notifications */}
-      <Toast toast={toast} onDismiss={dismissToast} />
 
       {/* Main Content Grid */}
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-4 gap-6">

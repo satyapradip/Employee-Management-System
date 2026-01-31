@@ -31,7 +31,7 @@ const StatusBadge = ({ status }) => {
  */
 const AssigneeInfo = ({ name }) => (
   <div className="flex items-center gap-2">
-    <div className="w-7 h-7 rounded-full bg-linear-to-br from-purple-400 to-purple-600 flex items-center justify-center text-xs font-bold text-white">
+    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-xs font-bold text-white">
       {getInitials(name)}
     </div>
     <span className="text-zinc-400 text-sm">{name}</span>
@@ -93,17 +93,22 @@ const TaskCard = ({ task, index, onEdit, onDelete, employees = [] }) => {
       {/* Hover Actions */}
       <div className="flex items-center gap-2 mt-4 pt-3 border-t border-zinc-700/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <button
+          type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700 transition-colors text-sm"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700 transition-colors text-sm cursor-pointer"
+          aria-label={isExpanded ? "Hide task details" : "Show task details"}
+          aria-expanded={isExpanded}
         >
-          <Icons.Description className="h-3.5 w-3.5" />
+          <Icons.Description className="h-3.5 w-3.5" aria-hidden="true" />
           Details
         </button>
         <button
+          type="button"
           onClick={onDelete}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors text-sm"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors text-sm cursor-pointer"
+          aria-label="Delete this task"
         >
-          <Icons.Trash className="h-3.5 w-3.5" />
+          <Icons.Trash className="h-3.5 w-3.5" aria-hidden="true" />
           Delete
         </button>
       </div>

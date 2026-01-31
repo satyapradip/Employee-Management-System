@@ -14,7 +14,6 @@ export { default as Sidebar } from "./Sidebar";
 export { default as StatsCard } from "./StatsCard";
 export { default as RecentActivity } from "./RecentActivity";
 export { default as QuickActions } from "./QuickActions";
-export { default as Toast } from "./Toast";
 export { default as DeleteConfirmModal } from "./DeleteConfirmModal";
 export {
   TaskCardSkeleton,
