@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { flushSync } from "react-dom";
 import { AuthContext } from "./contexts";
 import api from "../services/api";
-import useToast from "../hooks/useToast";
-import { useToastContext } from "../context/ToastProvider.jsx";
+// import useToast from "../hooks/useToast";
+import { useToastContext } from "../context/toastContext.js";
+import logger from "../utils/logger.js";
 
 // Session timeout in milliseconds (30 minutes)
 const SESSION_TIMEOUT = 30 * 60 * 1000;
@@ -80,7 +81,7 @@ const AuthProvider = ({ children }) => {
 
       // Call backend logout in background (don't wait for it)
       api.auth.logout().catch((err) => {
-        console.warn("Backend logout failed:", err);
+        logger.warn("Backend logout failed:", err);
       });
     },
     [showToast],
@@ -111,7 +112,9 @@ const AuthProvider = ({ children }) => {
       if (warningToastRef.current) {
         try {
           removeToast(warningToastRef.current);
-        } catch {}
+        } catch (err) {
+          logger.warn("Failed to remove warning toast:", err);
+        }
         warningToastRef.current = null;
       }
 
@@ -135,7 +138,9 @@ const AuthProvider = ({ children }) => {
                     removeToast(toastId);
                     // Notify user
                     showToast("Session extended", "success");
-                  } catch {}
+                  } catch (err) {
+                    logger.warn("Failed to remove warning toast:", err);
+                  }
                 },
               },
             });
@@ -147,18 +152,20 @@ const AuthProvider = ({ children }) => {
       }
 
       sessionTimeoutRef.current = setTimeout(() => {
-        console.log("⏰ Session expired due to inactivity");
+        logger.log("⏰ Session expired due to inactivity");
         // Ensure warning toast is removed when session actually expires
         if (warningToastRef.current) {
           try {
             removeToast(warningToastRef.current);
-          } catch {}
+          } catch (err) {
+            logger.warn("Failed to remove warning toast:", err);
+          }
           warningToastRef.current = null;
         }
         logout("Session expired due to inactivity");
       }, SESSION_TIMEOUT);
     }
-  }, [isAuthenticated, logout]);
+  }, [isAuthenticated, logout, removeToast, showToast]);
 
   /**
    * Track user activity for session management
@@ -245,14 +252,14 @@ const AuthProvider = ({ children }) => {
     const checkInterval = setInterval(() => {
       // Check if token is expired
       if (isTokenExpired()) {
-        console.log("🔑 Token expired");
+        logger.log("🔑 Token expired");
         logout("Session expired. Please login again.");
         return;
       }
 
       // Check if token needs refresh
       if (checkTokenExpiry()) {
-        console.log("🔄 Token needs refresh");
+        logger.debug("🔄 Token needs refresh");
         // In a real app, call refresh token endpoint here
         // For now, we'll just log it since we don't have a refresh endpoint
       }
@@ -289,16 +296,45 @@ const AuthProvider = ({ children }) => {
 
           // Only update state if component is still mounted
           if (isMounted) {
+            // Helper to extract role from token
+            const getRoleFromToken = (token) => {
+              try {
+                const payload = JSON.parse(atob(token.split(".")[1]));
+                return payload.role;
+              } catch {
+                return null;
+              }
+            };
+
+            // Ensure role is present - check user object first, then token as fallback
+            const userRole =
+              response.data.user?.role ||
+              getRoleFromToken(parsed.token) ||
+              "employee"; // Default fallback
+
             const userData = {
               ...response.data.user,
+              role: userRole, // Explicitly set role
               token: parsed.token,
             };
+
+            // Validate role
+            if (!["admin", "employee"].includes(userData.role)) {
+              logger.warn("Invalid role in stored session:", userData.role);
+              localStorage.removeItem("loggedInUser");
+              return;
+            }
+
+            logger.debug("Session restored:", {
+              email: userData.email,
+              role: userData.role,
+            });
 
             setUser(userData);
             setIsAuthenticated(true);
           }
         } catch (err) {
-          console.error("Auth verification failed:", err.message);
+          logger.error("Auth verification failed:", err.message);
           localStorage.removeItem("loggedInUser");
           // Don't update state if unmounted
         }
@@ -322,6 +358,42 @@ const AuthProvider = ({ children }) => {
   // ============================================
 
   /**
+   * Extract role from JWT token (fallback if user object doesn't have role)
+   */
+  const extractRoleFromToken = useCallback((token) => {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      return payload.role;
+    } catch {
+      return null;
+    }
+  }, []);
+
+  /**
+   * Register new user
+   */
+  const register = async (name, email, password) => {
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      const response = await api.auth.register(name, email, password);
+
+      if (response.success) {
+        // Registration successful - user needs to login
+        // Don't auto-login, let them use the login form
+        return { success: true };
+      }
+    } catch (err) {
+      const errorMessage = err.message || "Registration failed";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
    * Login user with email and password
    */
   const login = async (email, password) => {
@@ -332,10 +404,31 @@ const AuthProvider = ({ children }) => {
       const response = await api.auth.login(email, password);
 
       if (response.success) {
+        // Ensure role is present - check user object first, then token as fallback
+        const userRole =
+          response.data.user?.role ||
+          extractRoleFromToken(response.data.token) ||
+          "employee"; // Default fallback
+
         const userData = {
           ...response.data.user,
+          role: userRole, // Explicitly set role
           token: response.data.token,
         };
+
+        // Debug logging (development only)
+        logger.debug("Login successful:", {
+          email: userData.email,
+          role: userData.role,
+          hasToken: !!userData.token,
+          userId: userData._id || userData.id,
+        });
+
+        // Validate role
+        if (!["admin", "employee"].includes(userData.role)) {
+          logger.warn("Invalid role detected:", userData.role);
+          throw new Error("Invalid user role. Please contact support.");
+        }
 
         // Save to state
         setUser(userData);
@@ -347,10 +440,17 @@ const AuthProvider = ({ children }) => {
         // Reset session timeout
         resetSessionTimeout();
 
-        return { success: true };
+        return { success: true, user: userData };
       }
+
+      // If response.success is false but no error thrown
+      return {
+        success: false,
+        error: response.message || "Login failed. Please try again.",
+      };
     } catch (err) {
-      const errorMessage = err.message || "Login failed";
+      const errorMessage = err.message || "Login failed. Please check your credentials.";
+      logger.error("Login error:", errorMessage);
       setError(errorMessage);
       return { success: false, error: errorMessage };
     } finally {
@@ -430,6 +530,7 @@ const AuthProvider = ({ children }) => {
     error,
 
     // Actions
+    register,
     login,
     logout,
     updateProfile,

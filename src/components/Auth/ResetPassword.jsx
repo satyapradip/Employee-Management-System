@@ -78,7 +78,7 @@ const ResetPassword = ({ token, onBackToLogin, onSuccess }) => {
   // Loading state
   if (isVerifying) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center bg-linear-to-br from-gray-900 via-black to-gray-900">
+      <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
           <div className="text-white text-lg">Verifying reset link...</div>
@@ -90,9 +90,9 @@ const ResetPassword = ({ token, onBackToLogin, onSuccess }) => {
   // Invalid token state
   if (!isValid && !success) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center bg-linear-to-br from-gray-900 via-black to-gray-900">
+      <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900">
         <div className="relative backdrop-blur-xl bg-white/5 border border-red-500/30 p-10 rounded-2xl shadow-2xl shadow-red-500/10 w-full max-w-md mx-4">
-          <div className="absolute -inset-1 bg-linear-to-r from-red-600 to-orange-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
+          <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
 
           {/* Error Icon */}
           <div className="flex justify-center mb-6">
@@ -124,7 +124,7 @@ const ResetPassword = ({ token, onBackToLogin, onSuccess }) => {
 
             <button
               onClick={onBackToLogin}
-              className="w-full bg-linear-to-r from-emerald-600 to-teal-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-emerald-500/40 transition-all duration-300"
+              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-emerald-500/40 transition-all duration-300"
             >
               Back to Login
             </button>
@@ -137,9 +137,9 @@ const ResetPassword = ({ token, onBackToLogin, onSuccess }) => {
   // Success state
   if (success) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center bg-linear-to-br from-gray-900 via-black to-gray-900">
+      <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900">
         <div className="relative backdrop-blur-xl bg-white/5 border border-emerald-500/30 p-10 rounded-2xl shadow-2xl shadow-emerald-500/10 w-full max-w-md mx-4">
-          <div className="absolute -inset-1 bg-linear-to-r from-emerald-600 to-teal-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
+          <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
 
           {/* Success Icon */}
           <div className="flex justify-center mb-6">
@@ -181,10 +181,10 @@ const ResetPassword = ({ token, onBackToLogin, onSuccess }) => {
 
   // Reset form
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-linear-to-br from-gray-900 via-black to-gray-900">
+    <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900">
       <div className="relative backdrop-blur-xl bg-white/5 border border-emerald-500/30 p-10 rounded-2xl shadow-2xl shadow-emerald-500/10 w-full max-w-md mx-4">
         {/* Glow effect */}
-        <div className="absolute -inset-1 bg-linear-to-r from-emerald-600 to-teal-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
+        <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
 
         {/* Header */}
         <div className="text-center mb-8">
@@ -262,7 +262,7 @@ const ResetPassword = ({ token, onBackToLogin, onSuccess }) => {
               placeholder="New password (min 6 characters)"
               minLength={6}
             />
-            <div className="absolute inset-0 rounded-xl bg-linear-to-r from-emerald-500 to-teal-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
           </div>
 
           <div className="relative group">
@@ -276,7 +276,7 @@ const ResetPassword = ({ token, onBackToLogin, onSuccess }) => {
               placeholder="Confirm new password"
               minLength={6}
             />
-            <div className="absolute inset-0 rounded-xl bg-linear-to-r from-emerald-500 to-teal-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
           </div>
 
           {/* Password match indicator */}
@@ -312,9 +312,11 @@ const ResetPassword = ({ token, onBackToLogin, onSuccess }) => {
           )}
 
           <button
-            className="relative mt-2 bg-linear-to-r from-emerald-600 to-teal-600 text-white font-semibold py-4 px-6 rounded-xl overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="relative mt-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold py-4 px-6 rounded-xl overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
             type="submit"
             disabled={isSubmitting || password !== confirmPassword}
+            aria-label={isSubmitting ? "Resetting password..." : "Reset password"}
+            aria-busy={isSubmitting}
           >
             <span className="relative z-10 flex items-center justify-center gap-2">
               {isSubmitting ? (
@@ -359,13 +361,15 @@ const ResetPassword = ({ token, onBackToLogin, onSuccess }) => {
                 </>
               )}
             </span>
-            <div className="absolute inset-0 bg-linear-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
         </form>
 
         <button
+          type="button"
           onClick={onBackToLogin}
-          className="w-full mt-6 text-gray-400 hover:text-emerald-400 font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+          className="w-full mt-6 text-gray-400 hover:text-emerald-400 font-medium transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer bg-transparent border-none"
+          aria-label="Go back to login"
         >
           <svg
             className="w-4 h-4"

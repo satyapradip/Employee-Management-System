@@ -29,9 +29,9 @@ const ForgotPassword = ({ onBack }) => {
   // Success state
   if (success) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center bg-linear-to-br from-gray-900 via-black to-gray-900">
+      <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900">
         <div className="relative backdrop-blur-xl bg-white/5 border border-emerald-500/30 p-10 rounded-2xl shadow-2xl shadow-emerald-500/10 w-full max-w-md mx-4">
-          <div className="absolute -inset-1 bg-linear-to-r from-emerald-600 to-teal-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
+          <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
 
           {/* Success Icon */}
           <div className="flex justify-center mb-6">
@@ -78,10 +78,10 @@ const ForgotPassword = ({ onBack }) => {
   }
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-linear-to-br from-gray-900 via-black to-gray-900">
+    <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900">
       <div className="relative backdrop-blur-xl bg-white/5 border border-emerald-500/30 p-10 rounded-2xl shadow-2xl shadow-emerald-500/10 w-full max-w-md mx-4">
         {/* Glow effect */}
-        <div className="absolute -inset-1 bg-linear-to-r from-emerald-600 to-teal-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
+        <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
 
         {/* Header */}
         <div className="text-center mb-8">
@@ -157,13 +157,15 @@ const ForgotPassword = ({ onBack }) => {
               type="email"
               placeholder="Enter your email address"
             />
-            <div className="absolute inset-0 rounded-xl bg-linear-to-r from-emerald-500 to-teal-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
           </div>
 
           <button
-            className="relative bg-linear-to-r from-emerald-600 to-teal-600 text-white font-semibold py-4 px-6 rounded-xl overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="relative bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold py-4 px-6 rounded-xl overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
             type="submit"
             disabled={isSubmitting}
+            aria-label={isSubmitting ? "Sending reset link..." : "Send password reset link"}
+            aria-busy={isSubmitting}
           >
             <span className="relative z-10 flex items-center justify-center gap-2">
               {isSubmitting ? (
@@ -208,13 +210,15 @@ const ForgotPassword = ({ onBack }) => {
                 </>
               )}
             </span>
-            <div className="absolute inset-0 bg-linear-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
         </form>
 
         <button
+          type="button"
           onClick={onBack}
-          className="w-full mt-6 text-gray-400 hover:text-emerald-400 font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+          className="w-full mt-6 text-gray-400 hover:text-emerald-400 font-medium transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer bg-transparent border-none"
+          aria-label="Go back to login"
         >
           <svg
             className="w-4 h-4"

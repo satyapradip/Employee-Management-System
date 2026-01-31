@@ -4,6 +4,7 @@ import TaskListNumber from "../others/TaskListNumber";
 import TaskList from "../TaskList/TaskList";
 import api from "../../services/api.js";
 import { useAuth } from "../../hooks/useAuth";
+import logger from "../../utils/logger.js";
 
 /**
  * Welcome Banner Component - Compact version with better contrast
@@ -18,9 +19,9 @@ const WelcomeBanner = ({ name }) => {
 
   return (
     <div id="employeedashboard" className="mb-6 animate-slideDown">
-      <div className="relative overflow-hidden rounded-xl bg-linear-to-r from-zinc-800 to-zinc-800/80 p-5 border border-zinc-700/50">
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-zinc-800 to-zinc-800/80 p-5 border border-zinc-700/50">
         {/* Subtle accent line */}
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-violet-500 via-purple-500 to-indigo-500" />
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-500" />
 
         <div className="relative z-10 flex items-center justify-between">
           <div>
@@ -241,7 +242,7 @@ const EmployeeDashboard = () => {
         }
       } catch (err) {
         setError(err.message);
-        console.error("Failed to fetch tasks:", err);
+        logger.error("Failed to fetch tasks:", err);
       } finally {
         setIsLoading(false);
       }
@@ -338,7 +339,7 @@ const EmployeeDashboard = () => {
   return (
     <div className="min-h-screen bg-zinc-900 overflow-hidden">
       {/* Subtle background gradient */}
-      <div className="fixed inset-0 bg-linear-to-br from-zinc-900 via-zinc-900 to-zinc-800" />
+      <div className="fixed inset-0 bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800" />
 
       {/* Main content wrapper - removes right scrollbar */}
       <div className="relative z-10 h-screen overflow-y-auto overflow-x-hidden scrollbar-none">
