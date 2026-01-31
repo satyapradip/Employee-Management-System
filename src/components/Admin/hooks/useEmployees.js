@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import api from "../../../services/api";
+import logger from "../../../utils/logger.js";
 
 /**
  * Custom Hook: useEmployees
@@ -43,7 +44,7 @@ export const useEmployees = () => {
       }
     } catch (err) {
       setError(err.message || "Failed to fetch employees");
-      console.error("Failed to fetch employees:", err);
+      logger.error("Failed to fetch employees:", err);
     } finally {
       setIsLoading(false);
     }

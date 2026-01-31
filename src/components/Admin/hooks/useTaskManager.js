@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import api from "../../../services/api";
+import { useToastContext } from "../../../context/toastContext.js";
 
 /**
  * Task status mapping between backend and frontend
@@ -52,18 +53,8 @@ export const useTaskManager = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
 
-  // Toast notification state
-  const [toast, setToast] = useState(null);
-
-  // ============================================
-  // TOAST HELPER
-  // ============================================
-  const showToast = useCallback((message, type = "success") => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 4000);
-  }, []);
-
-  const dismissToast = useCallback(() => setToast(null), []);
+  // Use global toast system
+  const { showToast } = useToastContext();
 
   // ============================================
   // FETCH TASKS
@@ -291,11 +282,6 @@ export const useTaskManager = () => {
     updateTask,
     deleteTask,
     refreshTasks,
-
-    // Toast
-    toast,
-    showToast,
-    dismissToast,
   };
 };
 

@@ -1,12 +1,38 @@
 /**
  * API Service Layer
- * Centralized API calls with Axios
+ * Centralized API calls with fetch API
+ * Production-grade with request cancellation and error handling
  */
+import logger from "../utils/logger.js";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+// Validate and get API URL
+const getApiUrl = () => {
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+  // Warn in development if using default
+  if (import.meta.env.DEV && !import.meta.env.VITE_API_URL) {
+    logger.warn(
+      "VITE_API_URL not set, using default: http://localhost:5000/api",
+    );
+  }
+
+  // Error in production if not set
+  if (import.meta.env.PROD && !import.meta.env.VITE_API_URL) {
+    logger.error(
+      "VITE_API_URL is required in production! API calls may fail.",
+    );
+  }
+
+  return apiUrl;
+};
+
+const API_URL = getApiUrl();
 
 // Flag to prevent auto-redirect during manual logout
 let isLoggingOut = false;
+
+// Store active requests for cancellation
+const activeRequests = new Map();
 
 /**
  * Get auth token from localStorage
@@ -34,7 +60,12 @@ const getHeaders = () => {
 /**
  * Handle API response
  */
-const handleResponse = async (response) => {
+const handleResponse = async (response, requestId) => {
+  // Remove from active requests
+  if (requestId) {
+    activeRequests.delete(requestId);
+  }
+
   const data = await response.json();
 
   if (!response.ok) {
@@ -51,6 +82,56 @@ const handleResponse = async (response) => {
 };
 
 /**
+ * Create fetch request with AbortController
+ * @param {string} url - Request URL
+ * @param {Object} options - Fetch options
+ * @returns {Promise} - Fetch promise with abort capability
+ */
+const createRequest = (url, options = {}) => {
+  const requestId = `${Date.now()}-${Math.random()}`;
+  const controller = new AbortController();
+
+  // Store controller for cancellation
+  activeRequests.set(requestId, controller);
+
+  const fetchOptions = {
+    ...options,
+    signal: controller.signal,
+  };
+
+  const request = fetch(url, fetchOptions)
+    .then((response) => handleResponse(response, requestId))
+    .catch((error) => {
+      // Remove from active requests on error
+      activeRequests.delete(requestId);
+
+      // Don't throw if request was aborted
+      if (error.name === "AbortError") {
+        throw new Error("Request cancelled");
+      }
+      throw error;
+    });
+
+  // Add abort method
+  request.abort = () => {
+    controller.abort();
+    activeRequests.delete(requestId);
+  };
+
+  return request;
+};
+
+/**
+ * Cancel all active requests
+ */
+export const cancelAllRequests = () => {
+  activeRequests.forEach((controller) => {
+    controller.abort();
+  });
+  activeRequests.clear();
+};
+
+/**
  * API Methods
  */
 const api = {
@@ -59,86 +140,79 @@ const api = {
   // ============================================
   auth: {
     login: async (email, password) => {
-      const response = await fetch(`${API_URL}/auth/login`, {
+      return createRequest(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      return handleResponse(response);
     },
 
     register: async (name, email, password) => {
-      const response = await fetch(`${API_URL}/auth/register`, {
+      return createRequest(`${API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
-      return handleResponse(response);
     },
 
     getMe: async () => {
-      const response = await fetch(`${API_URL}/auth/me`, {
+      return createRequest(`${API_URL}/auth/me`, {
         headers: getHeaders(),
       });
-      return handleResponse(response);
     },
 
     updateProfile: async (data) => {
-      const response = await fetch(`${API_URL}/auth/me`, {
+      return createRequest(`${API_URL}/auth/me`, {
         method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify(data),
       });
-      return handleResponse(response);
     },
 
     changePassword: async (currentPassword, newPassword) => {
-      const response = await fetch(`${API_URL}/auth/change-password`, {
+      return createRequest(`${API_URL}/auth/change-password`, {
         method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify({ currentPassword, newPassword }),
       });
-      return handleResponse(response);
     },
 
     forgotPassword: async (email) => {
-      const response = await fetch(`${API_URL}/auth/forgot-password`, {
+      return createRequest(`${API_URL}/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      return handleResponse(response);
     },
 
     verifyResetToken: async (token) => {
-      const response = await fetch(`${API_URL}/auth/reset-password/${token}`, {
+      return createRequest(`${API_URL}/auth/reset-password/${token}`, {
         headers: { "Content-Type": "application/json" },
       });
-      return handleResponse(response);
     },
 
     resetPassword: async (token, password) => {
-      const response = await fetch(`${API_URL}/auth/reset-password/${token}`, {
+      return createRequest(`${API_URL}/auth/reset-password/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
       });
-      return handleResponse(response);
     },
 
     logout: async () => {
       // Set flag to prevent race condition with 401 handler
       isLoggingOut = true;
       try {
+        // Don't use createRequest for logout - we want it to always succeed
         const response = await fetch(`${API_URL}/auth/logout`, {
           method: "POST",
           headers: getHeaders(),
         });
         // Don't throw on error - logout should always succeed client-side
-        return handleResponse(response).catch(() => ({ success: true }));
+        return handleResponse(response, null).catch(() => ({ success: true }));
       } catch (error) {
         // Always succeed logout on client even if server call fails
-        console.warn(
+        logger.warn(
           "Logout API call failed, but proceeding with client logout:",
           error,
         );
@@ -158,76 +232,67 @@ const api = {
   tasks: {
     getAll: async (filters = {}) => {
       const params = new URLSearchParams(filters).toString();
-      const response = await fetch(`${API_URL}/tasks?${params}`, {
+      return createRequest(`${API_URL}/tasks?${params}`, {
         headers: getHeaders(),
       });
-      return handleResponse(response);
     },
 
     getOne: async (id) => {
-      const response = await fetch(`${API_URL}/tasks/${id}`, {
+      return createRequest(`${API_URL}/tasks/${id}`, {
         headers: getHeaders(),
       });
-      return handleResponse(response);
     },
 
     create: async (taskData) => {
-      const response = await fetch(`${API_URL}/tasks`, {
+      return createRequest(`${API_URL}/tasks`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify(taskData),
       });
-      return handleResponse(response);
     },
 
     update: async (id, taskData) => {
-      const response = await fetch(`${API_URL}/tasks/${id}`, {
+      return createRequest(`${API_URL}/tasks/${id}`, {
         method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify(taskData),
       });
-      return handleResponse(response);
     },
 
     delete: async (id) => {
-      const response = await fetch(`${API_URL}/tasks/${id}`, {
+      return createRequest(`${API_URL}/tasks/${id}`, {
         method: "DELETE",
         headers: getHeaders(),
       });
-      return handleResponse(response);
     },
 
     accept: async (id) => {
-      const response = await fetch(`${API_URL}/tasks/${id}/accept`, {
+      return createRequest(`${API_URL}/tasks/${id}/accept`, {
         method: "PUT",
         headers: getHeaders(),
       });
-      return handleResponse(response);
     },
 
     complete: async (id, notes = "") => {
-      const response = await fetch(`${API_URL}/tasks/${id}/complete`, {
+      return createRequest(`${API_URL}/tasks/${id}/complete`, {
         method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify({ notes }),
       });
-      return handleResponse(response);
     },
 
     fail: async (id, reason) => {
-      const response = await fetch(`${API_URL}/tasks/${id}/fail`, {
+      return createRequest(`${API_URL}/tasks/${id}/fail`, {
         method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify({ reason }),
       });
-      return handleResponse(response);
     },
 
     getStats: async () => {
-      const response = await fetch(`${API_URL}/tasks/stats`, {
+      return createRequest(`${API_URL}/tasks/stats`, {
         headers: getHeaders(),
       });
-      return handleResponse(response);
     },
   },
 
@@ -237,62 +302,52 @@ const api = {
   employees: {
     getAll: async (filters = {}) => {
       const params = new URLSearchParams(filters).toString();
-      const response = await fetch(`${API_URL}/employees?${params}`, {
+      return createRequest(`${API_URL}/employees?${params}`, {
         headers: getHeaders(),
       });
-      return handleResponse(response);
     },
 
     getOne: async (id) => {
-      const response = await fetch(`${API_URL}/employees/${id}`, {
+      return createRequest(`${API_URL}/employees/${id}`, {
         headers: getHeaders(),
       });
-      return handleResponse(response);
     },
 
     create: async (employeeData) => {
-      const response = await fetch(`${API_URL}/employees`, {
+      return createRequest(`${API_URL}/employees`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify(employeeData),
       });
-      return handleResponse(response);
     },
 
     update: async (id, employeeData) => {
-      const response = await fetch(`${API_URL}/employees/${id}`, {
+      return createRequest(`${API_URL}/employees/${id}`, {
         method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify(employeeData),
       });
-      return handleResponse(response);
     },
 
     delete: async (id) => {
-      const response = await fetch(`${API_URL}/employees/${id}`, {
+      return createRequest(`${API_URL}/employees/${id}`, {
         method: "DELETE",
         headers: getHeaders(),
       });
-      return handleResponse(response);
     },
 
     resetPassword: async (id, newPassword) => {
-      const response = await fetch(
-        `${API_URL}/employees/${id}/reset-password`,
-        {
-          method: "PUT",
-          headers: getHeaders(),
-          body: JSON.stringify({ newPassword }),
-        },
-      );
-      return handleResponse(response);
+      return createRequest(`${API_URL}/employees/${id}/reset-password`, {
+        method: "PUT",
+        headers: getHeaders(),
+        body: JSON.stringify({ newPassword }),
+      });
     },
 
     getDashboardStats: async () => {
-      const response = await fetch(`${API_URL}/employees/dashboard`, {
+      return createRequest(`${API_URL}/employees/dashboard`, {
         headers: getHeaders(),
       });
-      return handleResponse(response);
     },
   },
 };
