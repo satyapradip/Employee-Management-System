@@ -1,5 +1,5 @@
 import React from "react";
-import { STATUSES } from "../data/sampleTasks";
+import { STATUSES } from "../../../constants/taskConstants";
 
 /**
  * Filter Pills Component

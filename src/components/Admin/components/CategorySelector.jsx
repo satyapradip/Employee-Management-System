@@ -1,6 +1,6 @@
 import React from "react";
 import { Icons } from "./Icons.jsx";
-import { CATEGORIES } from "../data/sampleTasks";
+import { CATEGORIES } from "../../../constants/taskConstants";
 
 /**
  * Category Selector Component
