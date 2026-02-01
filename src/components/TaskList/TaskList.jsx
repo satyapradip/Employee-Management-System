@@ -209,12 +209,21 @@ const TaskCard = ({
           tabIndex={0}
           aria-label="Close fail modal"
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") setShowFailModal(false);
+            // Only close on Escape key, prevent Space/Enter from closing
+            if (e.key === "Escape") {
+              setShowFailModal(false);
+            }
           }}
         >
           <div
             className="bg-zinc-800 p-6 rounded-xl w-full max-w-md mx-4 border border-zinc-700"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => {
+              // Prevent Space/Enter from bubbling up to backdrop
+              if (e.key === " " || e.key === "Enter") {
+                e.stopPropagation();
+              }
+            }}
           >
             <h3 className="text-lg font-semibold text-white mb-4">
               Why did this task fail?
@@ -225,6 +234,7 @@ const TaskCard = ({
               className="w-full bg-zinc-900 text-white border border-zinc-700 rounded-lg p-3 text-sm resize-none focus:outline-none focus:border-violet-500"
               rows={3}
               placeholder="Enter the reason..."
+              autoFocus
             />
             <div className="flex gap-3 mt-4">
               <button
