@@ -36,6 +36,10 @@ const transformTask = (task) => ({
  * Custom Hook: useTaskManager
  * Production-grade task management with API integration
  *
+ * LEARNING NOTES:
+ * This is a CUSTOM HOOK - reusable logic for managing tasks
+ * Study this to understand: useState, useEffect, useCallback, useMemo
+ *
  * Features:
  * - Async data fetching with loading states
  * - Optimistic updates for better UX
@@ -44,39 +48,71 @@ const transformTask = (task) => ({
  */
 export const useTaskManager = () => {
   // ============================================
-  // STATE
+  // STATE MANAGEMENT
   // ============================================
+
+  // Why useState? To track data that changes and triggers re-renders
+
+  // tasks: Array of all tasks from backend
   const [tasks, setTasks] = useState([]);
+
+  // isLoading: Show spinner while fetching data initially
   const [isLoading, setIsLoading] = useState(true);
+
+  // isSubmitting: Show loading state on buttons (create/update/delete)
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // error: Store error messages to display to user
   const [error, setError] = useState(null);
+
+  // searchQuery: User's search input (e.g., "fix bug")
   const [searchQuery, setSearchQuery] = useState("");
+
+  // activeFilter: Current filter selected (e.g., "completed", "pending")
   const [activeFilter, setActiveFilter] = useState("all");
 
-  // Use global toast system
+  // Get showToast function from global toast context
+  // This lets us show notifications anywhere in this hook
   const { showToast } = useToastContext();
 
   // ============================================
-  // FETCH TASKS
+  // FETCH TASKS FROM API
   // ============================================
+
+  // Why useCallback?
+  // - Prevents function from being recreated on every render
+  // - Only recreates if dependencies ([showToast]) change
+  // - Important for performance and preventing infinite loops in useEffect
   const fetchTasks = useCallback(async () => {
     try {
+      // STEP 1: Set loading state (shows spinner in UI)
       setIsLoading(true);
-      setError(null);
+      setError(null); // Clear any previous errors
 
+      // STEP 2: Call API (goes to backend GET /api/tasks)
       const response = await api.tasks.getAll();
 
+      // STEP 3: If successful, transform and store tasks
       if (response.success) {
+        // Why transform? Backend format ≠ Frontend format
+        // Backend: { _id, status: "new" }
+        // Frontend: { id, status: "pending" }
         const transformedTasks = response.data.tasks.map(transformTask);
         setTasks(transformedTasks);
       }
     } catch (err) {
+      // STEP 4: Handle errors gracefully
       setError(err.message || "Failed to fetch tasks");
       showToast(err.message || "Failed to fetch tasks", "error");
     } finally {
+      // STEP 5: Always turn off loading, even if error occurred
+      // finally = runs whether try succeeds or catch catches error
       setIsLoading(false);
     }
-  }, [showToast]);
+  }, [showToast]); // Dependency: only recreate if showToast changes
+
+  // INTERVIEW QUESTION: "Why use useCallback here?"
+  // ANSWER: To prevent infinite loops in useEffect and optimize performance
 
   // Initial fetch
   useEffect(() => {
