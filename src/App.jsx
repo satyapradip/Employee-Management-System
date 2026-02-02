@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Login from "./components/Auth/Login.jsx";
 import Signup from "./components/Auth/Signup.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
@@ -9,7 +9,6 @@ import { useAuth } from "./hooks/useAuth.js";
 import useToast from "./hooks/useToast.js";
 import logger from "./utils/logger.js";
 import RouteErrorBoundary from "./components/ErrorBoundary/RouteErrorBoundary.jsx";
-
 
 /**
  * Auth Views
@@ -54,14 +53,21 @@ const App = () => {
   }, [isAuthenticated]);
 
   // Show error toast when there's an auth error
+  // Use a ref to track if we've already shown the toast for this error
+  const lastErrorRef = useRef(null);
+
   useEffect(() => {
-    if (error) {
+    if (error && error !== lastErrorRef.current) {
+      lastErrorRef.current = error;
       showToast(error, "error");
       // Auto-dismiss error after 5 seconds
       const timer = setTimeout(() => {
         clearError();
+        lastErrorRef.current = null;
       }, 5000);
       return () => clearTimeout(timer);
+    } else if (!error) {
+      lastErrorRef.current = null;
     }
   }, [error, clearError, showToast]);
 
@@ -104,9 +110,7 @@ const App = () => {
   const renderAuthView = () => {
     switch (authView) {
       case AUTH_VIEWS.SIGNUP:
-        return (
-          <Signup onBackToLogin={() => setAuthView(AUTH_VIEWS.LOGIN)} />
-        );
+        return <Signup onBackToLogin={() => setAuthView(AUTH_VIEWS.LOGIN)} />;
       case AUTH_VIEWS.FORGOT_PASSWORD:
         return <ForgotPassword onBack={() => setAuthView(AUTH_VIEWS.LOGIN)} />;
       case AUTH_VIEWS.RESET_PASSWORD:
@@ -160,29 +164,37 @@ const App = () => {
         </RouteErrorBoundary>
       )}
       {/* Safety fallback - if authenticated but no role matches, show helpful error */}
-      {isAuthenticated && user && user.role !== "admin" && user.role !== "employee" && (
-        <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-          <div className="text-center p-8 bg-zinc-900/80 rounded-2xl border border-red-500/50 max-w-md">
-            <h1 className="text-2xl font-bold text-red-400 mb-4">Access Error</h1>
-            <p className="text-gray-300 mb-2">
-              Invalid user role detected: <span className="font-mono text-yellow-400">{user.role || "undefined"}</span>
-            </p>
-            <p className="text-gray-400 text-sm mb-6">
-              Please contact support or try logging out and back in.
-            </p>
-            <button
-              onClick={() => {
-                localStorage.removeItem("loggedInUser");
-                window.location.reload();
-              }}
-              className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer"
-              aria-label="Clear session and reload page"
-            >
-              Clear Session & Reload
-            </button>
+      {isAuthenticated &&
+        user &&
+        user.role !== "admin" &&
+        user.role !== "employee" && (
+          <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+            <div className="text-center p-8 bg-zinc-900/80 rounded-2xl border border-red-500/50 max-w-md">
+              <h1 className="text-2xl font-bold text-red-400 mb-4">
+                Access Error
+              </h1>
+              <p className="text-gray-300 mb-2">
+                Invalid user role detected:{" "}
+                <span className="font-mono text-yellow-400">
+                  {user.role || "undefined"}
+                </span>
+              </p>
+              <p className="text-gray-400 text-sm mb-6">
+                Please contact support or try logging out and back in.
+              </p>
+              <button
+                onClick={() => {
+                  localStorage.removeItem("loggedInUser");
+                  window.location.reload();
+                }}
+                className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer"
+                aria-label="Clear session and reload page"
+              >
+                Clear Session & Reload
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </>
   );
 };

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { flushSync } from "react-dom";
 import { AuthContext } from "./contexts";
 import api from "../services/api";
-// import useToast from "../hooks/useToast";
 import { useToastContext } from "../context/toastContext.js";
 import logger from "../utils/logger.js";
 
