@@ -4,6 +4,7 @@ import TaskListNumber from "../others/TaskListNumber";
 import TaskList from "../TaskList/TaskList";
 import api from "../../services/api.js";
 import { useAuth } from "../../hooks/useAuth";
+import useToast from "../../hooks/useToast.js";
 import logger from "../../utils/logger.js";
 
 /**
@@ -64,7 +65,6 @@ const NextBestAction = ({ data }) => {
     const tasks = data?.tasks || [];
     const newTasks = tasks.filter((t) => t.newTask);
     const activeTasks = tasks.filter((t) => t.active);
-    const urgentTask = tasks.find((t) => t.active || t.newTask);
 
     if (newTasks.length > 0) {
       return {
@@ -210,6 +210,7 @@ const NextBestAction = ({ data }) => {
 const EmployeeDashboard = () => {
   // Get user and logout from AuthContext
   const { user, logout } = useAuth();
+  const showToast = useToast();
 
   const [tasks, setTasks] = useState([]);
   const [stats, setStats] = useState({
@@ -219,7 +220,6 @@ const EmployeeDashboard = () => {
     failed: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   // Fetch tasks from API
   useEffect(() => {
@@ -241,18 +241,21 @@ const EmployeeDashboard = () => {
           setStats(response.data.stats);
         }
       } catch (err) {
-        setError(err.message);
         logger.error("Failed to fetch tasks:", err);
+        // Show error toast only on initial load failure
+        showToast("Failed to load tasks", "error");
       } finally {
         setIsLoading(false);
       }
     };
     fetchTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle task actions
   const handleAcceptTask = async (taskId) => {
     try {
+      logger.info("Accepting task:", taskId);
       const response = await api.tasks.accept(taskId);
       if (response.success) {
         // Update local state
@@ -265,17 +268,22 @@ const EmployeeDashboard = () => {
         );
         setStats((prev) => ({
           ...prev,
-          new: prev.new - 1,
+          new: Math.max(0, prev.new - 1),
           active: prev.active + 1,
         }));
+        showToast("✓ Task accepted successfully!", "success");
+        logger.info("Task accepted:", taskId);
       }
     } catch (err) {
-      alert(err.message || "Failed to accept task");
+      const errorMsg = err.message || "Failed to accept task";
+      logger.error("Accept task error:", err);
+      showToast(errorMsg, "error");
     }
   };
 
   const handleCompleteTask = async (taskId) => {
     try {
+      logger.info("Completing task:", taskId);
       const response = await api.tasks.complete(taskId);
       if (response.success) {
         setTasks((prev) =>
@@ -287,17 +295,22 @@ const EmployeeDashboard = () => {
         );
         setStats((prev) => ({
           ...prev,
-          active: prev.active - 1,
+          active: Math.max(0, prev.active - 1),
           completed: prev.completed + 1,
         }));
+        showToast("✓ Task completed successfully!", "success");
+        logger.info("Task completed:", taskId);
       }
     } catch (err) {
-      alert(err.message || "Failed to complete task");
+      const errorMsg = err.message || "Failed to complete task";
+      logger.error("Complete task error:", err);
+      showToast(errorMsg, "error");
     }
   };
 
   const handleFailTask = async (taskId, reason) => {
     try {
+      logger.info("Marking task as failed:", taskId, "Reason:", reason);
       const response = await api.tasks.fail(taskId, reason);
       if (response.success) {
         setTasks((prev) =>
@@ -309,12 +322,16 @@ const EmployeeDashboard = () => {
         );
         setStats((prev) => ({
           ...prev,
-          active: prev.active - 1,
+          active: Math.max(0, prev.active - 1),
           failed: prev.failed + 1,
         }));
+        showToast("⚠ Task marked as failed", "warning");
+        logger.info("Task marked as failed:", taskId);
       }
     } catch (err) {
-      alert(err.message || "Failed to mark task as failed");
+      const errorMsg = err.message || "Failed to mark task as failed";
+      logger.error("Fail task error:", err);
+      showToast(errorMsg, "error");
     }
   };
 
