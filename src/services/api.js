@@ -18,9 +18,7 @@ const getApiUrl = () => {
 
   // Error in production if not set
   if (import.meta.env.PROD && !import.meta.env.VITE_API_URL) {
-    logger.error(
-      "VITE_API_URL is required in production! API calls may fail.",
-    );
+    logger.error("VITE_API_URL is required in production! API calls may fail.");
   }
 
   return apiUrl;

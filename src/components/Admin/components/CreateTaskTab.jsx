@@ -12,7 +12,6 @@ const PRIORITIES = ["high", "medium", "low"];
  */
 const CreateTaskTab = ({
   onCreateTask,
-  onTabChange,
   employees = [],
   isLoading = false,
   isSubmitting = false,
@@ -128,15 +127,18 @@ const CreateTaskTab = ({
 
         {/* Description */}
         <div>
-          <FormInput
-            label="Description"
-            icon={Icons.Description}
+          <label className="flex items-center gap-2 text-sm font-medium text-zinc-300 mb-2">
+            <Icons.Description className="h-4 w-4" />
+            Description
+          </label>
+
+          <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
             placeholder="Describe the task in detail..."
-            as="textarea"
             rows={3}
+            className="w-full bg-zinc-800/50 text-white border border-zinc-700 rounded-xl px-4 py-3 outline-none focus:border-emerald-500 transition-colors resize-none"
           />
           {errors.description && (
             <p className="mt-1 text-sm text-red-400">{errors.description}</p>
