@@ -1,12 +1,11 @@
-import React, {
-  useState,
-  useCallback,
-  useEffect,
-} from "react";
-import { ToastContext, useToastContext } from "./toastContext";
+import React, { useState, useCallback, useEffect, useRef } from "react";
+import { ToastContext } from "./toastContext";
 
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
+
+  // Track active timers to prevent memory leaks and infinite loops
+  const timersRef = useRef(new Map());
 
   // Add toast
   // Supports two signatures:
@@ -30,6 +29,16 @@ export function ToastProvider({ children }) {
       }
 
       setToasts((prev) => [...prev, toast]);
+
+      // Set up auto-dismiss timer for this specific toast
+      if (toast.duration && toast.duration > 0) {
+        const timer = setTimeout(() => {
+          setToasts((prev) => prev.filter((t) => t.id !== id));
+          timersRef.current.delete(id);
+        }, toast.duration);
+        timersRef.current.set(id, timer);
+      }
+
       return id;
     },
     [],
@@ -37,21 +46,23 @@ export function ToastProvider({ children }) {
 
   // Remove toast
   const removeToast = useCallback((id) => {
+    // Clear the timer if it exists
+    const timer = timersRef.current.get(id);
+    if (timer) {
+      clearTimeout(timer);
+      timersRef.current.delete(id);
+    }
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  // Handle auto-dismiss
+  // Cleanup all timers on unmount
   useEffect(() => {
-    const timers = toasts.map((toast) => {
-      if (!toast.duration) return null;
-
-      return setTimeout(() => {
-        removeToast(toast.id);
-      }, toast.duration);
-    });
-
-    return () => timers.forEach((t) => t && clearTimeout(t));
-  }, [toasts, removeToast]);
+    const timers = timersRef.current;
+    return () => {
+      timers.forEach((timer) => clearTimeout(timer));
+      timers.clear();
+    };
+  }, []);
 
   return (
     <ToastContext.Provider value={{ toasts, showToast, removeToast }}>
@@ -59,6 +70,3 @@ export function ToastProvider({ children }) {
     </ToastContext.Provider>
   );
 }
-
-// Export the hook for convenience
-export { useToastContext };
