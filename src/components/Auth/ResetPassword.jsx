@@ -17,14 +17,24 @@ const ResetPassword = ({ token, onBackToLogin, onSuccess }) => {
 
   // Verify token on mount
   useEffect(() => {
+    console.log(
+      "🔐 ResetPassword component mounted with token:",
+      token?.substring(0, 10) + "...",
+    );
+
     const verifyToken = async () => {
       try {
+        console.log("⏳ Verifying token with backend...");
         const response = await api.auth.verifyResetToken(token);
+        console.log("✅ Token verification response:", response);
+
         if (response.success && response.data.valid) {
           setIsValid(true);
           setEmail(response.data.email);
+          console.log("✅ Token is valid for email:", response.data.email);
         }
       } catch (err) {
+        console.error("❌ Token verification failed:", err);
         setError(err.message || "Invalid or expired reset link");
       } finally {
         setIsVerifying(false);
@@ -34,6 +44,7 @@ const ResetPassword = ({ token, onBackToLogin, onSuccess }) => {
     if (token) {
       verifyToken();
     } else {
+      console.error("❌ No reset token provided to component!");
       setIsVerifying(false);
       setError("No reset token provided");
     }
@@ -61,12 +72,29 @@ const ResetPassword = ({ token, onBackToLogin, onSuccess }) => {
       const response = await api.auth.resetPassword(token, password);
       if (response.success) {
         setSuccess(true);
-        // Auto-login user after 2 seconds
-        setTimeout(() => {
-          if (onSuccess) {
-            onSuccess(response.data);
-          }
-        }, 2000);
+
+        console.log("✅ Password reset successful! Response:", response.data);
+
+        // Save auth token and user data to localStorage for auto-login
+        if (response.data.token && response.data.user) {
+          console.log("💾 Saving user data and token for auto-login...");
+          
+          // Save user data to localStorage (same as login does)
+          localStorage.setItem("loggedInUser", JSON.stringify(response.data.user));
+
+          // Wait 2 seconds to show success message, then reload to trigger auto-login
+          setTimeout(() => {
+            console.log("🔄 Reloading to trigger auto-login...");
+            window.location.reload();
+          }, 2000);
+        } else {
+          // Fallback: No auto-login, just go to login page
+          setTimeout(() => {
+            if (onSuccess) {
+              onSuccess(response.data);
+            }
+          }, 2000);
+        }
       }
     } catch (err) {
       setError(err.message || "Failed to reset password");
@@ -315,7 +343,9 @@ const ResetPassword = ({ token, onBackToLogin, onSuccess }) => {
             className="relative mt-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold py-4 px-6 rounded-xl overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
             type="submit"
             disabled={isSubmitting || password !== confirmPassword}
-            aria-label={isSubmitting ? "Resetting password..." : "Reset password"}
+            aria-label={
+              isSubmitting ? "Resetting password..." : "Reset password"
+            }
             aria-busy={isSubmitting}
           >
             <span className="relative z-10 flex items-center justify-center gap-2">
