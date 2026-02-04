@@ -33,11 +33,23 @@ const App = () => {
 
   // Check for reset password token in URL on mount
   useEffect(() => {
+    console.log("🌐 Current URL:", window.location.href);
+    console.log("🔍 URL search string:", window.location.search);
+    
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get("token");
     const action = urlParams.get("action");
 
+    console.log("📦 Extracted params:", {
+      token: token ? token.substring(0, 20) + "..." : "NOT FOUND",
+      action: action || "NOT FOUND",
+      fullSearch: window.location.search,
+    });
+
     if (token && action === "reset-password") {
+      console.log(
+        "✅ Valid reset token found! Setting authView to RESET_PASSWORD",
+      );
       setResetToken(token);
       setAuthView(AUTH_VIEWS.RESET_PASSWORD);
       // Clean URL without refresh
@@ -45,12 +57,30 @@ const App = () => {
     }
   }, []);
 
-  // Reset to login view when authentication state changes
+  // Reset to login view when user successfully logs in
+  // This runs ONLY when isAuthenticated changes from false to true
   useEffect(() => {
-    // Always reset to login view when auth state changes (login or logout)
-    setAuthView(AUTH_VIEWS.LOGIN);
-    setResetToken(null);
+    console.log("🔐 isAuthenticated changed:", isAuthenticated);
+    if (isAuthenticated) {
+      // User just logged in successfully - reset to login view
+      // (This happens after successful reset password too)
+      console.log("✅ User authenticated, resetting to login view");
+      setAuthView(AUTH_VIEWS.LOGIN);
+      setResetToken(null);
+    }
+    // NOTE: We intentionally don't reset when isAuthenticated is false
+    // This allows reset password flow to work
   }, [isAuthenticated]);
+
+  // Debug: Log authView changes
+  useEffect(() => {
+    console.log(
+      "📄 Current authView:",
+      authView,
+      "resetToken:",
+      resetToken ? "present" : "none",
+    );
+  }, [authView, resetToken]);
 
   // Show error toast when there's an auth error
   // Use a ref to track if we've already shown the toast for this error
