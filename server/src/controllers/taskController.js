@@ -1,5 +1,6 @@
 import { Task, User } from "../models/index.js";
 import { ApiError, ApiResponse, asyncHandler } from "../utils/index.js";
+import * as taskNotificationService from "../services/taskNotificationService.js";
 
 /**
  * @desc    Get all tasks (Admin: all, Employee: own tasks)
@@ -117,6 +118,13 @@ export const createTask = asyncHandler(async (req, res) => {
   const populatedTask = await Task.findById(task._id)
     .populate("assignedTo", "name email")
     .populate("assignedBy", "name email");
+
+  // Send email notification to employee
+  taskNotificationService.notifyTaskAssigned(
+    populatedTask,
+    employee,
+    req.user
+  );
 
   ApiResponse.created(
     { task: populatedTask },
@@ -245,6 +253,16 @@ export const completeTask = asyncHandler(async (req, res) => {
     .populate("assignedTo", "name email")
     .populate("assignedBy", "name email");
 
+  // Send email notification to admin
+  const admin = await User.findById(task.assignedBy);
+  if (admin) {
+    taskNotificationService.notifyTaskCompleted(
+      populatedTask,
+      req.user,
+      admin
+    );
+  }
+
   ApiResponse.success(
     { task: populatedTask },
     "Task completed successfully",
@@ -285,6 +303,16 @@ export const failTask = asyncHandler(async (req, res) => {
   const populatedTask = await Task.findById(task._id)
     .populate("assignedTo", "name email")
     .populate("assignedBy", "name email");
+
+  // Send email notification to admin
+  const admin = await User.findById(task.assignedBy);
+  if (admin) {
+    taskNotificationService.notifyTaskFailed(
+      populatedTask,
+      req.user,
+      admin
+    );
+  }
 
   ApiResponse.success({ task: populatedTask }, "Task marked as failed").send(
     res,
