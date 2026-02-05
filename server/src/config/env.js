@@ -10,6 +10,7 @@ const env = {
   JWT_SECRET: process.env.JWT_SECRET,
   JWT_EXPIRE: process.env.JWT_EXPIRE || "7d",
   CLIENT_URL: process.env.CLIENT_URL || "http://localhost:5173",
+  FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:5173",
 
   // Email configuration
   GMAIL_USER: process.env.GMAIL_USER,
