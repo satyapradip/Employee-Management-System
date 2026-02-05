@@ -31,20 +31,35 @@ const App = () => {
   const [authView, setAuthView] = useState(AUTH_VIEWS.LOGIN);
   const [resetToken, setResetToken] = useState(null);
 
-  // Check for reset password token in URL on mount
+  // Check for reset password token in URL or sessionStorage on mount
   useEffect(() => {
     console.log("🌐 Current URL:", window.location.href);
     console.log("🔍 URL search string:", window.location.search);
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("token");
-    const action = urlParams.get("action");
 
-    console.log("📦 Extracted params:", {
+    // First, check URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    let token = urlParams.get("token");
+    let action = urlParams.get("action");
+
+    console.log("📦 URL params:", {
       token: token ? token.substring(0, 20) + "..." : "NOT FOUND",
       action: action || "NOT FOUND",
-      fullSearch: window.location.search,
     });
+
+    // If not in URL, check sessionStorage (captured by main.jsx before React mounted)
+    if (!token) {
+      const pendingToken = sessionStorage.getItem("pendingResetToken");
+      if (pendingToken) {
+        token = pendingToken;
+        action = "reset-password";
+        console.log(
+          "🔐 Found pending reset token in sessionStorage:",
+          token.substring(0, 20) + "...",
+        );
+        // Clear it after reading
+        sessionStorage.removeItem("pendingResetToken");
+      }
+    }
 
     if (token && action === "reset-password") {
       console.log(
