@@ -26,8 +26,11 @@
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^8.2.1",
     "express-validator": "^7.1.0",
+    "helmet": "^8.1.0",
+    "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.1",
+    "morgan": "^1.10.1",
     "nodemailer": "^7.0.12",
     "xss-clean": "^0.1.4"
   },
