@@ -113,7 +113,7 @@
 ---
 
 ### 4. 🛡️ **Add Helmet.js** (Security Headers)
-
+  **Status:** ✅ Implemented
 **Why:** Adds 15+ security headers to protect against common attacks
 
 ```bash
@@ -131,7 +131,7 @@ app.use(helmet());
 ---
 
 ### 5. 🔐 **Environment Variables Security**
-
+**Status:** ✅ Implemented
 **Check:** Is your `.env` file in `.gitignore`?
 
 Run this to verify:
