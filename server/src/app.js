@@ -6,27 +6,30 @@ import { errorHandler, notFound } from "./middleware/errorHandler.js";
 import rateLimit from "express-rate-limit";
 import mongoSanitize from "express-mongo-sanitize";
 import xss from "xss-clean";
+import helmet from "helmet";
+import compression from "compression";
+import morgan from "morgan";
+import hpp from "hpp";
 
 const app = express();
 
 // ===========================================
-// MIDDLEWARE
+// MIDDLEWARE (Optimized Order)
 // ===========================================
 
-// Parse allowed origins (supports comma-separated URLs)
+// Parse allowed origins
 const allowedOrigins = env.CLIENT_URL.split(",").map((url) => url.trim());
 
-// CORS configuration
+// 1. CORS - Must come BEFORE helmet to avoid conflicts
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, curl, etc.)
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         console.warn(`CORS blocked origin: ${origin}`);
-        callback(null, true); // Allow anyway in development
+        callback(null, env.NODE_ENV === "development"); // Strict in production
       }
     },
     credentials: true,
@@ -35,60 +38,92 @@ app.use(
   }),
 );
 
-// Body parsers
-app.use(express.json({ limit: "10kb" }));
+// 2. Security Headers - Environment-aware configuration
+if (env.NODE_ENV === "production") {
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'"],
+          styleSrc: ["'self'"],
+          imgSrc: ["'self'", "data:", "https:"],
+          connectSrc: ["'self'", ...allowedOrigins],
+          fontSrc: ["'self'", "data:"],
+          objectSrc: ["'none'"],
+          mediaSrc: ["'self'"],
+          frameSrc: ["'none'"],
+        },
+      },
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+      hsts: {
+        maxAge: 31536000, // 1 year
+        includeSubDomains: true,
+        preload: true,
+      },
+    }),
+  );
+} else {
+  // Development - More permissive for easier debugging
+  app.use(
+    helmet({
+      contentSecurityPolicy: false, // Disable strict CSP in dev
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+    }),
+  );
+}
+
+// 3. Compression - Reduce bandwidth
+app.use(compression());
+
+// 4. Body Parsers - Parse incoming requests
+app.use(express.json({ limit: "10kb" })); // Prevents large payload attacks
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
-// Data sanitization against NoSQL query injection
-app.use(mongoSanitize());
-// Data sanitization against XSS
-app.use(xss());
+// 4. HTTP Parameter Pollution Protection
+app.use(hpp());
 
-// Security headers (basic)
-app.use((req, res, next) => {
-  res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Frame-Options", "DENY");
-  res.setHeader("X-XSS-Protection", "1; mode=block");
-  next();
-});
+// 5. Data Sanitization
+app.use(mongoSanitize()); // Remove $ and . from req.body/params/query
+app.use(xss()); // Clean user input from malicious HTML
 
-// Global rate limiter
+// 6. Global Rate Limiter
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 100,
   message: "Too many requests from this IP, please try again later",
+  standardHeaders: true, // Return rate limit info in headers
+  legacyHeaders: false, // Disable X-RateLimit-* headers
 });
 app.use(globalLimiter);
 
-// Rate limiting middleware for authentication routes
+// 7. Route-Specific Rate Limiters
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 requests per window
+  windowMs: 15 * 60 * 1000,
+  max: 5,
   message: "Too many login attempts, please try again later",
+  skipSuccessfulRequests: true, // Don't count successful logins
 });
 
-// Forgot Password - STRICT (prevents abuse)
 const forgotPasswordLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  //max: 5, // Original limit
-  max: env.NODE_ENV === "development" ? 20 : 3, // Higher limit in dev for testing
+  max: env.NODE_ENV === "development" ? 20 : 3,
   message: "Too many password reset requests, please try again later",
 });
 
-// Reset Password - moderate (they have a valid token)
 const resetPasswordLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
   message: "Too many password reset attempts, please try again later",
 });
 
-// Apply to auth routes
+// Apply route-specific limiters
 app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/register", authLimiter);
 app.use("/api/auth/forgot-password", forgotPasswordLimiter);
 app.use("/api/auth/reset-password/:token", resetPasswordLimiter);
 
-// Request logging (development) - placed after rate limiting
+// 8. Request Logging (Development only)
 if (env.NODE_ENV === "development") {
   app.use((req, res, next) => {
     console.log(`${req.method} ${req.originalUrl}`);
@@ -96,14 +131,17 @@ if (env.NODE_ENV === "development") {
   });
 }
 
+// 9. Production Logging
+if (env.NODE_ENV === "production") {
+  app.use(morgan("combined")); // Apache-style logs
+}
+
 // ===========================================
 // ROUTES
 // ===========================================
 
-// API routes
 app.use("/api", routes);
 
-// Root endpoint
 app.get("/", (req, res) => {
   res.json({
     success: true,
@@ -117,10 +155,7 @@ app.get("/", (req, res) => {
 // ERROR HANDLING
 // ===========================================
 
-// 404 handler
 app.use(notFound);
-
-// Global error handler
 app.use(errorHandler);
 
 export default app;
