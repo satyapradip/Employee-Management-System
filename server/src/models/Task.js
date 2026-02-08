@@ -75,7 +75,6 @@ const taskSchema = new mongoose.Schema(
 // Indexes for faster queries
 taskSchema.index({ assignedTo: 1, status: 1 });
 taskSchema.index({ assignedBy: 1 });
-taskSchema.index({ status: 1 });
 taskSchema.index({ createdAt: -1 });
 
 /**

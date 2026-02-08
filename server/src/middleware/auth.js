@@ -86,9 +86,9 @@ export const isOwnerOrAdmin = (paramName = "id") => {
   return (req, res, next) => {
     const resourceId = req.params[paramName];
     const isOwner = req.user._id.toString() === resourceId;
-    const isAdmin = req.user.role === "admin";
+    const isAdminUser = req.user.role === "admin";
 
-    if (!isOwner && !isAdmin) {
+    if (!isOwner && !isAdminUser) {
       throw ApiError.forbidden("Not authorized to access this resource");
     }
     next();

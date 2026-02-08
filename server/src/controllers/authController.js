@@ -4,33 +4,31 @@ import { sendPasswordResetEmail } from "../utils/sendEmail.js";
 import env from "../config/env.js";
 
 /**
- * @desc    Register a new user
- * @route   POST /api/auth/register
+ * @desc    Register a new admin (Company Registration)
+ * @route   POST /api/auth/register-admin
  * @access  Public
  */
-export const register = asyncHandler(async (req, res) => {
-  const { name, email, password, role } = req.body;
+export const registerAdmin = asyncHandler(async (req, res) => {
+  const { name, email, password, companyName } = req.body;
 
-  // Normalize email to lowercase for case-insensitive lookup
-  const normalizedEmail = email.toLowerCase().trim();
-
-  // Check if user already exists
-  const existingUser = await User.findOne({ email: normalizedEmail });
+  // Check if email already exists
+  const existingUser = await User.findOne({
+    email: email.toLowerCase().trim(),
+  });
   if (existingUser) {
-    throw ApiError.conflict("User with this email already exists");
+    throw ApiError.conflict("An account with this email already exists");
   }
 
-  // Create user (only admin can create admin users)
-  const userRole = role === "admin" ? "employee" : role || "employee";
-
+  // Create admin user
   const user = await User.create({
     name,
-    email: normalizedEmail, // Use normalized email
+    email: email.toLowerCase().trim(),
     password,
-    role: userRole,
+    companyName,
+    role: "admin",
   });
 
-  // Generate token
+  // Generate JWT token
   const token = user.generateAuthToken();
 
   ApiResponse.created(
@@ -38,7 +36,7 @@ export const register = asyncHandler(async (req, res) => {
       user,
       token,
     },
-    "User registered successfully",
+    "Admin registered successfully",
   ).send(res);
 });
 
@@ -46,85 +44,50 @@ export const register = asyncHandler(async (req, res) => {
  * @desc    Login user
  * @route   POST /api/auth/login
  * @access  Public
- *
- * LEARNING NOTES:
- * This is the core authentication function. Study this carefully!
- * Flow: Validate → Find User → Check Password → Generate Token → Return
  */
 export const login = asyncHandler(async (req, res) => {
-  // STEP 1: Extract email and password from request body
-  // req.body comes from express.json() middleware
   const { email, password } = req.body;
 
-  // STEP 2: Basic validation - ensure both fields are provided
-  // Why check here? Because we want to fail fast with clear error
   if (!email || !password) {
     throw ApiError.badRequest("Please provide email and password");
   }
 
-  // STEP 3: Normalize email for case-insensitive comparison
-  // Why? "User@Email.com" and "user@email.com" should be same user
-  // .toLowerCase() → converts to lowercase
-  // .trim() → removes extra spaces from start/end
   const normalizedEmail = email.toLowerCase().trim();
 
-  // STEP 4: Find user in database
-  // .select("+password") is IMPORTANT:
-  // - By default, User model doesn't return password (security)
-  // - But we need it here to compare, so we explicitly ask for it with "+"
+  // Find user and include password for comparison
   const user = await User.findOne({ email: normalizedEmail }).select(
     "+password",
   );
 
-  // STEP 5: Check if user exists
-  // Security Note: Don't say "user not found" - it reveals if email exists
-  // Instead, say "invalid credentials" for both wrong email AND wrong password
   if (!user) {
     throw ApiError.unauthorized("Invalid credentials");
   }
 
-  // STEP 6: Check if user account is active
-  // Admin can deactivate users - prevent deactivated users from logging in
+  // Check if user account is active
   if (!user.isActive) {
     throw ApiError.unauthorized("Your account has been deactivated");
   }
 
-  // STEP 7: Verify password
-  // comparePassword is defined in User model (server/src/models/User.js)
-  // It uses bcrypt.compare() to check:
-  //   - Plain password user typed: "mypassword123"
-  //   - Hashed password in DB: "$2a$10$xyz..."
-  // Returns true/false
+  // Verify password
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
     throw ApiError.unauthorized("Invalid credentials");
   }
 
-  // STEP 8: Update last login timestamp
-  // Useful for tracking user activity
-  // { validateBeforeSave: false } → skip validation since we're just updating timestamp
+  // Update last login
   user.lastLogin = new Date();
   await user.save({ validateBeforeSave: false });
 
-  // STEP 9: Generate JWT (JSON Web Token)
-  // generateAuthToken is defined in User model
-  // Creates a token with user ID, email, role encoded inside
-  // Frontend stores this token and sends it with every request
+  // Generate JWT
   const token = user.generateAuthToken();
 
-  // STEP 10: Send success response with user data and token
-  // ApiResponse.success() is our custom utility (server/src/utils/ApiResponse.js)
-  // It standardizes all API responses: { success: true, data: {...}, message: "..." }
   ApiResponse.success(
     {
-      user, // User object (password auto-removed by toJSON in model)
-      token, // JWT token for authentication
+      user,
+      token,
     },
     "Login successful",
   ).send(res);
-
-  // INTERVIEW QUESTION: "Walk me through the login process"
-  // ANSWER: You should be able to explain steps 1-10 above!
 });
 
 /**

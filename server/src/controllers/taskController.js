@@ -3,22 +3,30 @@ import { ApiError, ApiResponse, asyncHandler } from "../utils/index.js";
 import * as taskNotificationService from "../services/taskNotificationService.js";
 
 /**
- * @desc    Get all tasks (Admin: all, Employee: own tasks)
+ * @desc    Get all tasks (Admin: all company tasks, Employee: own tasks)
  * @route   GET /api/tasks
  * @access  Private
  */
 export const getTasks = asyncHandler(async (req, res) => {
   const { status, category, priority, assignedTo, search } = req.query;
 
-  // Build query
   let query = {};
 
   // If employee, only show their tasks
   if (req.user.role === "employee") {
     query.assignedTo = req.user._id;
-  } else if (assignedTo) {
-    // Admin can filter by employee
-    query.assignedTo = assignedTo;
+  } else {
+    // Admin: get all tasks assigned to employees in their company
+    const employeeIds = await User.find({
+      companyName: req.user.companyName,
+      role: "employee",
+    }).distinct("_id");
+    query.assignedTo = { $in: employeeIds };
+
+    // Admin can also filter by specific employee
+    if (assignedTo) {
+      query.assignedTo = assignedTo;
+    }
   }
 
   // Filter by status
@@ -83,6 +91,14 @@ export const getTask = asyncHandler(async (req, res) => {
     throw ApiError.forbidden("Not authorized to view this task");
   }
 
+  // Admin can only see tasks for employees in their company
+  if (req.user.role === "admin") {
+    const employee = await User.findById(task.assignedTo._id);
+    if (!employee || employee.companyName !== req.user.companyName) {
+      throw ApiError.notFound("Task not found");
+    }
+  }
+
   ApiResponse.success({ task }, "Task fetched successfully").send(res);
 });
 
@@ -95,15 +111,18 @@ export const createTask = asyncHandler(async (req, res) => {
   const { title, description, category, priority, assignedTo, dueDate } =
     req.body;
 
-  // Verify assignedTo user exists and is an employee
-  const employee = await User.findById(assignedTo);
+  // Verify employee exists and belongs to same company
+  const employee = await User.findOne({
+    _id: assignedTo,
+    companyName: req.user.companyName,
+    role: "employee",
+  });
+
   if (!employee) {
-    throw ApiError.notFound("Employee not found");
-  }
-  if (employee.role !== "employee") {
-    throw ApiError.badRequest("Tasks can only be assigned to employees");
+    throw ApiError.notFound("Employee not found in your company");
   }
 
+  // Create task
   const task = await Task.create({
     title,
     description,
@@ -120,11 +139,7 @@ export const createTask = asyncHandler(async (req, res) => {
     .populate("assignedBy", "name email");
 
   // Send email notification to employee
-  taskNotificationService.notifyTaskAssigned(
-    populatedTask,
-    employee,
-    req.user
-  );
+  taskNotificationService.notifyTaskAssigned(populatedTask, employee, req.user);
 
   ApiResponse.created(
     { task: populatedTask },
@@ -157,6 +172,18 @@ export const updateTask = asyncHandler(async (req, res) => {
   for (const key of allowedUpdates) {
     if (req.body[key] !== undefined) {
       updates[key] = req.body[key];
+    }
+  }
+
+  // If updating assignedTo, verify employee is in same company
+  if (updates.assignedTo) {
+    const employee = await User.findOne({
+      _id: updates.assignedTo,
+      companyName: req.user.companyName,
+      role: "employee",
+    });
+    if (!employee) {
+      throw ApiError.notFound("Employee not found in your company");
     }
   }
 
@@ -256,11 +283,7 @@ export const completeTask = asyncHandler(async (req, res) => {
   // Send email notification to admin
   const admin = await User.findById(task.assignedBy);
   if (admin) {
-    taskNotificationService.notifyTaskCompleted(
-      populatedTask,
-      req.user,
-      admin
-    );
+    taskNotificationService.notifyTaskCompleted(populatedTask, req.user, admin);
   }
 
   ApiResponse.success(
@@ -307,11 +330,7 @@ export const failTask = asyncHandler(async (req, res) => {
   // Send email notification to admin
   const admin = await User.findById(task.assignedBy);
   if (admin) {
-    taskNotificationService.notifyTaskFailed(
-      populatedTask,
-      req.user,
-      admin
-    );
+    taskNotificationService.notifyTaskFailed(populatedTask, req.user, admin);
   }
 
   ApiResponse.success({ task: populatedTask }, "Task marked as failed").send(
@@ -325,7 +344,14 @@ export const failTask = asyncHandler(async (req, res) => {
  * @access  Private/Admin
  */
 export const getTaskStats = asyncHandler(async (req, res) => {
+  // Get all employee IDs for admin's company
+  const employeeIds = await User.find({
+    companyName: req.user.companyName,
+    role: "employee",
+  }).distinct("_id");
+
   const stats = await Task.aggregate([
+    { $match: { assignedTo: { $in: employeeIds } } },
     {
       $group: {
         _id: "$status",
@@ -335,6 +361,7 @@ export const getTaskStats = asyncHandler(async (req, res) => {
   ]);
 
   const categoryStats = await Task.aggregate([
+    { $match: { assignedTo: { $in: employeeIds } } },
     {
       $group: {
         _id: "$category",
@@ -362,7 +389,7 @@ export const getTaskStats = asyncHandler(async (req, res) => {
   });
 
   ApiResponse.success(
-    { stats: formattedStats },
-    "Stats fetched successfully",
+    formattedStats,
+    "Task statistics fetched successfully",
   ).send(res);
 });

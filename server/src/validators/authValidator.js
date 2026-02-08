@@ -3,7 +3,7 @@ import { body } from "express-validator";
 /**
  * Auth Validation Rules
  */
-export const registerValidation = [
+export const registerAdminValidation = [
   body("name")
     .trim()
     .notEmpty()
@@ -22,6 +22,12 @@ export const registerValidation = [
     .withMessage("Password is required")
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters"),
+  body("companyName")
+    .trim()
+    .notEmpty()
+    .withMessage("Company name is required")
+    .isLength({ max: 100 })
+    .withMessage("Company name cannot exceed 100 characters"),
 ];
 
 export const loginValidation = [

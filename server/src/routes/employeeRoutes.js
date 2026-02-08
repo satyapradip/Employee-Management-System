@@ -28,7 +28,9 @@ router.get("/dashboard", getDashboardStats);
 // CRUD operations
 router.get("/", getEmployees);
 router.get("/:id", getEmployee);
+
 router.post("/", createEmployeeValidation, validate, createEmployee);
+
 router.put("/:id", updateEmployeeValidation, validate, updateEmployee);
 router.delete("/:id", deleteEmployee);
 

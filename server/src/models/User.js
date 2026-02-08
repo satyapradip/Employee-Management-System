@@ -29,6 +29,12 @@ const userSchema = new mongoose.Schema(
       minlength: [6, "Password must be at least 6 characters"],
       select: false, // Don't include password in queries by default
     },
+    companyName: {
+      type: String,
+      required: [true, "Company name is required"],
+      trim: true,
+      maxlength: [100, "Company name cannot exceed 100 characters"],
+    },
     role: {
       type: String,
       enum: ["admin", "employee"],
@@ -56,8 +62,9 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-// Index for faster queries (email already has unique: true which creates an index)
-userSchema.index({ role: 1 });
+// Indexes for performance
+userSchema.index({ companyName: 1, role: 1 });
+userSchema.index({ isActive: 1 });
 
 /**
  * Hash password before saving
@@ -89,6 +96,7 @@ userSchema.methods.generateAuthToken = function () {
       id: this._id,
       email: this.email,
       role: this.role,
+      companyName: this.companyName,
     },
     env.JWT_SECRET,
     { expiresIn: env.JWT_EXPIRE },

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  register,
+  registerAdmin,
   login,
   getMe,
   updateProfile,
@@ -13,7 +13,7 @@ import {
 import { protect } from "../middleware/auth.js";
 import validate from "../middleware/validate.js";
 import {
-  registerValidation,
+  registerAdminValidation,
   loginValidation,
   changePasswordValidation,
   forgotPasswordValidation,
@@ -23,7 +23,12 @@ import {
 const router = Router();
 
 // Public routes
-router.post("/register", registerValidation, validate, register);
+router.post(
+  "/register-admin",
+  registerAdminValidation,
+  validate,
+  registerAdmin,
+);
 router.post("/login", loginValidation, validate, login);
 router.post(
   "/forgot-password",

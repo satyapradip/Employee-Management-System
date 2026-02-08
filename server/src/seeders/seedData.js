@@ -49,6 +49,7 @@ const seedData = async () => {
       email: "admin@company.com",
       password: "admin123",
       role: "admin",
+      companyName: "Acme Corp",
     });
     console.log("👤 Admin created:", admin.email);
 
@@ -59,30 +60,35 @@ const seedData = async () => {
         email: "supritimaity59@gmail.com",
         password: "123456",
         role: "employee",
+        companyName: "Acme Corp",
       },
       {
         name: "Jane Smith",
         email: "jane@company.com",
         password: "123456",
         role: "employee",
+        companyName: "Acme Corp",
       },
       {
         name: "Mike Johnson",
         email: "mike@company.com",
         password: "123456",
         role: "employee",
+        companyName: "Acme Corp",
       },
       {
         name: "Sarah Wilson",
         email: "sarah@company.com",
         password: "123456",
         role: "employee",
+        companyName: "Acme Corp",
       },
       {
         name: "Tom Brown",
         email: "tom@company.com",
         password: "123456",
         role: "employee",
+        companyName: "Acme Corp",
       },
     ];
 
