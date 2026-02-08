@@ -8,7 +8,13 @@ import QuickActions from "./QuickActions";
  * Sidebar Component
  * Contains stats, recent activity, and quick actions
  */
-const Sidebar = ({ stats, onCreateTask, onRefresh, isLoading = false }) => {
+const Sidebar = ({
+  stats,
+  onCreateTask,
+  onManageTeam,
+  onRefresh,
+  isLoading = false,
+}) => {
   return (
     <div className="space-y-4">
       {/* Refresh Button */}
@@ -57,7 +63,7 @@ const Sidebar = ({ stats, onCreateTask, onRefresh, isLoading = false }) => {
       <RecentActivity />
 
       {/* Quick Actions */}
-      <QuickActions onCreateTask={onCreateTask} />
+      <QuickActions onCreateTask={onCreateTask} onManageTeam={onManageTeam} />
     </div>
   );
 };

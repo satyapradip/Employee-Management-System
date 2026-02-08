@@ -4,7 +4,7 @@ import { Icons } from "./Icons.jsx";
 /**
  * Quick Actions Component
  */
-const QuickActions = ({ onCreateTask }) => {
+const QuickActions = ({ onCreateTask, onManageTeam }) => {
   const actions = [
     {
       label: "New Task",
@@ -13,16 +13,10 @@ const QuickActions = ({ onCreateTask }) => {
       onClick: onCreateTask,
     },
     {
-      label: "View Reports",
-      icon: Icons.Chart,
-      color: "blue",
-      onClick: () => {},
-    },
-    {
       label: "Manage Team",
       icon: Icons.Users,
       color: "purple",
-      onClick: () => {},
+      onClick: onManageTeam,
     },
   ];
 

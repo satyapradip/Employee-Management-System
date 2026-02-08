@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import Header from "../others/Header";
-import { TabNavigation, TasksTab, CreateTaskTab, Sidebar } from "./components";
+import {
+  TabNavigation,
+  TasksTab,
+  CreateTaskTab,
+  EmployeesTab,
+  Sidebar,
+} from "./components";
 import { FullPageLoader, ErrorState } from "./components/LoadingStates";
 import { useTaskManager } from "./hooks/useTaskManager";
 import { useEmployees } from "./hooks/useEmployees";
@@ -36,11 +42,16 @@ const AdminDashboard = () => {
     error,
   } = useTaskManager();
 
-  // Fetch employees for task assignment
+  // Fetch employees for task assignment + CRUD
   const {
     employees,
     employeeOptions,
     isLoading: employeesLoading,
+    isSubmitting: employeesSubmitting,
+    createEmployee,
+    updateEmployee,
+    deleteEmployee,
+    toggleActive,
   } = useEmployees();
 
   // Handle task creation with employee ID
@@ -89,6 +100,7 @@ const AdminDashboard = () => {
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             taskCount={stats.total}
+            employeeCount={employees.length}
           />
 
           {/* Tab Content */}
@@ -122,6 +134,19 @@ const AdminDashboard = () => {
                 isSubmitting={isSubmitting}
               />
             )}
+
+            {/* Employees Tab */}
+            {activeTab === "employees" && (
+              <EmployeesTab
+                employees={employees}
+                isLoading={employeesLoading}
+                isSubmitting={employeesSubmitting}
+                onCreateEmployee={createEmployee}
+                onUpdateEmployee={updateEmployee}
+                onDeleteEmployee={deleteEmployee}
+                onToggleActive={toggleActive}
+              />
+            )}
           </div>
         </div>
 
@@ -130,6 +155,7 @@ const AdminDashboard = () => {
           <Sidebar
             stats={stats}
             onCreateTask={() => setActiveTab("create")}
+            onManageTeam={() => setActiveTab("employees")}
             onRefresh={refreshTasks}
             isLoading={isLoading}
           />

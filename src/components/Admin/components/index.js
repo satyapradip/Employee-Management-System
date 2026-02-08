@@ -4,6 +4,7 @@
 export { default as TabNavigation } from "./TabNavigation";
 export { default as TasksTab } from "./TasksTab";
 export { default as CreateTaskTab } from "./CreateTaskTab";
+export { default as EmployeesTab } from "./EmployeesTab";
 export { default as TaskCard } from "./TaskCard";
 export { default as SearchBar } from "./SearchBar";
 export { default as FilterPills } from "./FilterPills";
