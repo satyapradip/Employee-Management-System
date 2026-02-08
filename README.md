@@ -1,12 +1,20 @@
 # 🏢 Employee Management System
 
-A full-stack employee and task management application built with React, Node.js, Express, and MongoDB. Features a modern dark-themed UI with real-time task tracking and role-based access control.
+A full-stack multi-tenant employee and task management application built with React, Node.js, Express, and MongoDB. Features a modern dark-themed UI with 3D animations, real-time task tracking, and role-based access control.
 
 ![Node.js](https://img.shields.io/badge/Node.js-18+-green)
 ![React](https://img.shields.io/badge/React-19-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-8.0-brightgreen)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
+
+## 📚 Documentation & Tutorials
+
+**New Users? Start Here:**
+- 🚀 [**Quick Start Tutorial**](./QUICK_START_TUTORIAL.md) - Get up and running in 5 minutes
+- 📖 [**User Guide**](./USER_GUIDE.md) - Complete guide for signup, login, and features
+- 📊 [**Visual Workflow Guide**](./VISUAL_WORKFLOW_GUIDE.md) - Diagrams and visual explanations
+- 📝 [**Project Analysis**](./PROJECT_ANALYSIS.md) - Technical architecture details
 
 ## ✨ Demo
 
@@ -15,6 +23,22 @@ A full-stack employee and task management application built with React, Node.js,
 | ![Admin](https://via.placeholder.com/400x250?text=Admin+Dashboard) | ![Employee](https://via.placeholder.com/400x250?text=Employee+Dashboard) |
 
 ## 📋 Features
+
+### 🌐 Multi-Tenant Architecture
+
+- ✅ **Complete data isolation** - Each company has separate data
+- ✅ **Self-registration** - Companies can sign up independently
+- ✅ **Subscription plans** - Free, Professional, Enterprise tiers
+- ✅ **Company-based limits** - Employee and task limits per plan
+- ✅ **Secure isolation** - Company ID filtering on all queries
+
+### 🎨 Landing Page & Onboarding
+
+- ✅ **3D animated sphere** - Interactive Three.js visualization
+- ✅ **Modern glassmorphism UI** - Beautiful gradient designs
+- ✅ **Multi-step registration** - Easy company setup wizard
+- ✅ **Pricing tiers** - Clear plan comparisons
+- ✅ **Responsive design** - Works on all devices
 
 ### Admin Dashboard
 
@@ -25,6 +49,7 @@ A full-stack employee and task management application built with React, Node.js,
 - ✅ Search and filter tasks by status, category, priority
 - ✅ Real-time stats cards with task metrics
 - ✅ Quick actions sidebar for common operations
+- ✅ Company-wide analytics and insights
 
 ### Employee Dashboard
 
@@ -41,8 +66,11 @@ A full-stack employee and task management application built with React, Node.js,
 - ✅ JWT-based authentication
 - ✅ Role-based access control (Admin/Employee)
 - ✅ Password hashing with bcrypt
+- ✅ Password reset via email
 - ✅ Protected API routes
 - ✅ Session persistence
+- ✅ Company-level data isolation
+- ✅ Input sanitization and validation
 
 ## 🛠️ Tech Stack
 
@@ -51,16 +79,24 @@ A full-stack employee and task management application built with React, Node.js,
 - **React 19** - Modern React with hooks
 - **Tailwind CSS 4** - Utility-first styling
 - **Vite** - Next-gen frontend tooling
+- **React Router DOM** - Client-side routing
+- **Three.js** - 3D graphics and animations
+- **React Three Fiber** - React renderer for Three.js
+- **Framer Motion** - Animation library
+- **Lucide React** - Modern icon library
 
 ### Backend
 
 - **Node.js** - JavaScript runtime
 - **Express.js** - Web framework
-- **MongoDB** - NoSQL database
+- **MongoDB** - NoSQL database with multi-tenant support
 - **Mongoose** - ODM for MongoDB
 - **JWT** - Token-based authentication
 - **bcrypt** - Password hashing
 - **express-validator** - Input validation
+- **Nodemailer** - Email notifications
+- **Helmet** - Security headers
+- **Rate Limiting** - API protection
 
 ## 📁 Project Structure
 
