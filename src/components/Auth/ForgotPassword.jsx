@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 
 /**
  * ForgotPassword Component
  * Allows users to request a password reset link
  */
-const ForgotPassword = ({ onBack }) => {
+const ForgotPassword = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -29,15 +31,15 @@ const ForgotPassword = ({ onBack }) => {
   // Success state
   if (success) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900">
-        <div className="relative backdrop-blur-xl bg-white/5 border border-emerald-500/30 p-10 rounded-2xl shadow-2xl shadow-emerald-500/10 w-full max-w-md mx-4">
-          <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
+      <div className="flex h-screen w-screen items-center justify-center bg-[#09090b]">
+        <div className="relative backdrop-blur-xl bg-white/[0.03] border border-white/[0.08] p-10 rounded-2xl shadow-2xl shadow-indigo-500/5 w-full max-w-md mx-4">
+          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl blur-xl opacity-15 -z-10"></div>
 
           {/* Success Icon */}
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center">
+            <div className="w-16 h-16 bg-indigo-500/15 rounded-full flex items-center justify-center">
               <svg
-                className="w-8 h-8 text-emerald-400"
+                className="w-8 h-8 text-indigo-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -58,7 +60,7 @@ const ForgotPassword = ({ onBack }) => {
             </h2>
             <p className="text-gray-400 mb-6">
               We've sent a password reset link to{" "}
-              <span className="text-emerald-400">{email}</span>
+              <span className="text-indigo-400">{email}</span>
             </p>
             <p className="text-gray-500 text-sm mb-6">
               The link will expire in 10 minutes. If you don't see the email,
@@ -66,7 +68,7 @@ const ForgotPassword = ({ onBack }) => {
             </p>
 
             <button
-              onClick={onBack}
+              onClick={() => navigate("/login")}
               className="w-full bg-white/10 hover:bg-white/20 text-white font-medium py-3 px-6 rounded-xl transition-all duration-300"
             >
               Back to Login
@@ -78,17 +80,17 @@ const ForgotPassword = ({ onBack }) => {
   }
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900">
-      <div className="relative backdrop-blur-xl bg-white/5 border border-emerald-500/30 p-10 rounded-2xl shadow-2xl shadow-emerald-500/10 w-full max-w-md mx-4">
+    <div className="flex h-screen w-screen items-center justify-center bg-[#09090b]">
+      <div className="relative backdrop-blur-xl bg-white/[0.03] border border-white/[0.08] p-10 rounded-2xl shadow-2xl shadow-indigo-500/5 w-full max-w-md mx-4">
         {/* Glow effect */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
+        <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl blur-xl opacity-15 -z-10"></div>
 
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 bg-emerald-500/20 rounded-full flex items-center justify-center">
+            <div className="w-14 h-14 bg-indigo-500/15 rounded-full flex items-center justify-center">
               <svg
-                className="w-7 h-7 text-emerald-400"
+                className="w-7 h-7 text-indigo-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -153,18 +155,22 @@ const ForgotPassword = ({ onBack }) => {
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isSubmitting}
-              className="w-full bg-white/5 text-white outline-none border border-gray-700 focus:border-emerald-500 py-4 px-5 rounded-xl placeholder:text-gray-500 transition-all duration-300 focus:shadow-lg focus:shadow-emerald-500/20 disabled:opacity-50"
+              className="w-full bg-white/[0.04] text-white outline-none border border-white/[0.08] focus:border-indigo-500 py-4 px-5 rounded-xl placeholder:text-zinc-500 transition-all duration-300 focus:shadow-lg focus:shadow-indigo-500/20 disabled:opacity-50"
               type="email"
               placeholder="Enter your email address"
             />
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
           </div>
 
           <button
-            className="relative bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold py-4 px-6 rounded-xl overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
+            className="relative bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-4 px-6 rounded-xl overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/25 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
             type="submit"
             disabled={isSubmitting}
-            aria-label={isSubmitting ? "Sending reset link..." : "Send password reset link"}
+            aria-label={
+              isSubmitting
+                ? "Sending reset link..."
+                : "Send password reset link"
+            }
             aria-busy={isSubmitting}
           >
             <span className="relative z-10 flex items-center justify-center gap-2">
@@ -210,14 +216,14 @@ const ForgotPassword = ({ onBack }) => {
                 </>
               )}
             </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
         </form>
 
         <button
           type="button"
-          onClick={onBack}
-          className="w-full mt-6 text-gray-400 hover:text-emerald-400 font-medium transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer bg-transparent border-none"
+          onClick={() => navigate("/login")}
+          className="w-full mt-6 text-zinc-400 hover:text-indigo-400 font-medium transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer bg-transparent border-none"
           aria-label="Go back to login"
         >
           <svg

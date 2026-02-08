@@ -56,6 +56,18 @@ const getHeaders = () => {
 };
 
 /**
+ * Custom API Error with validation details
+ */
+class ApiError extends Error {
+  constructor(message, statusCode, errors = []) {
+    super(message);
+    this.name = "ApiError";
+    this.statusCode = statusCode;
+    this.errors = errors;
+  }
+}
+
+/**
  * Handle API response
  */
 const handleResponse = async (response, requestId) => {
@@ -73,7 +85,14 @@ const handleResponse = async (response, requestId) => {
       localStorage.removeItem("loggedInUser");
       window.location.href = "/";
     }
-    throw new Error(data.message || "Something went wrong");
+
+    // Throw enhanced error with validation details
+    const error = new ApiError(
+      data.message || "Something went wrong",
+      response.status,
+      data.errors || [],
+    );
+    throw error;
   }
 
   return data;
@@ -150,6 +169,14 @@ const api = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
+      });
+    },
+
+    registerAdmin: async (data) => {
+      return createRequest(`${API_URL}/auth/register-admin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       });
     },
 

@@ -1,8 +1,53 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { validateEmail, validatePassword } from "../../utils/validation.js";
 
-const Login = ({ onForgotPassword, onSignup }) => {
+const ROLES = [
+  {
+    key: "admin",
+    label: "Admin",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+        />
+      </svg>
+    ),
+    subtitle: "Manage employees & tasks",
+  },
+  {
+    key: "employee",
+    label: "Employee",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+        />
+      </svg>
+    ),
+    subtitle: "View & complete tasks",
+  },
+];
+
+const Login = () => {
+  const [selectedRole, setSelectedRole] = useState("admin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -31,6 +76,12 @@ const Login = ({ onForgotPassword, onSignup }) => {
     }
   }, [password, errors.password]);
 
+  // Clear form errors when switching roles
+  useEffect(() => {
+    setLoginError(null);
+    setErrors({});
+  }, [selectedRole]);
+
   const validateForm = () => {
     const newErrors = {};
     const emailValidation = validateEmail(email);
@@ -51,7 +102,6 @@ const Login = ({ onForgotPassword, onSignup }) => {
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
-    // Clear error when user types
     if (errors.email) {
       const validation = validateEmail(value);
       if (validation.isValid) {
@@ -63,7 +113,6 @@ const Login = ({ onForgotPassword, onSignup }) => {
   const handlePasswordChange = (e) => {
     const value = e.target.value;
     setPassword(value);
-    // Clear error when user types
     if (errors.password) {
       const validation = validatePassword(value);
       if (validation.isValid) {
@@ -77,7 +126,6 @@ const Login = ({ onForgotPassword, onSignup }) => {
     setLoginError(null);
     setErrors({});
 
-    // Client-side validation
     if (!validateForm()) {
       return;
     }
@@ -90,7 +138,15 @@ const Login = ({ onForgotPassword, onSignup }) => {
       if (!result.success) {
         setLoginError(result.error || "Login failed. Please try again.");
       } else {
-        // Login successful - form will be cleared
+        // Verify the logged-in user matches the selected role
+        const user = result.user || result.data?.user;
+        if (user && user.role !== selectedRole) {
+          setLoginError(
+            `This account is registered as ${user.role === "admin" ? "an Admin" : "an Employee"}. Please select the correct role and try again.`,
+          );
+          return;
+        }
+
         setEmail("");
         setPassword("");
       }
@@ -104,17 +160,43 @@ const Login = ({ onForgotPassword, onSignup }) => {
   };
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900">
-      <div className="relative backdrop-blur-xl bg-white/5 border border-emerald-500/30 p-10 rounded-2xl shadow-2xl shadow-emerald-500/10 w-full max-w-md mx-4">
+    <div className="flex h-screen w-screen items-center justify-center bg-[#09090b]">
+      <div className="relative backdrop-blur-xl bg-white/[0.03] border border-white/[0.08] p-10 rounded-2xl shadow-2xl shadow-indigo-500/5 w-full max-w-md mx-4">
         {/* Glow effect */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
+        <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl blur-xl opacity-15 -z-10"></div>
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-            Welcome to EMP
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Welcome to TaskFlow
           </h1>
-          <p className="text-gray-400 mt-2">Sign in to your account</p>
+          <p className="text-zinc-400 mt-2 text-[15px]">
+            Sign in to your account
+          </p>
+        </div>
+
+        {/* ─── Role Toggle ─── */}
+        <div className="mb-6">
+          <div className="flex gap-2 p-1 bg-white/[0.04] border border-white/[0.06] rounded-xl">
+            {ROLES.map((role) => (
+              <button
+                key={role.key}
+                type="button"
+                onClick={() => setSelectedRole(role.key)}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer ${
+                  selectedRole === role.key
+                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/20"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]"
+                }`}
+              >
+                {role.icon}
+                {role.label}
+              </button>
+            ))}
+          </div>
+          <p className="text-center text-xs text-zinc-500 mt-2">
+            {ROLES.find((r) => r.key === selectedRole)?.subtitle}
+          </p>
         </div>
 
         {/* Error Message */}
@@ -160,7 +242,11 @@ const Login = ({ onForgotPassword, onSignup }) => {
           </div>
         )}
 
-        <form onSubmit={submitHandler} className="flex flex-col gap-5" noValidate>
+        <form
+          onSubmit={submitHandler}
+          className="flex flex-col gap-5"
+          noValidate
+        >
           {/* Email Field */}
           <div className="relative group">
             <label htmlFor="email" className="sr-only">
@@ -183,11 +269,11 @@ const Login = ({ onForgotPassword, onSignup }) => {
               aria-required="true"
               aria-invalid={errors.email ? "true" : "false"}
               aria-describedby={errors.email ? "email-error" : undefined}
-              className={`w-full bg-white/5 text-white outline-none border ${
+              className={`w-full bg-white/[0.04] text-white outline-none border ${
                 errors.email
                   ? "border-red-500 focus:border-red-500"
-                  : "border-gray-700 focus:border-emerald-500"
-              } py-4 px-5 rounded-xl placeholder:text-gray-500 transition-all duration-300 focus:shadow-lg focus:shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed`}
+                  : "border-white/[0.08] focus:border-indigo-500"
+              } py-4 px-5 rounded-xl placeholder:text-zinc-500 transition-all duration-300 focus:shadow-lg focus:shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed`}
               type="email"
               placeholder="Enter your email"
             />
@@ -201,7 +287,7 @@ const Login = ({ onForgotPassword, onSignup }) => {
                 {errors.email}
               </p>
             )}
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
           </div>
 
           {/* Password Field */}
@@ -232,11 +318,11 @@ const Login = ({ onForgotPassword, onSignup }) => {
                 aria-describedby={
                   errors.password ? "password-error" : undefined
                 }
-                className={`w-full bg-white/5 text-white outline-none border ${
+                className={`w-full bg-white/[0.04] text-white outline-none border ${
                   errors.password
                     ? "border-red-500 focus:border-red-500"
-                    : "border-gray-700 focus:border-emerald-500"
-                } py-4 px-5 pr-12 rounded-xl placeholder:text-gray-500 transition-all duration-300 focus:shadow-lg focus:shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed`}
+                    : "border-white/[0.08] focus:border-indigo-500"
+                } py-4 px-5 pr-12 rounded-xl placeholder:text-zinc-500 transition-all duration-300 focus:shadow-lg focus:shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed`}
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
               />
@@ -297,26 +383,26 @@ const Login = ({ onForgotPassword, onSignup }) => {
                 {errors.password}
               </p>
             )}
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
           </div>
 
           <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={onForgotPassword}
-              disabled={isSubmitting || isLoading}
-              className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors duration-200 bg-transparent border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            <Link
+              to="/forgot-password"
+              className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors duration-200 inline-block"
               aria-label="Forgot password? Click to reset"
             >
               Forgot password?
-            </button>
+            </Link>
           </div>
 
           <button
-            className="relative mt-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold py-4 px-6 rounded-xl overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
+            className="relative mt-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-4 px-6 rounded-xl overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/25 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
             type="submit"
             disabled={isSubmitting || isLoading}
-            aria-label={isSubmitting ? "Signing in..." : "Sign in"}
+            aria-label={
+              isSubmitting ? "Signing in..." : `Sign in as ${selectedRole}`
+            }
             aria-busy={isSubmitting}
           >
             <span className="relative z-10 flex items-center justify-center gap-2">
@@ -345,26 +431,37 @@ const Login = ({ onForgotPassword, onSignup }) => {
                   Signing in...
                 </>
               ) : (
-                "Sign In"
+                `Sign In as ${selectedRole === "admin" ? "Admin" : "Employee"}`
               )}
             </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
           </button>
         </form>
 
-        <p className="text-center text-gray-400 mt-8">
-          Don't have an account?{" "}
-          <button
-            type="button"
-            onClick={onSignup}
-            disabled={isSubmitting || isLoading}
-            className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors duration-200 bg-transparent border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Sign up for a new account"
-          >
-            Sign up
-          </button>
-        </p>
+        {/* Bottom link — changes based on role */}
+        <div className="text-center mt-8">
+          {selectedRole === "admin" ? (
+            <p className="text-zinc-400 text-[15px]">
+              Don't have an account?{" "}
+              <Link
+                to="/register-company"
+                className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors duration-200 inline-block"
+                aria-label="Register as admin"
+              >
+                Register as Admin
+              </Link>
+            </p>
+          ) : (
+            <p className="text-zinc-500 text-sm">
+              Employee accounts are created by your company admin.
+              <br />
+              <span className="text-zinc-600">
+                Contact your admin if you don't have credentials.
+              </span>
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
