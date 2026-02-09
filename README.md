@@ -8,9 +8,14 @@ A full-stack multi-tenant employee and task management application built with Re
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
+> **Current Version:** 1.0.0 (Production Ready)  
+> **Status:** ✅ Core features complete | 🔧 Enhancement phase  
+> **Last Updated:** February 10, 2026
+
 ## 📚 Documentation & Tutorials
 
 **New Users? Start Here:**
+
 - 🚀 [**Quick Start Tutorial**](./QUICK_START_TUTORIAL.md) - Get up and running in 5 minutes
 - 📖 [**User Guide**](./USER_GUIDE.md) - Complete guide for signup, login, and features
 - 📊 [**Visual Workflow Guide**](./VISUAL_WORKFLOW_GUIDE.md) - Diagrams and visual explanations
@@ -26,11 +31,13 @@ A full-stack multi-tenant employee and task management application built with Re
 
 ### 🌐 Multi-Tenant Architecture
 
-- ✅ **Complete data isolation** - Each company has separate data
+- ✅ **Complete data isolation** - Each company has separate data via companyName field
 - ✅ **Self-registration** - Companies can sign up independently
-- ✅ **Subscription plans** - Free, Professional, Enterprise tiers
-- ✅ **Company-based limits** - Employee and task limits per plan
-- ✅ **Secure isolation** - Company ID filtering on all queries
+- ✅ **Company-based filtering** - All queries scoped to company
+- ✅ **Secure isolation** - Company validation on all authenticated requests
+- ⚠️ **Subscription plans** - Planned feature (Free, Pro, Enterprise)
+
+> **Note:** Current implementation uses `companyName` field for tenant isolation. Full Company model with subscription tiers is planned for Phase 2.
 
 ### 🎨 Landing Page & Onboarding
 
@@ -63,14 +70,18 @@ A full-stack multi-tenant employee and task management application built with Re
 
 ### Authentication & Security
 
-- ✅ JWT-based authentication
+- ✅ JWT-based authentication with HTTP-only patterns
 - ✅ Role-based access control (Admin/Employee)
-- ✅ Password hashing with bcrypt
-- ✅ Password reset via email
-- ✅ Protected API routes
-- ✅ Session persistence
+- ✅ Password hashing with bcrypt (10 rounds)
+- ✅ Password reset via email with token expiry
+- ✅ Protected API routes with middleware
+- ✅ Session persistence in localStorage
 - ✅ Company-level data isolation
-- ✅ Input sanitization and validation
+- ✅ Input sanitization (NoSQL injection, XSS protection)
+- ✅ Rate limiting (global + auth-specific)
+- ✅ Security headers via Helmet
+- ✅ CORS with origin whitelist
+- ✅ HTTP parameter pollution prevention
 
 ## 🛠️ Tech Stack
 
