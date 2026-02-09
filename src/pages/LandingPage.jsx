@@ -72,71 +72,165 @@ function AnimatedBackground() {
   );
 }
 
+// logo 
+function TaskFlowLogo() {
+  return (
+    <motion.div
+      whileHover="hover"
+      initial="rest"
+      animate="rest"
+      className="flex items-center gap-2 cursor-pointer select-none"
+    >
+      {/* Icon */}
+      <motion.div
+        variants={{
+          rest: { scale: 1, rotate: 0 },
+          hover: { scale: 1.05, rotate: -3 },
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 15 }}
+        className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg"
+      >
+        {/* Glow */}
+        <div className="absolute inset-0 rounded-xl blur-md bg-indigo-500/40 opacity-60" />
+
+        {/* Check / Arrow mark */}
+        <svg
+          className="relative w-5 h-5 text-white"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={1.8}
+          >        
+          {/* Top person (leader) */}
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 6a3 3 0 110 6 3 3 0 010-6z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M8.5 14.5c0-2 2-3.5 3.5-3.5s3.5 1.5 3.5 3.5"
+          />
+        
+          {/* Bottom left person */}
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M6 10a2.5 2.5 0 110 5 2.5 2.5 0 010-5z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3.5 18c0-1.5 1.5-2.5 2.5-2.5s2.5 1 2.5 2.5"
+          />
+        
+          {/* Bottom right person */}
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M18 10a2.5 2.5 0 110 5 2.5 2.5 0 010-5z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.5 18c0-1.5 1.5-2.5 2.5-2.5s2.5 1 2.5 2.5"
+          />
+          </svg>
+
+      </motion.div>
+
+      {/* Text */}
+      <motion.span
+        variants={{
+          rest: { opacity: 0.9 },
+          hover: { opacity: 1 },
+        }}
+        className="text-lg font-bold tracking-tight
+          bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400
+          bg-clip-text text-transparent"
+      >
+        𝙏𝙖𝙨𝙠𝙁𝙡𝙤𝙬
+      </motion.span>
+    </motion.div>
+  );
+}
+
+
 /* ─── Transparent Navbar ─── */
+
 function Navbar() {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-black/40 backdrop-blur-xl border-b border-white/[0.06] shadow-lg shadow-black/10"
-          : "bg-transparent"
-      }`}
+      initial={{ y: -30, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
+      className="fixed top-4 z-50 w-full flex justify-center pointer-events-none"
     >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="text-xl font-bold tracking-tight"
+      {/* Floating Glass Container */}
+      <div
+        className={`
+          pointer-events-auto
+          flex items-center justify-between
+          w-[92%] max-w-6xl
+          px-6 py-3
+          rounded-full
+          transition-all duration-300
+          ${
+            scrolled
+              ? "bg-black/60 backdrop-blur-2xl border border-white/10 shadow-xl"
+              : "bg-black/30 backdrop-blur-xl border border-white/10"
+          }
+        `}
+      >
+        {/* Logo */}
+        <div
+          onClick={() => navigate("/")}
+          className="text-lg font-semibold tracking-tight cursor-pointer"
         >
-          <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            TaskFlow
-          </span>
-        </motion.div>
+          <TaskFlowLogo />
+        </div>
+        
 
-        <div className="hidden md:flex items-center gap-8">
-          <a
-            href="#features"
-            className="text-sm text-zinc-400 hover:text-white transition-colors duration-200"
-          >
+        {/* Desktop Links */}
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-300">
+          <a href="#features" className="hover:text-white transition">
             Features
           </a>
-          <a
-            href="#how-it-works"
-            className="text-sm text-zinc-400 hover:text-white transition-colors duration-200"
-          >
+          <a href="#how-it-works" className="hover:text-white transition">
             How it works
           </a>
-          <a
-            href="#about"
-            className="text-sm text-zinc-400 hover:text-white transition-colors duration-200"
-          >
+          <a href="#about" className="hover:text-white transition">
             About
           </a>
         </div>
 
+        {/* Actions */}
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/login")}
-            className="px-5 py-2 text-sm text-zinc-300 hover:text-white transition-colors duration-200 cursor-pointer"
+            className="px-4 py-2 text-sm rounded-full text-zinc-300 hover:text-white transition"
           >
-            Sign In
+            Sign in
           </button>
+
           <button
             onClick={() => navigate("/register-company")}
-            className="px-5 py-2 text-sm bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.1] hover:border-white/[0.2] rounded-lg font-medium text-white transition-all duration-200 cursor-pointer"
+            className="px-5 py-2 text-sm rounded-full
+              bg-purple-600 hover:bg-purple-700
+              text-white font-medium
+              transition"
           >
             Get Started
           </button>
@@ -146,12 +240,14 @@ function Navbar() {
   );
 }
 
+
+
 /* ─── Hero Section ─── */
 function HeroSection() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen pt-32 flex items-center justify-center overflow-hidden">
       <AnimatedBackground />
 
       {/* Gradient overlays */}
@@ -297,7 +393,7 @@ function FeaturesSection() {
     {
       icon: (
         <svg
-          className="w-6 h-6"
+          className="w-6 h-6 cursor-pointer"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -319,7 +415,7 @@ function FeaturesSection() {
     {
       icon: (
         <svg
-          className="w-6 h-6"
+          className="w-6 h-6 cursor-pointer"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -341,7 +437,7 @@ function FeaturesSection() {
     {
       icon: (
         <svg
-          className="w-6 h-6"
+          className="w-6 h-6 cursor-pointer"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -363,7 +459,7 @@ function FeaturesSection() {
     {
       icon: (
         <svg
-          className="w-6 h-6"
+          className="w-6 h-6 cursor-pointer"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -385,7 +481,7 @@ function FeaturesSection() {
     {
       icon: (
         <svg
-          className="w-6 h-6"
+          className="w-6 h-6 cursor-pointer"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -407,7 +503,7 @@ function FeaturesSection() {
     {
       icon: (
         <svg
-          className="w-6 h-6"
+          className="w-6 h-6 cursor-pointer"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
