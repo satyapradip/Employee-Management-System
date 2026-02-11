@@ -8,7 +8,10 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "seed": "node src/seeders/seedData.js",
-    "verify": "node scripts/verify-db.js"
+    "verify": "node scripts/verify-db.js",
+    "test": "NODE_ENV=test jest --detectOpenHandles --forceExit",
+    "test:watch": "NODE_ENV=test jest --watch",
+    "test:coverage": "NODE_ENV=test jest --coverage"
   },
   "keywords": [
     "employee",
@@ -37,6 +40,9 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
-    "nodemon": "^3.1.11"
+    "@types/jest": "^30.0.0",
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.11",
+    "supertest": "^7.2.2"
   }
 }
