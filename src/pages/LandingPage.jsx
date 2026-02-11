@@ -72,90 +72,56 @@ function AnimatedBackground() {
   );
 }
 
-// logo 
+// logo
 function TaskFlowLogo() {
   return (
     <motion.div
-      whileHover="hover"
-      initial="rest"
-      animate="rest"
-      className="flex items-center gap-2 cursor-pointer select-none"
+      whileHover={{ scale: 1.05 }}
+      transition={{ type: "spring", stiffness: 300, damping: 15 }}
+      className="flex items-center gap-3 cursor-pointer select-none"
     >
-      {/* Icon */}
+      {/* Logo with rounded background */}
       <motion.div
-        variants={{
-          rest: { scale: 1, rotate: 0 },
-          hover: { scale: 1.05, rotate: -3 },
-        }}
-        transition={{ type: "spring", stiffness: 300, damping: 15 }}
-        className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg"
+        className="p-1 bg-gradient-to-br from-white/10 to-white/5 rounded-3xl border border-white/2 shadow-lg backdrop-blur-sm"
+        whileHover={{ rotate: [0, -5, 5, 0] }}
+        transition={{ duration: 0.5 }}
       >
-        {/* Glow */}
-        <div className="absolute inset-0 rounded-xl blur-md bg-indigo-500/40 opacity-60" />
-
-        {/* Check / Arrow mark */}
-        <svg
-          className="relative w-5 h-5 text-white"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={1.8}
-          >        
-          {/* Top person (leader) */}
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 6a3 3 0 110 6 3 3 0 010-6z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M8.5 14.5c0-2 2-3.5 3.5-3.5s3.5 1.5 3.5 3.5"
-          />
-        
-          {/* Bottom left person */}
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M6 10a2.5 2.5 0 110 5 2.5 2.5 0 010-5z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3.5 18c0-1.5 1.5-2.5 2.5-2.5s2.5 1 2.5 2.5"
-          />
-        
-          {/* Bottom right person */}
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M18 10a2.5 2.5 0 110 5 2.5 2.5 0 010-5z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15.5 18c0-1.5 1.5-2.5 2.5-2.5s2.5 1 2.5 2.5"
-          />
-          </svg>
-
+        <img
+          src="/TeamFlow_logo.png"
+          alt="TeamFlow Logo"
+          className="h-10 w-10 object-cover rounded-3xl"
+        />
       </motion.div>
 
-      {/* Text */}
-      <motion.span
-        variants={{
-          rest: { opacity: 0.9 },
-          hover: { opacity: 1 },
-        }}
-        className="text-lg font-bold tracking-tight
-          bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400
-          bg-clip-text text-transparent"
+      {/* Animated Text */}
+      <motion.div
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="flex flex-col"
       >
-        𝙏𝙖𝙨𝙠𝙁𝙡𝙤𝙬
-      </motion.span>
+        <motion.span
+          className="text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+          whileHover={{
+            backgroundImage:
+              "linear-gradient(to right, rgb(129, 140, 248), rgb(192, 132, 252), rgb(244, 114, 182))",
+            scale: 1.02,
+          }}
+        >
+          𝚃𝚎𝚊𝚖𝙵𝚕𝚘𝚠
+        </motion.span>
+        <motion.span
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="text-[10px] text-zinc-500 tracking-wider uppercase"
+        >
+          Manage & Flow
+        </motion.span>
+      </motion.div>
     </motion.div>
   );
 }
-
 
 /* ─── Transparent Navbar ─── */
 
@@ -201,7 +167,6 @@ function Navbar() {
         >
           <TaskFlowLogo />
         </div>
-        
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-300">
@@ -239,8 +204,6 @@ function Navbar() {
     </motion.nav>
   );
 }
-
-
 
 /* ─── Hero Section ─── */
 function HeroSection() {
@@ -686,7 +649,7 @@ function HowItWorksSection() {
             Get started in 4 simple steps
           </h2>
           <p className="text-zinc-500 max-w-xl mx-auto text-[15px]">
-            From registration to task completion — here's how TaskFlow works for
+            From registration to task completion — here's how TeamFlow works for
             your team.
           </p>
         </motion.div>
@@ -784,11 +747,20 @@ function Footer() {
   return (
     <footer className="py-10 px-6 border-t border-white/[0.04]">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-        <span className="text-sm font-semibold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-          TaskFlow
-        </span>
+        <div className="flex items-center gap-3">
+          <div className="p-1.5 bg-gradient-to-br from-white/10 to-white/5 rounded-3xl border border-white/5">
+            <img
+              src="/TeamFlow_logo.png"
+              alt="TeamFlow"
+              className="h-7 w-7 object-cover rounded-3xl"
+            />
+          </div>
+          <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            𝚃𝚎𝚊𝚖𝙵𝚕𝚘𝚠
+          </span>
+        </div>
         <span className="text-zinc-600 text-xs">
-          &copy; {new Date().getFullYear()} TaskFlow. All rights reserved.
+          &copy; {new Date().getFullYear()} TeamFlow. All rights reserved.
         </span>
         <div className="flex gap-6">
           {["Privacy", "Terms", "Contact"].map((link) => (

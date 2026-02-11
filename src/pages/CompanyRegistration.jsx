@@ -204,6 +204,15 @@ export default function CompanyRegistration() {
 
         {/* Header */}
         <div className="mb-8">
+          <div className="flex justify-center mb-6">
+            <div className="p-3 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl border border-white/10 shadow-xl">
+              <img
+                src="/TeamFlow_logo.png"
+                alt="TeamFlow"
+                className="h-16 w-16 object-contain rounded-xl"
+              />
+            </div>
+          </div>
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">
             <span className="bg-gradient-to-r from-white via-white to-zinc-400 bg-clip-text text-transparent">
               Create your{" "}

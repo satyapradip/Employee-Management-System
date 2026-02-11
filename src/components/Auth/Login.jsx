@@ -167,8 +167,17 @@ const Login = () => {
 
         {/* Header */}
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Welcome to TaskFlow
+          <div className="flex justify-center mb-4">
+            <div className="p-3 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl border border-white/10 shadow-xl">
+              <img
+                src="/TeamFlow_logo.png"
+                alt="TeamFlow"
+                className="h-14 w-14 object-contain rounded-xl"
+              />
+            </div>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-white">
+            Welcome to TeamFlow
           </h1>
           <p className="text-zinc-400 mt-2 text-[15px]">
             Sign in to your account
