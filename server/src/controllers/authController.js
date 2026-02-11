@@ -188,10 +188,10 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   const resetToken = user.generateResetPasswordToken();
   await user.save({ validateBeforeSave: false });
 
-  // Create reset URL - using query params format for React app
+  // Create reset URL - using path parameter format for React app
   // Get base URL (handle multiple URLs in CLIENT_URL)
   const baseUrl = env.CLIENT_URL.split(",")[0].trim();
-  const resetUrl = `${baseUrl}?action=reset-password&token=${resetToken}`;
+  const resetUrl = `${baseUrl}/reset-password/${resetToken}`;
 
   try {
     // Send email
