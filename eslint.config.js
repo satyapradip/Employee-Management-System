@@ -30,10 +30,30 @@ export default defineConfig([
   // Server-side configuration
   {
     files: ["server/**/*.js"],
+    ignores: ["server/tests/**/*.js"], // Exclude test files from this config
     extends: [js.configs.recommended],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.node,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+      },
+    },
+    rules: {
+      "no-unused-vars": ["error", { varsIgnorePattern: "^[A-Z_]" }],
+    },
+  },
+  // Server-side test configuration (Jest)
+  {
+    files: ["server/tests/**/*.js", "server/**/*.test.js", "server/**/*.spec.js"],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: {
+        ...globals.node,
+        ...globals.jest, // Add Jest globals (describe, it, expect, etc.)
+      },
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
