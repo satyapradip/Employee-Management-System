@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import { Icons } from "./Icons.jsx";
 
 /* ─────────────────────────────────────────────
@@ -38,7 +39,7 @@ function AddEmployeeModal({ isOpen, onClose, onSubmit, isSubmitting }) {
     }
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
@@ -165,12 +166,13 @@ function AddEmployeeModal({ isOpen, onClose, onSubmit, isSubmitting }) {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
 /* ─────────────────────────────────────────────
-   Edit Employee Modal
+  Edit Employee Modal
    ───────────────────────────────────────────── */
 function EditEmployeeModal({
   isOpen,
@@ -216,7 +218,7 @@ function EditEmployeeModal({
     if (result?.success) onClose();
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -292,7 +294,8 @@ function EditEmployeeModal({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -510,7 +513,7 @@ const EmployeesTab = ({
   return (
     <>
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-b border-zinc-800 p-6">
+      <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-b border-zinc-800 p-6 rounded-t-2xl">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
@@ -572,7 +575,7 @@ const EmployeesTab = ({
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-6 ">
         {isLoading ? (
           /* Loading skeleton */
           <div className="space-y-3">
