@@ -20,6 +20,12 @@ const ResetPassword = () => {
 
   // Verify token on mount
   useEffect(() => {
+    // Skip verification if we've already successfully reset the password
+    if (success) {
+      console.log("✅ Password already reset, skipping token verification");
+      return;
+    }
+
     console.log(
       "🔐 ResetPassword component mounted with token:",
       token?.substring(0, 10) + "...",
@@ -51,7 +57,7 @@ const ResetPassword = () => {
       setIsVerifying(false);
       setError("No reset token provided");
     }
-  }, [token]);
+  }, [token, success]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -88,10 +94,14 @@ const ResetPassword = () => {
             JSON.stringify(response.data.user),
           );
 
-          // Wait 2 seconds to show success message, then reload to trigger auto-login
+          // Wait 2 seconds to show success message, then navigate to appropriate dashboard
           setTimeout(() => {
-            console.log("🔄 Reloading to trigger auto-login...");
-            window.location.reload();
+            const dashboardRoute =
+              response.data.user.role === "admin"
+                ? "/admin-dashboard"
+                : "/employee-dashboard";
+            console.log("🔄 Navigating to dashboard:", dashboardRoute);
+            navigate(dashboardRoute, { replace: true });
           }, 2000);
         } else {
           // Fallback: No auto-login, just go to login page
