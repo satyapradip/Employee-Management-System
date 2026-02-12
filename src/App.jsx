@@ -1,79 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Routes, Route, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import Login from "./components/Auth/Login.jsx";
 import Signup from "./components/Auth/Signup.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 import ResetPassword from "./components/Auth/ResetPassword.jsx";
 import AdminDashboard from "./components/Admin";
 import EmployeeDashboard from "./components/Dashboard/EmployeeDashboard.jsx";
+import LandingPage from "./pages/LandingPage.jsx";
 import { useAuth } from "./hooks/useAuth.js";
 import useToast from "./hooks/useToast.js";
 import logger from "./utils/logger.js";
 import RouteErrorBoundary from "./components/ErrorBoundary/RouteErrorBoundary.jsx";
 
 /**
- * Auth Views
+ * Protected Route Component
+ * Redirects to login if not authenticated
  */
-const AUTH_VIEWS = {
-  LOGIN: "login",
-  SIGNUP: "signup",
-  FORGOT_PASSWORD: "forgot_password",
-  RESET_PASSWORD: "reset_password",
-};
+const ProtectedRoute = ({ children, requiredRole }) => {
+  const { user, isAuthenticated, isLoading } = useAuth();
 
-/**
- * App Component
- * Main application router based on authentication state
- * Uses AuthProvider context for all auth logic
- */
-const App = () => {
-  const { user, isAuthenticated, isLoading, error, clearError } = useAuth();
-  const showToast = useToast();
-  const [authView, setAuthView] = useState(AUTH_VIEWS.LOGIN);
-  const [resetToken, setResetToken] = useState(null);
-
-  // Check for reset password token in URL on mount
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("token");
-    const action = urlParams.get("action");
-
-    if (token && action === "reset-password") {
-      setResetToken(token);
-      setAuthView(AUTH_VIEWS.RESET_PASSWORD);
-      // Clean URL without refresh
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, []);
-
-  // Reset to login view when authentication state changes
-  useEffect(() => {
-    // Always reset to login view when auth state changes (login or logout)
-    setAuthView(AUTH_VIEWS.LOGIN);
-    setResetToken(null);
-  }, [isAuthenticated]);
-
-  // Show error toast when there's an auth error
-  // Use a ref to track if we've already shown the toast for this error
-  const lastErrorRef = useRef(null);
-
-  useEffect(() => {
-    if (error && error !== lastErrorRef.current) {
-      lastErrorRef.current = error;
-      showToast(error, "error");
-      // Auto-dismiss error after 5 seconds
-      const timer = setTimeout(() => {
-        clearError();
-        lastErrorRef.current = null;
-      }, 5000);
-      return () => clearTimeout(timer);
-    } else if (!error) {
-      lastErrorRef.current = null;
-    }
-  }, [error, clearError, showToast]);
-
-  // Show loading state while checking session
   if (isLoading) {
-    logger.log("🔄 App: isLoading = true");
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
@@ -84,18 +30,56 @@ const App = () => {
     );
   }
 
-  // Handle edge case: authenticated but no user data yet (shouldn't happen, but safety check)
-  if (isAuthenticated && !user) {
-    logger.warn("⚠️ App: isAuthenticated but no user data");
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
-          <div className="text-white text-lg">Loading user data...</div>
-        </div>
-      </div>
-    );
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
   }
+
+  if (requiredRole && user?.role !== requiredRole) {
+    // Redirect to appropriate dashboard based on actual role
+    if (user?.role === "admin") {
+      return <Navigate to="/admin" replace />;
+    } else if (user?.role === "employee") {
+      return <Navigate to="/employee" replace />;
+    }
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
+
+/**
+ * Auth Route Component
+ * Redirects to dashboard if already authenticated
+ */
+const AuthRoute = ({ children }) => {
+  const { user, isAuthenticated } = useAuth();
+
+  if (isAuthenticated && user) {
+  const lastErrorRef = useRef(null);
+
+  useEffect(() => {
+    if (error && error !== lastErrorRef.current) {
+      lastErrorRef.current = error;
+      showToast(error, "error");
+      const timer = setTimeout(() => {
+        clearError();
+        lastErrorRef.current = null;
+      }, 5000);
+      return () => clearTimeout(timer);
+    } else if (!error) {
+      lastErrorRef.current = null;
+    }
+  }, [error, clearError, showToast]);
+
+  // Check for reset password token in URL and redirect
+  useEffect(() => {
+    const token = searchParams.get("token");
+    const action = searchParams.get("action");
+
+    if (token && action === "reset-password") {
+      navigate(`/reset-password?token=${token}`);
+    }
+  }, [searchParams, navigate]);
 
   // Debug: Log current state (only in development)
   logger.debug("🎯 App render state:", {
@@ -106,73 +90,82 @@ const App = () => {
     userId: user?._id || user?.id,
   });
 
-  // Render auth views when not authenticated
-  const renderAuthView = () => {
-    switch (authView) {
-      case AUTH_VIEWS.SIGNUP:
-        return <Signup onBackToLogin={() => setAuthView(AUTH_VIEWS.LOGIN)} />;
-      case AUTH_VIEWS.FORGOT_PASSWORD:
-        return <ForgotPassword onBack={() => setAuthView(AUTH_VIEWS.LOGIN)} />;
-      case AUTH_VIEWS.RESET_PASSWORD:
-        return (
-          <ResetPassword
-            token={resetToken}
-            onBackToLogin={() => {
-              setResetToken(null);
-              setAuthView(AUTH_VIEWS.LOGIN);
-            }}
-            onSuccess={() => {
-              setResetToken(null);
-              setAuthView(AUTH_VIEWS.LOGIN);
-            }}
-          />
-        );
-      default:
-        return (
-          <Login
-            onSignup={() => setAuthView(AUTH_VIEWS.SIGNUP)}
-            onForgotPassword={() => setAuthView(AUTH_VIEWS.FORGOT_PASSWORD)}
-          />
-        );
-    }
-  };
-
   return (
-    <>
-      {/* If NOT logged in → Show Auth Views */}
-      {!isAuthenticated && (
-        <RouteErrorBoundary fallbackMessage="An error occurred in the authentication section.">
-          {renderAuthView()}
-        </RouteErrorBoundary>
-      )}
-      {/* If logged in as ADMIN → Show Admin Dashboard */}
-      {isAuthenticated && user && user.role === "admin" && (
-        <RouteErrorBoundary
-          fallbackMessage="An error occurred in the admin dashboard."
-          showDetails={true}
-        >
-          <AdminDashboard />
-        </RouteErrorBoundary>
-      )}
-      {/* If logged in as EMPLOYEE → Show Employee Dashboard */}
-      {isAuthenticated && user && user.role === "employee" && (
-        <RouteErrorBoundary
-          fallbackMessage="An error occurred in the employee dashboard."
-          showDetails={true}
-        >
-          <EmployeeDashboard />
-        </RouteErrorBoundary>
-      )}
-      {/* Safety fallback - if authenticated but no role matches, show helpful error */}
-      {isAuthenticated &&
-        user &&
-        user.role !== "admin" &&
-        user.role !== "employee" && (
-          <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-            <div className="text-center p-8 bg-zinc-900/80 rounded-2xl border border-red-500/50 max-w-md">
-              <h1 className="text-2xl font-bold text-red-400 mb-4">
-                Access Error
-              </h1>
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<LandingPage />} />
+      
+      {/* Auth Routes - redirect to dashboard if already logged in */}
+      <Route
+        path="/login"
+        element={
+          <AuthRoute>
+            <RouteErrorBoundary fallbackMessage="An error occurred in the authentication section.">
+              <Login />
+            </RouteErrorBoundary>
+          </AuthRoute>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <AuthRoute>
+            <RouteErrorBoundary fallbackMessage="An error occurred in the signup section.">
+              <Signup />
+            </RouteErrorBoundary>
+          </AuthRoute>
+        }
+      />
+      <Route
+        path="/forgot-password"
+        element={
+          <AuthRoute>
+            <RouteErrorBoundary fallbackMessage="An error occurred in password recovery.">
+              <ForgotPassword />
+            </RouteErrorBoundary>
+          </AuthRoute>
+        }
+      />
+      <Route
+        path="/reset-password"
+        element={
+          <RouteErrorBoundary fallbackMessage="An error occurred in password reset.">
+            <ResetPassword />
+          </RouteErrorBoundary>
+        }
+      />
+
+      {/* Protected Routes */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute requiredRole="admin">
+            <RouteErrorBoundary
+              fallbackMessage="An error occurred in the admin dashboard."
+              showDetails={true}
+            >
+              <AdminDashboard />
+            </RouteErrorBoundary>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/employee"
+        element={
+          <ProtectedRoute requiredRole="employee">
+            <RouteErrorBoundary
+              fallbackMessage="An error occurred in the employee dashboard."
+              showDetails={true}
+            >
+              <EmployeeDashboard />
+            </RouteErrorBoundary>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Fallback - redirect unknown routes to home */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes        </h1>
               <p className="text-gray-300 mb-2">
                 Invalid user role detected:{" "}
                 <span className="font-mono text-yellow-400">

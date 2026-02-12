@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import useToast from "../../hooks/useToast";
 
-const Signup = ({ onBackToLogin }) => {
+const Signup = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -94,9 +96,7 @@ const Signup = ({ onBackToLogin }) => {
         });
         // Switch to login after a brief delay
         setTimeout(() => {
-          if (onBackToLogin) {
-            onBackToLogin();
-          }
+          navigate('/login');
         }, 1500);
       } else {
         // Error is handled by AuthProvider, but show toast for visibility
@@ -353,7 +353,7 @@ const Signup = ({ onBackToLogin }) => {
           Already have an account?{" "}
           <button
             type="button"
-            onClick={onBackToLogin}
+            onClick={() => navigate('/login')}
             className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors duration-200 bg-transparent border-none cursor-pointer"
           >
             Sign in
