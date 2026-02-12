@@ -1,5 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Routes, Route, Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import Login from "./components/Auth/Login.jsx";
 import Signup from "./components/Auth/Signup.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
@@ -55,8 +61,29 @@ const AuthRoute = ({ children }) => {
   const { user, isAuthenticated } = useAuth();
 
   if (isAuthenticated && user) {
+    // Redirect to appropriate dashboard based on role
+    if (user.role === "admin") {
+      return <Navigate to="/admin" replace />;
+    } else if (user.role === "employee") {
+      return <Navigate to="/employee" replace />;
+    }
+  }
+
+  return children;
+};
+
+/**
+ * App Component
+ * Main application router based on authentication state
+ */
+const App = () => {
+  const { user, isAuthenticated, error, clearError } = useAuth();
+  const showToast = useToast();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const lastErrorRef = useRef(null);
 
+  // Show error toast when there's an auth error
   useEffect(() => {
     if (error && error !== lastErrorRef.current) {
       lastErrorRef.current = error;
@@ -94,7 +121,7 @@ const AuthRoute = ({ children }) => {
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<LandingPage />} />
-      
+
       {/* Auth Routes - redirect to dashboard if already logged in */}
       <Route
         path="/login"
@@ -165,30 +192,7 @@ const AuthRoute = ({ children }) => {
 
       {/* Fallback - redirect unknown routes to home */}
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes        </h1>
-              <p className="text-gray-300 mb-2">
-                Invalid user role detected:{" "}
-                <span className="font-mono text-yellow-400">
-                  {user.role || "undefined"}
-                </span>
-              </p>
-              <p className="text-gray-400 text-sm mb-6">
-                Please contact support or try logging out and back in.
-              </p>
-              <button
-                onClick={() => {
-                  localStorage.removeItem("loggedInUser");
-                  window.location.reload();
-                }}
-                className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer"
-                aria-label="Clear session and reload page"
-              >
-                Clear Session & Reload
-              </button>
-            </div>
-          </div>
-        )}
-    </>
+    </Routes>
   );
 };
 
