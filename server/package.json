@@ -11,7 +11,9 @@
     "verify": "node scripts/verify-db.js",
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit",
     "test:watch": "NODE_ENV=test jest --watch",
-    "test:coverage": "NODE_ENV=test jest --coverage"
+    "test:coverage": "NODE_ENV=test jest --coverage",
+    "build": "echo 'No build step required for Node.js backend'",
+    "deploy:check": "npm test && node server.js --check"
   },
   "keywords": [
     "employee",
