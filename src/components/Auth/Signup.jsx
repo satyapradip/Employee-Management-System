@@ -96,14 +96,17 @@ const Signup = () => {
         });
         // Switch to login after a brief delay
         setTimeout(() => {
-          navigate('/login');
+          navigate("/login");
         }, 1500);
       } else {
         // Error is handled by AuthProvider, but show toast for visibility
         showToast(result.error || "Registration failed", "error");
       }
     } catch (error) {
-      showToast(error.message || "An error occurred during registration", "error");
+      showToast(
+        error.message || "An error occurred during registration",
+        "error",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -353,7 +356,7 @@ const Signup = () => {
           Already have an account?{" "}
           <button
             type="button"
-            onClick={() => navigate('/login')}
+            onClick={() => navigate("/login")}
             className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors duration-200 bg-transparent border-none cursor-pointer"
           >
             Sign in
@@ -365,4 +368,3 @@ const Signup = () => {
 };
 
 export default Signup;
-
