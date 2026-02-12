@@ -90,8 +90,11 @@ app.use(xss()); // Clean user input from malicious HTML
 // 6. Global Rate Limiter
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
-  message: "Too many requests from this IP, please try again later",
+  max: env.NODE_ENV === "development" ? 1000 : 100, // Very lenient in dev
+  message: {
+    success: false,
+    message: "Too many requests from this IP, please try again later",
+  },
   standardHeaders: true, // Return rate limit info in headers
   legacyHeaders: false, // Disable X-RateLimit-* headers
 });
@@ -100,21 +103,36 @@ app.use(globalLimiter);
 // 7. Route-Specific Rate Limiters
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: "Too many login attempts, please try again later",
+  max: env.NODE_ENV === "development" ? 100 : 5, // Lenient in dev, strict in prod
+  message: {
+    success: false,
+    message: "Too many login attempts, please try again later",
+  },
   skipSuccessfulRequests: true, // Don't count successful logins
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 const forgotPasswordLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: env.NODE_ENV === "development" ? 20 : 3,
-  message: "Too many password reset requests, please try again later",
+  max: env.NODE_ENV === "development" ? 50 : 3,
+  message: {
+    success: false,
+    message: "Too many password reset requests, please try again later",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 const resetPasswordLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: "Too many password reset attempts, please try again later",
+  max: env.NODE_ENV === "development" ? 50 : 5,
+  message: {
+    success: false,
+    message: "Too many password reset attempts, please try again later",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 // Apply route-specific limiters

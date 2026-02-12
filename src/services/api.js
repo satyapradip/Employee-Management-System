@@ -76,7 +76,21 @@ const handleResponse = async (response, requestId) => {
     activeRequests.delete(requestId);
   }
 
-  const data = await response.json();
+  // Try to parse JSON, but handle non-JSON responses gracefully
+  let data;
+  try {
+    const text = await response.text();
+    data = text ? JSON.parse(text) : {};
+  } catch (jsonError) {
+    // If JSON parsing fails, create a fallback error object
+    data = {
+      success: false,
+      message:
+        response.status === 429
+          ? "Too many requests. Please wait a moment and try again."
+          : `Server error (${response.status})`,
+    };
+  }
 
   if (!response.ok) {
     // Handle 401 - Unauthorized
