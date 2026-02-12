@@ -12,10 +12,14 @@ dist
 dist-ssr
 *.local
 
-# Environment files
+# Environment files - IMPORTANT: Keep .env.production for reference but NEVER commit with real values
 .env
 .env.local
 .env.*.local
+.env.development
+server/.env
+server/.env.local
+server/.env.development
 
 # Editor directories and files
 .vscode/*
@@ -27,3 +31,25 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Production builds
+build/
+coverage/
+.cache/
+
+# Vercel
+.vercel
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Testing
+coverage
+.nyc_output
+
+# Temporary files
+*.tmp
+*.temp
+.cache
+
