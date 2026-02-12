@@ -3,13 +3,14 @@ import { Icons } from "./Icons.jsx";
 
 /**
  * Tab Navigation Component
- * Switches between All Tasks, Create Task, and Employees views
+ * Switches between All Tasks, Create Task, Employees, and Analytics views
  */
 const TabNavigation = ({
   activeTab,
   setActiveTab,
   taskCount,
   employeeCount = 0,
+  analyticsEnabled = false,
 }) => {
   const tabs = [
     {
@@ -36,31 +37,42 @@ const TabNavigation = ({
       activeClass:
         "bg-gradient-to-r from-indigo-500 to-purple-600 shadow-indigo-500/25",
     },
+    {
+      key: "analytics",
+      label: "Analytics",
+      icon: Icons.Chart,
+      count: null,
+      activeClass:
+        "bg-gradient-to-r from-violet-500 to-purple-600 shadow-violet-500/25",
+      hidden: !analyticsEnabled,
+    },
   ];
 
   return (
     <div className="flex items-center gap-2 mb-6 flex-wrap">
-      {tabs.map((tab) => (
-        <button
-          key={tab.key}
-          type="button"
-          onClick={() => setActiveTab(tab.key)}
-          className={`flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all duration-300 cursor-pointer ${
-            activeTab === tab.key
-              ? `${tab.activeClass} text-white shadow-lg`
-              : "bg-zinc-800/80 text-zinc-400 hover:bg-zinc-700 hover:text-white"
-          }`}
-          aria-pressed={activeTab === tab.key}
-        >
-          <tab.icon className="h-5 w-5" aria-hidden="true" />
-          {tab.label}
-          {tab.count != null && (
-            <span className="px-2 py-0.5 rounded-full text-xs bg-white/20">
-              {tab.count}
-            </span>
-          )}
-        </button>
-      ))}
+      {tabs
+        .filter((tab) => !tab.hidden)
+        .map((tab) => (
+          <button
+            key={tab.key}
+            type="button"
+            onClick={() => setActiveTab(tab.key)}
+            className={`flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all duration-300 cursor-pointer ${
+              activeTab === tab.key
+                ? `${tab.activeClass} text-white shadow-lg`
+                : "bg-zinc-800/80 text-zinc-400 hover:bg-zinc-700 hover:text-white"
+            }`}
+            aria-pressed={activeTab === tab.key}
+          >
+            <tab.icon className="h-5 w-5" aria-hidden="true" />
+            {tab.label}
+            {tab.count != null && (
+              <span className="px-2 py-0.5 rounded-full text-xs bg-white/20">
+                {tab.count}
+              </span>
+            )}
+          </button>
+        ))}
     </div>
   );
 };

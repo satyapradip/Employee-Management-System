@@ -318,6 +318,42 @@ export const Icons = {
       />
     </svg>
   ),
+
+  // Category icon (folder/tag)
+  Category: ({ className = "h-5 w-5" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+      />
+    </svg>
+  ),
+
+  // Trend/Analytics icon
+  Trend: ({ className = "h-5 w-5" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+      />
+    </svg>
+  ),
 };
 
 // Default export for the Icons object

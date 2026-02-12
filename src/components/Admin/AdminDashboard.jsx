@@ -5,11 +5,13 @@ import {
   TasksTab,
   CreateTaskTab,
   EmployeesTab,
+  AnalyticsTab,
   Sidebar,
 } from "./components";
 import { FullPageLoader, ErrorState } from "./components/LoadingStates";
 import { useTaskManager } from "./hooks/useTaskManager";
 import { useEmployees } from "./hooks/useEmployees";
+import { useAnalytics } from "./hooks/useAnalytics";
 import { useAuth } from "../../hooks/useAuth";
 import "./styles/animations.css";
 
@@ -53,6 +55,12 @@ const AdminDashboard = () => {
     deleteEmployee,
     toggleActive,
   } = useEmployees();
+
+  // Fetch analytics data
+  const {
+    stats: analyticsStats,
+    isLoading: analyticsLoading,
+  } = useAnalytics();
 
   // Handle task creation with employee ID
   const handleCreateTask = async (taskData) => {
@@ -101,6 +109,7 @@ const AdminDashboard = () => {
             setActiveTab={setActiveTab}
             taskCount={stats.total}
             employeeCount={employees.length}
+            analyticsEnabled={true}
           />
 
           {/* Tab Content */}
@@ -145,6 +154,15 @@ const AdminDashboard = () => {
                 onUpdateEmployee={updateEmployee}
                 onDeleteEmployee={deleteEmployee}
                 onToggleActive={toggleActive}
+              />
+            )}
+
+            {/* Analytics Tab */}
+            {activeTab === "analytics" && (
+              <AnalyticsTab
+                stats={analyticsStats}
+                employees={employees}
+                isLoading={analyticsLoading}
               />
             )}
           </div>
