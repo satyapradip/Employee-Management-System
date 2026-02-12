@@ -1,0 +1,29 @@
+# Render deployment configuration
+# Learn more: https://render.com/docs/yaml-spec
+
+services:
+  # Backend API Service
+  - type: web
+    name: employee-management-api
+    runtime: node
+    env: node
+    region: oregon # Change to your preferred region
+    plan: free # Options: free, starter, standard, pro
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false # Set in Render dashboard for security
+      - key: JWT_SECRET
+        generateValue: true # Auto-generates a secure random value
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: CLIENT_URL
+        sync: false # Set in Render dashboard (your Vercel URL)
+    autoDeploy: true
+    branch: main

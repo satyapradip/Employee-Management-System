@@ -1,0 +1,46 @@
+# Dependencies
+node_modules
+server/node_modules
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+server/.env
+server/.env.local
+
+# Development
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build outputs (server)
+server/dist
+server/build
+
+# Test files
+**/__tests__
+**/*.test.js
+**/*.spec.js
+coverage
+
+# Documentation (optional - include if you want docs deployed)
+*.md
+!README.md
+
+# Git
+.git
+.gitignore
