@@ -53,7 +53,7 @@ const DueDate = ({ date }) => (
  * Displays individual task information in a card format
  * With edit and delete functionality
  */
-const TaskCard = ({ task, index, onEdit, onDelete, employees = [] }) => {
+const TaskCard = ({ task, index, onDelete }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (

@@ -5,6 +5,7 @@ import ApiError from "../utils/ApiError.js";
  * Global Error Handler Middleware
  * Catches all errors and sends standardized response
  */
+// eslint-disable-next-line no-unused-vars
 const errorHandler = (err, req, res, next) => {
   let error = { ...err };
   error.message = err.message;

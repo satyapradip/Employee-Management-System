@@ -8,7 +8,8 @@ export default defineConfig({
     react(),
     tailwindcss({
       // Don't error on class name suggestions in CI
-      quiet: process.env.CI === "true",
+      // eslint-disable-next-line no-undef
+      quiet: typeof process !== "undefined" && process.env?.CI === "true",
     }),
   ],
 });

@@ -2,6 +2,7 @@
  * Centralized Icons Component
  * All SVG icons used in Admin Dashboard
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const Icons = {
   // Task list icon
   Tasks: ({ className = "h-5 w-5" }) => (

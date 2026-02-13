@@ -81,7 +81,7 @@ const handleResponse = async (response, requestId) => {
   try {
     const text = await response.text();
     data = text ? JSON.parse(text) : {};
-  } catch (jsonError) {
+  } catch {
     // If JSON parsing fails, create a fallback error object
     data = {
       success: false,
