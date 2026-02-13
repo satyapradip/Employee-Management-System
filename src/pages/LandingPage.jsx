@@ -128,6 +128,7 @@ function TaskFlowLogo() {
 function Navbar() {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -137,71 +138,163 @@ function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      setMobileMenuOpen(false);
+    }
+  };
+
   return (
-    <motion.nav
-      initial={{ y: -30, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.45, ease: "easeOut" }}
-      className="fixed top-4 z-50 w-full flex justify-center pointer-events-none"
-    >
-      {/* Floating Glass Container */}
-      <div
-        className={`
-          pointer-events-auto
-          flex items-center justify-between
-          w-[92%] max-w-6xl
-          px-6 py-3
-          rounded-full
-          transition-all duration-300
-          ${
-            scrolled
-              ? "bg-black/60 backdrop-blur-2xl border border-white/10 shadow-xl"
-              : "bg-black/30 backdrop-blur-xl border border-white/10"
-          }
-        `}
+    <>
+      <motion.nav
+        initial={{ y: -30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+        className="fixed top-4 z-50 w-full flex justify-center pointer-events-none px-2"
       >
-        {/* Logo */}
+        {/* Floating Glass Container */}
         <div
-          onClick={() => navigate("/")}
-          className="text-lg font-semibold tracking-tight cursor-pointer"
+          className={`
+            pointer-events-auto
+            flex items-center justify-between
+            w-full max-w-6xl
+            px-4 md:px-6 py-3
+            rounded-full
+            transition-all duration-300
+            ${
+              scrolled
+                ? "bg-black/60 backdrop-blur-2xl border border-white/10 shadow-xl"
+                : "bg-black/30 backdrop-blur-xl border border-white/10"
+            }
+          `}
         >
-          <TaskFlowLogo />
-        </div>
-
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-300">
-          <a href="#features" className="hover:text-white transition">
-            Features
-          </a>
-          <a href="#how-it-works" className="hover:text-white transition">
-            How it works
-          </a>
-          <a href="#about" className="hover:text-white transition">
-            About
-          </a>
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate("/login")}
-            className="px-4 py-2 text-sm rounded-full text-zinc-300 hover:text-white transition"
+          {/* Logo */}
+          <div
+            onClick={() => navigate("/")}
+            className="text-lg font-semibold tracking-tight cursor-pointer"
           >
-            Sign in
-          </button>
+            <TaskFlowLogo />
+          </div>
 
-          <button
-            onClick={() => navigate("/register-company")}
-            className="px-5 py-2 text-sm rounded-full
-              bg-purple-600 hover:bg-purple-700
-              text-white font-medium
-              transition"
-          >
-            Get Started
-          </button>
+          {/* Desktop Links */}
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-300">
+            <button
+              onClick={() => scrollToSection("features")}
+              className="hover:text-white transition cursor-pointer"
+            >
+              Features
+            </button>
+            <button
+              onClick={() => scrollToSection("how-it-works")}
+              className="hover:text-white transition cursor-pointer"
+            >
+              How it works
+            </button>
+            <button
+              onClick={() => scrollToSection("about")}
+              className="hover:text-white transition cursor-pointer"
+            >
+              About
+            </button>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2 md:gap-3">
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-zinc-300 hover:text-white transition"
+              aria-label="Toggle menu"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                {mobileMenuOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </button>
+
+            <button
+              onClick={() => navigate("/login")}
+              className="px-3 md:px-4 py-2 text-sm rounded-full text-zinc-300 hover:text-white transition"
+            >
+              Sign in
+            </button>
+
+            <button
+              onClick={() => navigate("/register-company")}
+              className="hidden sm:block px-4 md:px-5 py-2 text-sm rounded-full
+                bg-purple-600 hover:bg-purple-700
+                text-white font-medium
+                transition"
+            >
+              Get Started
+            </button>
+          </div>
         </div>
-      </div>
-    </motion.nav>
+      </motion.nav>
+
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="fixed top-20 left-4 right-4 z-40 md:hidden pointer-events-auto"
+        >
+          <div className="bg-black/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 shadow-xl">
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => scrollToSection("features")}
+                className="px-4 py-3 text-left text-zinc-300 hover:text-white hover:bg-white/5 rounded-lg transition"
+              >
+                Features
+              </button>
+              <button
+                onClick={() => scrollToSection("how-it-works")}
+                className="px-4 py-3 text-left text-zinc-300 hover:text-white hover:bg-white/5 rounded-lg transition"
+              >
+                How it works
+              </button>
+              <button
+                onClick={() => scrollToSection("about")}
+                className="px-4 py-3 text-left text-zinc-300 hover:text-white hover:bg-white/5 rounded-lg transition"
+              >
+                About
+              </button>
+              <div className="h-px bg-white/10 my-2" />
+              <button
+                onClick={() => {
+                  navigate("/register-company");
+                  setMobileMenuOpen(false);
+                }}
+                className="px-4 py-3 text-left bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition"
+              >
+                Get Started
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </>
   );
 }
 
@@ -210,7 +303,7 @@ function HeroSection() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative min-h-screen pt-32 flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen pt-24 md:pt-32 pb-16 flex items-center justify-center overflow-hidden">
       <AnimatedBackground />
 
       {/* Gradient overlays */}
@@ -218,7 +311,7 @@ function HeroSection() {
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#09090b] to-transparent z-10" />
 
       {/* Content */}
-      <div className="relative z-20 max-w-5xl mx-auto px-6 text-center">
+      <div className="relative z-20 max-w-5xl mx-auto px-4 md:px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -229,13 +322,13 @@ function HeroSection() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 bg-white/[0.05] border border-white/[0.08] rounded-full text-xs text-zinc-400"
+            className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 mb-6 md:mb-8 bg-white/[0.05] border border-white/[0.08] rounded-full text-xs text-zinc-400"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             Role-based access for admins & employees
           </motion.div>
 
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-4 md:mb-6 px-2">
             <span className="text-white">Manage your team</span>
             <br />
             <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -247,7 +340,7 @@ function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="text-lg md:text-xl text-zinc-400 mb-10 max-w-2xl mx-auto leading-relaxed"
+            className="text-base md:text-lg lg:text-xl text-zinc-400 mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed px-4"
           >
             The all-in-one platform for employee management, task tracking, and
             team analytics. Built for modern teams that move fast.
@@ -257,18 +350,18 @@ function HeroSection() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-3 justify-center"
+            className="flex flex-col sm:flex-row gap-3 justify-center px-4"
           >
             <button
               onClick={() => navigate("/register-company")}
-              className="group px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold text-[15px] text-white overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/25 active:scale-[0.97] cursor-pointer"
+              className="group px-6 md:px-8 py-3 md:py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold text-sm md:text-[15px] text-white overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/25 active:scale-[0.97] cursor-pointer w-full sm:w-auto"
             >
               Register as Admin
             </button>
 
             <button
               onClick={() => navigate("/login")}
-              className="px-8 py-3.5 bg-white/[0.05] border border-white/[0.1] hover:bg-white/[0.08] hover:border-white/[0.15] rounded-xl font-semibold text-[15px] text-zinc-300 hover:text-white transition-all duration-200 cursor-pointer"
+              className="px-6 md:px-8 py-3 md:py-3.5 bg-white/[0.05] border border-white/[0.1] hover:bg-white/[0.08] hover:border-white/[0.15] rounded-xl font-semibold text-sm md:text-[15px] text-zinc-300 hover:text-white transition-all duration-200 cursor-pointer w-full sm:w-auto"
             >
               Sign in
             </button>
@@ -279,10 +372,10 @@ function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
-            className="mt-20 flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-10"
+            className="mt-12 md:mt-20 flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 lg:gap-10 px-4"
           >
-            <div className="flex items-center gap-3 px-5 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl">
-              <div className="w-9 h-9 rounded-lg bg-indigo-500/15 flex items-center justify-center">
+            <div className="flex items-center gap-3 px-4 md:px-5 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl w-full sm:w-auto max-w-xs">
+              <div className="w-9 h-9 rounded-lg bg-indigo-500/15 flex items-center justify-center shrink-0">
                 <svg
                   className="w-5 h-5 text-indigo-400"
                   fill="none"
@@ -304,8 +397,8 @@ function HeroSection() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-3 px-5 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl">
-              <div className="w-9 h-9 rounded-lg bg-purple-500/15 flex items-center justify-center">
+            <div className="flex items-center gap-3 px-4 md:px-5 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl w-full sm:w-auto max-w-xs">
+              <div className="w-9 h-9 rounded-lg bg-purple-500/15 flex items-center justify-center shrink-0">
                 <svg
                   className="w-5 h-5 text-purple-400"
                   fill="none"
@@ -336,7 +429,7 @@ function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 hidden md:block"
       >
         <motion.div
           animate={{ y: [0, 8, 0] }}
@@ -356,7 +449,7 @@ function FeaturesSection() {
     {
       icon: (
         <svg
-          className="w-6 h-6 cursor-pointer"
+          className="w-6 h-6"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -378,7 +471,7 @@ function FeaturesSection() {
     {
       icon: (
         <svg
-          className="w-6 h-6 cursor-pointer"
+          className="w-6 h-6"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -400,7 +493,7 @@ function FeaturesSection() {
     {
       icon: (
         <svg
-          className="w-6 h-6 cursor-pointer"
+          className="w-6 h-6"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -422,7 +515,7 @@ function FeaturesSection() {
     {
       icon: (
         <svg
-          className="w-6 h-6 cursor-pointer"
+          className="w-6 h-6"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -444,7 +537,7 @@ function FeaturesSection() {
     {
       icon: (
         <svg
-          className="w-6 h-6 cursor-pointer"
+          className="w-6 h-6"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -466,7 +559,7 @@ function FeaturesSection() {
     {
       icon: (
         <svg
-          className="w-6 h-6 cursor-pointer"
+          className="w-6 h-6"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -488,27 +581,27 @@ function FeaturesSection() {
   ];
 
   return (
-    <section id="features" className="py-28 px-6 relative">
+    <section id="features" className="py-16 md:py-28 px-4 md:px-6 relative">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
         >
-          <p className="text-indigo-400 text-sm font-medium tracking-wider uppercase mb-3">
+          <p className="text-indigo-400 text-xs md:text-sm font-medium tracking-wider uppercase mb-2 md:mb-3">
             Features
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-white mb-3 md:mb-4 px-2">
             Everything you need to manage your team
           </h2>
-          <p className="text-zinc-500 max-w-xl mx-auto text-[15px]">
+          <p className="text-zinc-500 max-w-xl mx-auto text-sm md:text-[15px] px-4">
             Powerful tools designed for modern teams that want to move fast and
             stay organized.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
           {features.map((feature, index) => (
             <motion.div
               key={index}
@@ -516,21 +609,21 @@ function FeaturesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.08 }}
-              className="group relative p-6 bg-white/[0.02] border border-white/[0.06] rounded-2xl hover:border-white/[0.12] transition-all duration-300"
+              className="group relative p-5 md:p-6 bg-white/[0.02] border border-white/[0.06] rounded-2xl hover:border-white/[0.12] transition-all duration-300"
             >
               <div
                 className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
               />
               <div className="relative">
                 <div
-                  className={`w-10 h-10 rounded-xl bg-white/[0.05] flex items-center justify-center mb-4 ${feature.iconColor}`}
+                  className={`w-10 h-10 rounded-xl bg-white/[0.05] flex items-center justify-center mb-3 md:mb-4 ${feature.iconColor}`}
                 >
                   {feature.icon}
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2 tracking-tight">
+                <h3 className="text-base md:text-lg font-semibold text-white mb-1.5 md:mb-2 tracking-tight">
                   {feature.title}
                 </h3>
-                <p className="text-zinc-500 text-sm leading-relaxed">
+                <p className="text-zinc-500 text-xs md:text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </div>
@@ -634,27 +727,27 @@ function HowItWorksSection() {
   ];
 
   return (
-    <section id="how-it-works" className="py-28 px-6 relative">
+    <section id="how-it-works" className="py-16 md:py-28 px-4 md:px-6 relative">
       <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
         >
-          <p className="text-indigo-400 text-sm font-medium tracking-wider uppercase mb-3">
+          <p className="text-indigo-400 text-xs md:text-sm font-medium tracking-wider uppercase mb-2 md:mb-3">
             How it works
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-white mb-3 md:mb-4 px-2">
             Get started in 4 simple steps
           </h2>
-          <p className="text-zinc-500 max-w-xl mx-auto text-[15px]">
+          <p className="text-zinc-500 max-w-xl mx-auto text-sm md:text-[15px] px-4">
             From registration to task completion — here's how TeamFlow works for
             your team.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-5">
+        <div className="grid sm:grid-cols-2 gap-4 md:gap-5">
           {steps.map((s, i) => (
             <motion.div
               key={i}
@@ -662,9 +755,9 @@ function HowItWorksSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="relative p-6 bg-white/[0.02] border border-white/[0.06] rounded-2xl hover:border-white/[0.12] transition-all duration-300"
+              className="relative p-5 md:p-6 bg-white/[0.02] border border-white/[0.06] rounded-2xl hover:border-white/[0.12] transition-all duration-300"
             >
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3 md:gap-4">
                 <div className="shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center text-indigo-400">
                   {s.icon}
                 </div>
@@ -672,10 +765,10 @@ function HowItWorksSection() {
                   <span className="text-xs font-mono text-indigo-400/60">
                     Step {s.step}
                   </span>
-                  <h3 className="text-lg font-semibold text-white mt-0.5 mb-1.5 tracking-tight">
+                  <h3 className="text-base md:text-lg font-semibold text-white mt-0.5 mb-1 md:mb-1.5 tracking-tight">
                     {s.title}
                   </h3>
-                  <p className="text-zinc-500 text-sm leading-relaxed">
+                  <p className="text-zinc-500 text-xs md:text-sm leading-relaxed">
                     {s.description}
                   </p>
                 </div>
@@ -688,11 +781,11 @@ function HowItWorksSection() {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mt-12"
+          className="text-center mt-8 md:mt-12 px-4"
         >
           <button
             onClick={() => navigate("/register-company")}
-            className="px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold text-[15px] text-white hover:shadow-xl hover:shadow-indigo-500/25 active:scale-[0.97] transition-all duration-200 cursor-pointer"
+            className="px-6 md:px-8 py-3 md:py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold text-sm md:text-[15px] text-white hover:shadow-xl hover:shadow-indigo-500/25 active:scale-[0.97] transition-all duration-200 cursor-pointer w-full sm:w-auto"
           >
             Register as Admin — It's free
           </button>
@@ -707,7 +800,7 @@ function CTASection() {
   const navigate = useNavigate();
 
   return (
-    <section id="about" className="py-28 px-6 relative">
+    <section id="about" className="py-16 md:py-28 px-4 md:px-6 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-indigo-500/[0.03] to-transparent pointer-events-none" />
 
       <motion.div
@@ -716,23 +809,23 @@ function CTASection() {
         viewport={{ once: true }}
         className="max-w-3xl mx-auto text-center relative z-10"
       >
-        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-4">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-white mb-3 md:mb-4 px-2">
           Ready to transform your team management?
         </h2>
-        <p className="text-zinc-500 text-[15px] mb-8 max-w-xl mx-auto">
+        <p className="text-zinc-500 text-sm md:text-[15px] mb-6 md:mb-8 max-w-xl mx-auto px-4">
           Sign up as an admin to create your workspace, add employees, and start
           assigning tasks — all in minutes.
         </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center px-4">
           <button
             onClick={() => navigate("/register-company")}
-            className="px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold text-[15px] text-white hover:shadow-xl hover:shadow-indigo-500/25 active:scale-[0.97] transition-all duration-200 cursor-pointer"
+            className="px-6 md:px-8 py-3 md:py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold text-sm md:text-[15px] text-white hover:shadow-xl hover:shadow-indigo-500/25 active:scale-[0.97] transition-all duration-200 cursor-pointer w-full sm:w-auto"
           >
             Get started for free
           </button>
           <button
             onClick={() => navigate("/login")}
-            className="px-8 py-3.5 bg-white/[0.05] border border-white/[0.1] hover:bg-white/[0.08] rounded-xl font-semibold text-[15px] text-zinc-300 hover:text-white transition-all duration-200 cursor-pointer"
+            className="px-6 md:px-8 py-3 md:py-3.5 bg-white/[0.05] border border-white/[0.1] hover:bg-white/[0.08] rounded-xl font-semibold text-sm md:text-[15px] text-zinc-300 hover:text-white transition-all duration-200 cursor-pointer w-full sm:w-auto"
           >
             Sign in to your account
           </button>
@@ -744,10 +837,22 @@ function CTASection() {
 
 /* ─── Footer ─── */
 function Footer() {
+  const navigate = useNavigate();
+
+  const handleFooterLink = (link) => {
+    // Scroll to top smoothly
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    // You can add actual routes here if needed
+    console.log(`Navigate to ${link}`);
+  };
+
   return (
-    <footer className="py-10 px-6 border-t border-white/[0.04]">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="flex items-center gap-3">
+    <footer className="py-8 md:py-10 px-4 md:px-6 border-t border-white/[0.04]">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
+        <div
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={() => navigate("/")}
+        >
           <div className="p-1.5 bg-gradient-to-br from-white/10 to-white/5 rounded-3xl border border-white/5">
             <img
               src="/TeamFlow_logo.png"
@@ -759,18 +864,18 @@ function Footer() {
             𝚃𝚎𝚊𝚖𝙵𝚕𝚘𝚠
           </span>
         </div>
-        <span className="text-zinc-600 text-xs">
+        <span className="text-zinc-600 text-xs text-center">
           &copy; {new Date().getFullYear()} TeamFlow. All rights reserved.
         </span>
-        <div className="flex gap-6">
+        <div className="flex gap-4 md:gap-6">
           {["Privacy", "Terms", "Contact"].map((link) => (
-            <a
+            <button
               key={link}
-              href="#"
-              className="text-zinc-600 hover:text-zinc-300 text-xs transition-colors"
+              onClick={() => handleFooterLink(link)}
+              className="text-zinc-600 hover:text-zinc-300 text-xs transition-colors cursor-pointer"
             >
               {link}
-            </a>
+            </button>
           ))}
         </div>
       </div>
