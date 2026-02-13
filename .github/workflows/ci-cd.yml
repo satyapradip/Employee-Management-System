@@ -30,11 +30,12 @@ jobs:
 
       - name: 🧹 Lint code
         run: npm run lint
+        continue-on-error: false
 
       - name: 🏗️  Build frontend
         run: npm run build
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://api.example.com' }}
 
       - name: 📤 Upload build artifacts
         uses: actions/upload-artifact@v3
@@ -54,7 +55,7 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          --health-cmd "mongosh --eval 'db.adminCommand({ ping: 1 })'"
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok' || mongo --quiet --eval 'db.runCommand({ ping: 1 }).ok'"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -74,7 +75,12 @@ jobs:
         working-directory: ./server
         run: npm ci
 
-      - name: 🧪 Run tests
+      - name: � Lint backend code
+        working-directory: ./server
+        run: npm run lint || echo "No lint script found"
+        continue-on-error: true
+
+      - name: �🧪 Run tests
         working-directory: ./server
         run: npm test
         env:

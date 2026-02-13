@@ -9,6 +9,7 @@
     "dev": "nodemon server.js",
     "seed": "node src/seeders/seedData.js",
     "verify": "node scripts/verify-db.js",
+    "lint": "echo 'Linting not configured for backend'",
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --coverage",
