@@ -83,7 +83,7 @@ describe("Auth API Tests", () => {
         .post("/api/auth/register-admin")
         .send(testData);
 
-      expect(res.statusCode).toBe(400);
+      expect(res.statusCode).toBe(409); // 409 Conflict is correct for duplicate
       expect(res.body.success).toBe(false);
     });
   });

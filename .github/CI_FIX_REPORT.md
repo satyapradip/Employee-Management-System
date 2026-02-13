@@ -14,17 +14,22 @@
 
 **Problem**: Tests failing due to:
 
+- Jest not configured for ES modules (SyntaxError: Cannot use import statement outside a module)
 - Missing named export for `connectDB` function
 - MongoDB health check using incorrect command
 - No lint script in backend package.json
 
 **Solutions Applied**:
 
-1. Added named export for `connectDB` in `server/src/config/db.js`
-2. Updated MongoDB health check to support both `mongosh` and legacy `mongo` commands
-3. Added lint script to backend package.json
-4. Added backend lint step in CI workflow (with continue-on-error)
-5. Improved error handling in CI workflow
+1. **Configured Jest for ES modules support**:
+   - Updated test script to use `node --experimental-vm-modules`
+   - Added `extensionsToTreatAsEsm` configuration to jest.config.js
+   - Added module name mapping for ES modules
+2. Added named export for `connectDB` in `server/src/config/db.js`
+3. Updated MongoDB health check to support both `mongosh` and legacy `mongo` commands
+4. Added lint script to backend package.json
+5. Added backend lint step in CI workflow (with continue-on-error)
+6. Improved error handling in CI workflow
 
 ## Files Modified
 
@@ -51,7 +56,26 @@ tailwindcss({
 
 ### 4. `server/package.json`
 
+- **Installed `cross-env`** for cross-platform environment variable support
+- Updated test scripts to use Node's experimental VM modules for ES module support:
+  ```json
+  "test": "cross-env NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --forceExit"
+  ```
 - Added `lint` script placeholder
+
+### 5. `server/jest.config.js`
+
+- Configured for ES modules (package.json already has `"type": "module"`)
+- Added module name mapper for cleaner imports:
+  ```javascript
+  moduleNameMapper: {
+    '^(\\.\\..?\\/.+)\\.js$': '$1'
+  }
+  ```
+
+### 6. `server/tests/auth.test.js`
+
+- Fixed test assertion to expect correct HTTP status code (409 Conflict for duplicate email)
 
 ## Testing the Fixes
 
