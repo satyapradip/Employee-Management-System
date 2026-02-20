@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth"; 
+import { useAuth } from "../hooks/useAuth";
 
 /* ─── Animated Background (CSS/Framer Motion — no WebGL) ─── */
 function AnimatedBackground() {
@@ -236,7 +236,9 @@ function Navbar() {
 
             {isAuthenticated ? (
               <button
-                onClick={() => navigate(user?.role === "admin" ? "/admin" : "/employee")}
+                onClick={() =>
+                  navigate(user?.role === "admin" ? "/admin" : "/employee")
+                }
                 className="px-4 md:px-5 py-2 text-sm rounded-full bg-purple-600 hover:bg-purple-700 text-white font-medium transition"
               >
                 Go to Dashboard
@@ -364,7 +366,9 @@ function HeroSection() {
           >
             {isAuthenticated ? (
               <button
-                onClick={() => navigate(user?.role === "admin" ? "/admin" : "/employee")}
+                onClick={() =>
+                  navigate(user?.role === "admin" ? "/admin" : "/employee")
+                }
                 className="group px-6 md:px-8 py-3 md:py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold text-sm md:text-[15px] text-white overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/25 active:scale-[0.97] cursor-pointer w-full sm:w-auto"
               >
                 Go to Dashboard
