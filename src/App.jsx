@@ -13,6 +13,7 @@ import ResetPassword from "./components/Auth/ResetPassword.jsx";
 import AdminDashboard from "./components/Admin";
 import EmployeeDashboard from "./components/Dashboard/EmployeeDashboard.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
+import CompanyRegistration from "./pages/CompanyRegistration.jsx";
 import { useAuth } from "./hooks/useAuth.js";
 import useToast from "./hooks/useToast.js";
 import logger from "./utils/logger.js";
@@ -187,6 +188,18 @@ const App = () => {
               <EmployeeDashboard />
             </RouteErrorBoundary>
           </ProtectedRoute>
+        }
+      />
+
+      {/* Company Registration */}
+      <Route
+        path="/register-company"
+        element={
+          <AuthRoute>
+            <RouteErrorBoundary fallbackMessage="An error occurred in company registration.">
+              <CompanyRegistration />
+            </RouteErrorBoundary>
+          </AuthRoute>
         }
       />
 

@@ -94,8 +94,10 @@ const handleResponse = async (response, requestId) => {
 
   if (!response.ok) {
     // Handle 401 - Unauthorized
-    // Only auto-redirect if not already in logout process
-    if (response.status === 401 && !isLoggingOut) {
+    // Only auto-redirect if user was already authenticated (has a stored session)
+    // Do NOT redirect during login attempts (when no user is stored yet)
+    const existingUser = localStorage.getItem("loggedInUser");
+    if (response.status === 401 && !isLoggingOut && existingUser) {
       localStorage.removeItem("loggedInUser");
       window.location.href = "/";
     }
