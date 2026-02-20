@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth"; 
 
 /* ─── Animated Background (CSS/Framer Motion — no WebGL) ─── */
 function AnimatedBackground() {
@@ -127,6 +128,7 @@ function TaskFlowLogo() {
 
 function Navbar() {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -232,22 +234,29 @@ function Navbar() {
               </svg>
             </button>
 
-            <button
-              onClick={() => navigate("/login")}
-              className="px-3 md:px-4 py-2 text-sm rounded-full text-zinc-300 hover:text-white transition"
-            >
-              Sign in
-            </button>
-
-            <button
-              onClick={() => navigate("/register-company")}
-              className="hidden sm:block px-4 md:px-5 py-2 text-sm rounded-full
-                bg-purple-600 hover:bg-purple-700
-                text-white font-medium
-                transition"
-            >
-              Get Started
-            </button>
+            {isAuthenticated ? (
+              <button
+                onClick={() => navigate(user?.role === "admin" ? "/admin" : "/employee")}
+                className="px-4 md:px-5 py-2 text-sm rounded-full bg-purple-600 hover:bg-purple-700 text-white font-medium transition"
+              >
+                Go to Dashboard
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => navigate("/login")}
+                  className="px-3 md:px-4 py-2 text-sm rounded-full text-zinc-300 hover:text-white transition"
+                >
+                  Sign in
+                </button>
+                <button
+                  onClick={() => navigate("/register-company")}
+                  className="hidden sm:block px-4 md:px-5 py-2 text-sm rounded-full bg-purple-600 hover:bg-purple-700 text-white font-medium transition"
+                >
+                  Get Started
+                </button>
+              </>
+            )}
           </div>
         </div>
       </motion.nav>
@@ -301,6 +310,7 @@ function Navbar() {
 /* ─── Hero Section ─── */
 function HeroSection() {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
 
   return (
     <section className="relative min-h-screen pt-24 md:pt-32 pb-16 flex items-center justify-center overflow-hidden">
@@ -352,19 +362,29 @@ function HeroSection() {
             transition={{ delay: 0.6 }}
             className="flex flex-col sm:flex-row gap-3 justify-center px-4"
           >
-            <button
-              onClick={() => navigate("/register-company")}
-              className="group px-6 md:px-8 py-3 md:py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold text-sm md:text-[15px] text-white overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/25 active:scale-[0.97] cursor-pointer w-full sm:w-auto"
-            >
-              Register as Admin
-            </button>
-
-            <button
-              onClick={() => navigate("/login")}
-              className="px-6 md:px-8 py-3 md:py-3.5 bg-white/[0.05] border border-white/[0.1] hover:bg-white/[0.08] hover:border-white/[0.15] rounded-xl font-semibold text-sm md:text-[15px] text-zinc-300 hover:text-white transition-all duration-200 cursor-pointer w-full sm:w-auto"
-            >
-              Sign in
-            </button>
+            {isAuthenticated ? (
+              <button
+                onClick={() => navigate(user?.role === "admin" ? "/admin" : "/employee")}
+                className="group px-6 md:px-8 py-3 md:py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold text-sm md:text-[15px] text-white overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/25 active:scale-[0.97] cursor-pointer w-full sm:w-auto"
+              >
+                Go to Dashboard
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => navigate("/register-company")}
+                  className="group px-6 md:px-8 py-3 md:py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold text-sm md:text-[15px] text-white overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/25 active:scale-[0.97] cursor-pointer w-full sm:w-auto"
+                >
+                  Register as Admin
+                </button>
+                <button
+                  onClick={() => navigate("/login")}
+                  className="px-6 md:px-8 py-3 md:py-3.5 bg-white/[0.05] border border-white/[0.1] hover:bg-white/[0.08] hover:border-white/[0.15] rounded-xl font-semibold text-sm md:text-[15px] text-zinc-300 hover:text-white transition-all duration-200 cursor-pointer w-full sm:w-auto"
+                >
+                  Sign in
+                </button>
+              </>
+            )}
           </motion.div>
 
           {/* Role highlights */}
