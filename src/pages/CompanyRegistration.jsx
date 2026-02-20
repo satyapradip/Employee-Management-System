@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import api from "../services/api";
 import useToast from "../hooks/useToast";
+import { useAuth } from "../hooks/useAuth";
 import logger from "../utils/logger";
 
 /* ─── Input (defined OUTSIDE component to prevent remount on re-render) ─── */
@@ -69,6 +70,7 @@ function FormInput({
 export default function CompanyRegistration() {
   const navigate = useNavigate();
   const showToast = useToast();
+  const { login } = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -135,21 +137,17 @@ export default function CompanyRegistration() {
       const response = await api.auth.registerAdmin(payload);
 
       logger.info("Admin registered!", response);
-      showToast("success", "Account created! Logging you in...");
 
-      const { token, user } = response.data;
-
-      // Save user data with token (same format as login)
-      const userData = {
-        ...user,
-        token,
-      };
-
-      localStorage.setItem("loggedInUser", JSON.stringify(userData));
-
-      setTimeout(() => {
-        navigate("/admin-dashboard");
-      }, 1200);
+      // Log in using AuthContext so state is properly updated
+      const loginResult = await login(formData.email, formData.password);
+      if (loginResult?.success) {
+        showToast("Account created! Welcome aboard.", "success");
+        navigate("/admin");
+      } else {
+        // Registration succeeded but auto-login failed — send to login page
+        showToast("Account created! Please sign in.", "success");
+        navigate("/login");
+      }
     } catch (error) {
       logger.error("Registration failed", {
         message: error.message,
@@ -168,13 +166,13 @@ export default function CompanyRegistration() {
 
         if (Object.keys(backendErrors).length > 0) {
           setErrors(backendErrors);
-          showToast("error", "Please fix the validation errors");
+          showToast("Please fix the validation errors", "error");
           return;
         }
       }
 
       const msg = error.message || "Registration failed. Please try again.";
-      showToast("error", msg);
+      showToast(msg, "error");
     } finally {
       setIsLoading(false);
     }
