@@ -24,6 +24,7 @@ services:
       - key: JWT_EXPIRE
         value: 7d
       - key: CLIENT_URL
-        sync: false # Set in Render dashboard (your Vercel URL)
+        value: https://employee-management-system-lac-chi.vercel.app
+        sync: false # Also confirm this in the Render dashboard
     autoDeploy: true
     branch: main

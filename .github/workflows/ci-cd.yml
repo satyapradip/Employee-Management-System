@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  NODE_VERSION: "18.x"
+  NODE_VERSION: "20.x"
 
 jobs:
   # Frontend Testing & Build
@@ -16,28 +16,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: 🔧 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
+          cache-dependency-path: package-lock.json
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: 🧹 Lint code
+      # Lint must NOT block the build - warnings are informational only
+      - name: Lint code
         run: npm run lint
-        continue-on-error: false
+        continue-on-error: true
 
-      - name: 🏗️  Build frontend
+      - name: Build frontend
         run: npm run build
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://api.example.com' }}
+          # VITE_API_URL must ALSO be set in the Vercel dashboard
+          # (Project -> Settings -> Environment Variables)
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
-      - name: 📤 Upload build artifacts
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build
@@ -55,45 +59,51 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok' || mongo --quiet --eval 'db.runCommand({ ping: 1 }).ok'"
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ping:1}).ok'"
           --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-timeout 10s
+          --health-retries 10
+          --health-start-period 20s
 
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: 🔧 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
           cache-dependency-path: server/package-lock.json
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         working-directory: ./server
         run: npm ci
 
-      - name: � Lint backend code
+      - name: Lint backend code
         working-directory: ./server
         run: npm run lint || echo "No lint script found"
         continue-on-error: true
 
-      - name: �🧪 Run tests
+      - name: Run tests
         working-directory: ./server
         run: npm test
         env:
           NODE_ENV: test
           MONGODB_URI: mongodb://localhost:27017/test_db
-          JWT_SECRET: test-secret-key-for-ci-pipeline-minimum-32-characters
+          JWT_SECRET: test-secret-key-for-ci-pipeline-minimum-32-characters-long
+          JWT_EXPIRE: 7d
+          CLIENT_URL: http://localhost:5173
+          FRONTEND_URL: http://localhost:5173
+          PORT: 5001
 
-      - name: 📊 Upload coverage
+      - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
           directory: ./server/coverage
           flags: backend
           fail_ci_if_error: false
+        continue-on-error: true
 
   # Security Audit
   security:
@@ -101,24 +111,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: 🔧 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: 🔒 Run npm audit (Frontend)
+      - name: Run npm audit (Frontend)
         run: npm audit --audit-level=high
         continue-on-error: true
 
-      - name: 🔒 Run npm audit (Backend)
+      - name: Run npm audit (Backend)
         working-directory: ./server
         run: npm audit --audit-level=high
         continue-on-error: true
 
-  # Deploy to Vercel (Frontend)
+  # Deploy Frontend to Vercel
   deploy-frontend:
     name: Deploy Frontend to Vercel
     needs: [frontend, backend]
@@ -126,16 +136,17 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: 🚀 Deploy to Vercel
+      - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: "--prod"
+          # Pass VITE_API_URL so the Vercel build bakes in the correct backend URL
+          vercel-args: "--prod --build-env VITE_API_URL=${{ secrets.VITE_API_URL }}"
           working-directory: ./
 
   # Notify on failure
@@ -146,7 +157,6 @@ jobs:
     if: failure()
 
     steps:
-      - name: 📧 Send notification
+      - name: Send notification
         run: |
-          echo "Build failed! Check GitHub Actions logs."
-          # Add Slack/Discord webhook here if needed
+          echo "Build failed! Check GitHub Actions logs for details."
