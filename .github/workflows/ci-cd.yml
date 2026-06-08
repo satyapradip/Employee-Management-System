@@ -141,14 +141,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          # Pass VITE_API_URL so the Vercel build bakes in the correct backend URL
-          vercel-args: "--prod --build-env VITE_API_URL=${{ secrets.VITE_API_URL }}"
-          working-directory: ./
+        run: npx vercel@latest deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }} --build-env VITE_API_URL=${{ secrets.VITE_API_URL }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
   # Notify on failure
   notify:
