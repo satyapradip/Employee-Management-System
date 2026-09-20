@@ -371,12 +371,12 @@ const AuthProvider = ({ children }) => {
   /**
    * Register new user
    */
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, companyName) => {
     setError(null);
     setIsLoading(true);
 
     try {
-      const response = await api.auth.register(name, email, password);
+      const response = await api.auth.register(name, email, password, companyName);
 
       if (response.success) {
         // Registration successful - user needs to login

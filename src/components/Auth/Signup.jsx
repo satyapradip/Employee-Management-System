@@ -13,6 +13,7 @@ import {
   Sparkles,
   AlertCircle,
   CheckCircle2,
+  Building2,
 } from "lucide-react";
 
 const Signup = () => {
@@ -20,6 +21,7 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    companyName: "",
     password: "",
     confirmPassword: "",
   });
@@ -88,7 +90,8 @@ const Signup = () => {
       const result = await register(
         formData.name.trim(),
         formData.email.trim(),
-        formData.password
+        formData.password,
+        formData.companyName.trim()
       );
 
       if (result.success) {
@@ -96,6 +99,7 @@ const Signup = () => {
         setFormData({
           name: "",
           email: "",
+          companyName: "",
           password: "",
           confirmPassword: "",
         });
@@ -212,6 +216,32 @@ const Signup = () => {
               {errors.email && (
                 <p className="text-red-400 text-xs mt-1 pl-1">{errors.email}</p>
               )}
+            </div>
+
+            {/* Company / Team Name (Optional) */}
+            <div>
+              <label
+                htmlFor="signup-company"
+                className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5"
+              >
+                Company / Team Name{" "}
+                <span className="text-zinc-500 font-normal lowercase">
+                  (optional)
+                </span>
+              </label>
+              <div className="relative">
+                <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                <input
+                  id="signup-company"
+                  type="text"
+                  name="companyName"
+                  value={formData.companyName}
+                  onChange={handleChange}
+                  placeholder="e.g. Acme Innovations"
+                  autoComplete="organization"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-sm"
+                />
+              </div>
             </div>
 
             {/* Password */}

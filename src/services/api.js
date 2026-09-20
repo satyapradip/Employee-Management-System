@@ -7,21 +7,11 @@ import logger from "../utils/logger.js";
 
 // Validate and get API URL
 const getApiUrl = () => {
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
-  // Warn in development if using default
-  if (import.meta.env.DEV && !import.meta.env.VITE_API_URL) {
-    logger.warn(
-      "VITE_API_URL not set, using default: http://localhost:5000/api",
-    );
+  // In the browser, use relative /api so Vite proxy handles it without CORS or port issues
+  if (typeof window !== "undefined") {
+    return "/api";
   }
-
-  // Error in production if not set
-  if (import.meta.env.PROD && !import.meta.env.VITE_API_URL) {
-    logger.error("VITE_API_URL is required in production! API calls may fail.");
-  }
-
-  return apiUrl;
+  return import.meta.env.VITE_API_URL || "http://127.0.0.1:5000/api";
 };
 
 const API_URL = getApiUrl();
@@ -132,8 +122,26 @@ const createRequest = (url, options = {}) => {
     signal: controller.signal,
   };
 
-  const request = fetch(url, fetchOptions)
-    .then((response) => handleResponse(response, requestId))
+  const executeFetch = async (targetUrl) => {
+    try {
+      const response = await fetch(targetUrl, fetchOptions);
+      return await handleResponse(response, requestId);
+    } catch (error) {
+      if (
+        typeof window !== "undefined" &&
+        targetUrl.startsWith("/api") &&
+        error.message?.includes("Failed to fetch")
+      ) {
+        console.warn("Retrying fetch directly via http://127.0.0.1:5000...");
+        const fallbackUrl = `http://127.0.0.1:5000${targetUrl}`;
+        const fallbackResponse = await fetch(fallbackUrl, fetchOptions);
+        return await handleResponse(fallbackResponse, requestId);
+      }
+      throw error;
+    }
+  };
+
+  const request = executeFetch(url)
     .catch((error) => {
       // Remove from active requests on error
       activeRequests.delete(requestId);
@@ -180,11 +188,11 @@ const api = {
       });
     },
 
-    register: async (name, email, password) => {
+    register: async (name, email, password, companyName) => {
       return createRequest(`${API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, companyName }),
       });
     },
 
