@@ -1,16 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
+import {
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  ArrowLeft,
+  CheckCircle2,
+  AlertCircle,
+  ShieldCheck,
+} from "lucide-react";
 
-/**
- * ResetPassword Component
- * Allows users to set a new password using reset token
- */
 const ResetPassword = () => {
-  const { token } = useParams();
+  const { token: paramToken } = useParams();
+  const [searchParams] = useSearchParams();
+  const sessionToken =
+    typeof sessionStorage !== "undefined"
+      ? sessionStorage.getItem("pendingResetToken")
+      : null;
+  const token = paramToken || searchParams.get("token") || sessionToken;
+
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifying, setIsVerifying] = useState(true);
   const [isValid, setIsValid] = useState(false);
@@ -20,30 +35,18 @@ const ResetPassword = () => {
 
   // Verify token on mount
   useEffect(() => {
-    // Skip verification if we've already successfully reset the password
-    if (success) {
-      console.log("✅ Password already reset, skipping token verification");
-      return;
-    }
-
-    console.log(
-      "🔐 ResetPassword component mounted with token:",
-      token?.substring(0, 10) + "...",
-    );
+    if (success) return;
 
     const verifyToken = async () => {
       try {
-        console.log("⏳ Verifying token with backend...");
         const response = await api.auth.verifyResetToken(token);
-        console.log("✅ Token verification response:", response);
-
-        if (response.success && response.data.valid) {
+        if (response.success && response.data?.valid) {
           setIsValid(true);
-          setEmail(response.data.email);
-          console.log("✅ Token is valid for email:", response.data.email);
+          setEmail(response.data.email || "");
+        } else {
+          setError(response.message || "Invalid or expired reset link");
         }
       } catch (err) {
-        console.error("❌ Token verification failed:", err);
         setError(err.message || "Invalid or expired reset link");
       } finally {
         setIsVerifying(false);
@@ -53,9 +56,8 @@ const ResetPassword = () => {
     if (token) {
       verifyToken();
     } else {
-      console.error("❌ No reset token provided to component!");
       setIsVerifying(false);
-      setError("No reset token provided");
+      setError("No reset token provided in link");
     }
   }, [token, success]);
 
@@ -63,15 +65,13 @@ const ResetPassword = () => {
     e.preventDefault();
     setError(null);
 
-    // Validate passwords match
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
       return;
     }
 
-    // Validate password length
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
       return;
     }
 
@@ -82,32 +82,17 @@ const ResetPassword = () => {
       if (response.success) {
         setSuccess(true);
 
-        console.log("✅ Password reset successful! Response:", response.data);
-
-        // Save auth token and user data to localStorage for auto-login
-        if (response.data.token && response.data.user) {
-          console.log("💾 Saving user data and token for auto-login...");
-
-          // Save user data to localStorage (same as login does)
-          localStorage.setItem(
-            "loggedInUser",
-            JSON.stringify(response.data.user),
-          );
-
-          // Wait 2 seconds to show success message, then navigate to appropriate dashboard
+        if (response.data?.token && response.data?.user) {
+          localStorage.setItem("loggedInUser", JSON.stringify(response.data.user));
           setTimeout(() => {
             const dashboardRoute =
-              response.data.user.role === "admin"
-                ? "/admin-dashboard"
-                : "/employee-dashboard";
-            console.log("🔄 Navigating to dashboard:", dashboardRoute);
+              response.data.user.role === "admin" ? "/admin" : "/employee";
             navigate(dashboardRoute, { replace: true });
-          }, 2000);
+          }, 1800);
         } else {
-          // Fallback: No auto-login, just go to login page
           setTimeout(() => {
-            navigate("/login");
-          }, 2000);
+            navigate("/login", { replace: true });
+          }, 1800);
         }
       }
     } catch (err) {
@@ -117,319 +102,166 @@ const ResetPassword = () => {
     }
   };
 
-  // Loading state
   if (isVerifying) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center bg-[#09090b]">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-          <div className="text-white text-lg">Verifying reset link...</div>
+      <div className="min-h-screen w-full bg-[#070b14] flex items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="w-10 h-10 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-white font-medium text-sm">Verifying security token...</div>
         </div>
       </div>
     );
   }
 
-  // Invalid token state
-  if (!isValid && !success) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center bg-[#09090b]">
-        <div className="relative backdrop-blur-xl bg-white/[0.03] border border-red-500/30 p-10 rounded-2xl shadow-2xl shadow-red-500/5 w-full max-w-md mx-4">
-          <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
-
-          {/* Error Icon */}
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center">
-              <svg
-                className="w-8 h-8 text-red-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-white mb-2">Invalid Link</h2>
-            <p className="text-gray-400 mb-6">
-              {error || "This password reset link is invalid or has expired."}
-            </p>
-            <p className="text-gray-500 text-sm mb-6">
-              Please request a new password reset link.
-            </p>
-
-            <button
-              onClick={() => navigate("/login")}
-              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-300"
-            >
-              Back to Login
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Success state
-  if (success) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center bg-[#09090b]">
-        <div className="relative backdrop-blur-xl bg-white/[0.03] border border-white/[0.08] p-10 rounded-2xl shadow-2xl shadow-indigo-500/5 w-full max-w-md mx-4">
-          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl blur-xl opacity-15 -z-10"></div>
-
-          {/* Success Icon */}
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-emerald-500/15 rounded-full flex items-center justify-center">
-              <svg
-                className="w-8 h-8 text-emerald-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-white mb-2">
-              Password Reset Successful!
-            </h2>
-            <p className="text-gray-400 mb-4">
-              Your password has been changed successfully.
-            </p>
-            <p className="text-indigo-400 text-sm">
-              Redirecting to dashboard...
-            </p>
-            <div className="mt-4">
-              <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Reset form
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-[#09090b]">
-      <div className="relative backdrop-blur-xl bg-white/[0.03] border border-white/[0.08] p-10 rounded-2xl shadow-2xl shadow-indigo-500/5 w-full max-w-md mx-4">
-        {/* Glow effect */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl blur-xl opacity-15 -z-10"></div>
+    <div className="min-h-screen w-full bg-[#070b14] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
+      <div className="glow-ambient-indigo top-[-100px] left-1/2 -translate-x-1/2" />
+      <div className="glow-ambient-cyan bottom-[-100px] right-[-50px]" />
+      <div className="absolute inset-0 bg-grid-subtle pointer-events-none opacity-40" />
 
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 bg-indigo-500/15 rounded-full flex items-center justify-center">
-              <svg
-                className="w-7 h-7 text-indigo-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
-                />
-              </svg>
-            </div>
-          </div>
-          <h1 className="text-2xl font-bold text-white">Reset Password</h1>
-          <p className="text-gray-400 mt-2">
-            Enter a new password for{" "}
-            <span className="text-indigo-400">{email}</span>
-          </p>
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 text-sm flex items-center gap-2">
-            <svg
-              className="w-5 h-5 shrink-0"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>{error}</span>
-            <button
-              onClick={() => setError(null)}
-              className="ml-auto text-red-400 hover:text-red-300"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <div className="relative group">
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={isSubmitting}
-              className="w-full bg-white/[0.04] text-white outline-none border border-white/[0.08] focus:border-indigo-500 py-4 px-5 rounded-xl placeholder:text-zinc-500 transition-all duration-300 focus:shadow-lg focus:shadow-indigo-500/20 disabled:opacity-50"
-              type="password"
-              placeholder="New password (min 6 characters)"
-              minLength={6}
-            />
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
-          </div>
-
-          <div className="relative group">
-            <input
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              disabled={isSubmitting}
-              className="w-full bg-white/[0.04] text-white outline-none border border-white/[0.08] focus:border-indigo-500 py-4 px-5 rounded-xl placeholder:text-zinc-500 transition-all duration-300 focus:shadow-lg focus:shadow-indigo-500/20 disabled:opacity-50"
-              type="password"
-              placeholder="Confirm new password"
-              minLength={6}
-            />
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
-          </div>
-
-          {/* Password match indicator */}
-          {confirmPassword && (
-            <div
-              className={`flex items-center gap-2 text-sm ${
-                password === confirmPassword
-                  ? "text-emerald-400"
-                  : "text-amber-400"
-              }`}
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d={
-                    password === confirmPassword
-                      ? "M5 13l4 4L19 7"
-                      : "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  }
-                />
-              </svg>
-              {password === confirmPassword
-                ? "Passwords match"
-                : "Passwords do not match"}
-            </div>
-          )}
-
-          <button
-            className="relative mt-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-4 px-6 rounded-xl overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/25 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
-            type="submit"
-            disabled={isSubmitting || password !== confirmPassword}
-            aria-label={
-              isSubmitting ? "Resetting password..." : "Reset password"
-            }
-            aria-busy={isSubmitting}
-          >
-            <span className="relative z-10 flex items-center justify-center gap-2">
-              {isSubmitting ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                  Resetting...
-                </>
-              ) : (
-                <>
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  Reset Password
-                </>
-              )}
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </button>
-        </form>
-
-        <button
-          type="button"
-          onClick={() => navigate("/login")}
-          className="w-full mt-6 text-zinc-400 hover:text-indigo-400 font-medium transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer bg-transparent border-none"
-          aria-label="Go back to login"
+      <div className="relative z-10 w-full max-w-md">
+        <Link
+          to="/login"
+          className="inline-flex items-center gap-2 text-xs font-medium text-zinc-400 hover:text-white transition-colors mb-6 group"
         >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            />
-          </svg>
-          Back to Login
-        </button>
+          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+          Back to Sign In
+        </Link>
+
+        <div className="glass-panel p-8 sm:p-10 rounded-3xl border border-white/10 shadow-2xl shadow-black/60">
+          {success ? (
+            <div className="text-center py-4">
+              <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                <CheckCircle2 className="w-8 h-8" />
+              </div>
+              <h2 className="font-display font-bold text-2xl text-white mb-2">
+                Password Reset Complete
+              </h2>
+              <p className="text-zinc-300 text-sm leading-relaxed mb-6">
+                Your credentials have been securely updated. Redirecting you to your workspace...
+              </p>
+              <div className="w-full bg-zinc-800/60 rounded-full h-1.5 overflow-hidden">
+                <div className="bg-emerald-500 h-full w-full animate-pulse" />
+              </div>
+            </div>
+          ) : !isValid ? (
+            <div className="text-center py-4">
+              <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400">
+                <AlertCircle className="w-8 h-8" />
+              </div>
+              <h2 className="font-display font-bold text-2xl text-white mb-2">
+                Invalid or Expired Link
+              </h2>
+              <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                {error || "This password reset token has expired or is no longer valid."}
+              </p>
+              <Link
+                to="/forgot-password"
+                className="w-full btn-primary-gradient py-3.5 rounded-xl font-semibold text-sm inline-flex items-center justify-center gap-2"
+              >
+                Request New Reset Link
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div className="text-center mb-7">
+                <div className="inline-flex p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 mb-4">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <h1 className="font-display font-bold text-2xl sm:text-3xl text-white tracking-tight">
+                  Set new password
+                </h1>
+                <p className="text-zinc-400 text-xs sm:text-sm mt-1.5">
+                  Enter your updated credentials for <span className="text-zinc-200 font-medium">{email}</span>
+                </p>
+              </div>
+
+              {error && (
+                <div className="mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs sm:text-sm flex items-start gap-2.5">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <div className="flex-1 leading-snug">{error}</div>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="reset-new-password"
+                    className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5"
+                  >
+                    New Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                    <input
+                      id="reset-new-password"
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="•••••••• (Min 6 characters)"
+                      className="w-full pl-10 pr-11 py-3 rounded-xl glass-input text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-zinc-200 cursor-pointer"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="reset-confirm-password"
+                    className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5"
+                  >
+                    Confirm New Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                    <input
+                      id="reset-confirm-password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full pl-10 pr-11 py-3 rounded-xl glass-input text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-zinc-200 cursor-pointer"
+                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full btn-primary-gradient py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-indigo-600/30 mt-6"
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Updating password...
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      Save &amp; Enter Workspace
+                      <ArrowRight className="w-4 h-4" />
+                    </span>
+                  )}
+                </button>
+              </form>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

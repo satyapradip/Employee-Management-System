@@ -1,7 +1,19 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import useToast from "../../hooks/useToast";
+import {
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  ArrowLeft,
+  Sparkles,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -19,11 +31,9 @@ const Signup = () => {
   const { register } = useAuth();
   const showToast = useToast();
 
-  // Client-side validation
   const validateForm = () => {
     const newErrors = {};
 
-    // Name validation
     if (!formData.name.trim()) {
       newErrors.name = "Name is required";
     } else if (formData.name.trim().length < 2) {
@@ -32,7 +42,6 @@ const Signup = () => {
       newErrors.name = "Name cannot exceed 50 characters";
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
@@ -40,7 +49,6 @@ const Signup = () => {
       newErrors.email = "Please enter a valid email address";
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
@@ -49,7 +57,6 @@ const Signup = () => {
       newErrors.password = "Password cannot exceed 128 characters";
     }
 
-    // Confirm password validation
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
@@ -63,7 +70,6 @@ const Signup = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user types
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: null }));
     }
@@ -82,286 +88,236 @@ const Signup = () => {
       const result = await register(
         formData.name.trim(),
         formData.email.trim(),
-        formData.password,
+        formData.password
       );
 
       if (result.success) {
         showToast("Account created successfully! Please sign in.", "success");
-        // Clear form
         setFormData({
           name: "",
           email: "",
           password: "",
           confirmPassword: "",
         });
-        // Switch to login after a brief delay
         setTimeout(() => {
           navigate("/login");
-        }, 1500);
+        }, 1200);
       } else {
-        // Error is handled by AuthProvider, but show toast for visibility
-        showToast(result.error || "Registration failed", "error");
+        setErrors((prev) => ({
+          ...prev,
+          general: result.error || "Registration failed. Please try again.",
+        }));
       }
     } catch (error) {
-      showToast(
-        error.message || "An error occurred during registration",
-        "error",
-      );
+      setErrors((prev) => ({
+        ...prev,
+        general: error.message || "An unexpected error occurred during signup.",
+      }));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900">
-      <div className="relative backdrop-blur-xl bg-white/5 border border-emerald-500/30 p-10 rounded-2xl shadow-2xl shadow-emerald-500/10 w-full max-w-md mx-4">
-        {/* Glow effect */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl blur-xl opacity-20 -z-10"></div>
+    <div className="min-h-screen w-full bg-[#070b14] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
+      <div className="glow-ambient-indigo top-[-100px] left-1/2 -translate-x-1/2" />
+      <div className="glow-ambient-cyan bottom-[-100px] right-[-50px]" />
+      <div className="absolute inset-0 bg-grid-subtle pointer-events-none opacity-40" />
 
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-            Create Account
-          </h1>
-          <p className="text-gray-400 mt-2">Sign up to get started</p>
-        </div>
+      <div className="relative z-10 w-full max-w-md">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-xs font-medium text-zinc-400 hover:text-white transition-colors mb-6 group"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+          Back to Home
+        </Link>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          {/* Name Field */}
-          <div className="relative group">
-            <input
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              disabled={isSubmitting}
-              className={`w-full bg-white/5 text-white outline-none border ${
-                errors.name
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-gray-700 focus:border-emerald-500"
-              } py-4 px-5 rounded-xl placeholder:text-gray-500 transition-all duration-300 focus:shadow-lg focus:shadow-emerald-500/20 disabled:opacity-50`}
-              type="text"
-              placeholder="Full Name"
-              autoComplete="name"
-            />
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-400">{errors.name}</p>
-            )}
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
-          </div>
-
-          {/* Email Field */}
-          <div className="relative group">
-            <input
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              disabled={isSubmitting}
-              className={`w-full bg-white/5 text-white outline-none border ${
-                errors.email
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-gray-700 focus:border-emerald-500"
-              } py-4 px-5 rounded-xl placeholder:text-gray-500 transition-all duration-300 focus:shadow-lg focus:shadow-emerald-500/20 disabled:opacity-50`}
-              type="email"
-              placeholder="Email Address"
-              autoComplete="email"
-            />
-            {errors.email && (
-              <p className="mt-1 text-sm text-red-400">{errors.email}</p>
-            )}
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
-          </div>
-
-          {/* Password Field */}
-          <div className="relative group">
-            <div className="relative">
-              <input
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                disabled={isSubmitting}
-                className={`w-full bg-white/5 text-white outline-none border ${
-                  errors.password
-                    ? "border-red-500 focus:border-red-500"
-                    : "border-gray-700 focus:border-emerald-500"
-                } py-4 px-5 pr-12 rounded-xl placeholder:text-gray-500 transition-all duration-300 focus:shadow-lg focus:shadow-emerald-500/20 disabled:opacity-50`}
-                type={showPassword ? "text" : "password"}
-                placeholder="Password (min. 6 characters)"
-                autoComplete="new-password"
+        <div className="glass-panel p-8 sm:p-10 rounded-3xl border border-white/10 shadow-2xl shadow-black/60">
+          <div className="text-center mb-7">
+            <div className="inline-flex p-3 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 mb-4 shadow-lg shadow-indigo-500/25">
+              <img
+                src="/TeamFlow_logo.png"
+                alt="TeamFlow"
+                className="w-8 h-8 object-contain"
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.29 3.29m0 0L3 3m3.29 3.29L3 3"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    />
-                  </svg>
-                )}
-              </button>
             </div>
-            {errors.password && (
-              <p className="mt-1 text-sm text-red-400">{errors.password}</p>
-            )}
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
+            <h1 className="font-display font-bold text-2xl sm:text-3xl text-white tracking-tight">
+              Create an account
+            </h1>
+            <p className="text-zinc-400 text-xs sm:text-sm mt-1.5">
+              Join your organization on TeamFlow
+            </p>
           </div>
 
-          {/* Confirm Password Field */}
-          <div className="relative group">
-            <div className="relative">
-              <input
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                disabled={isSubmitting}
-                className={`w-full bg-white/5 text-white outline-none border ${
-                  errors.confirmPassword
-                    ? "border-red-500 focus:border-red-500"
-                    : "border-gray-700 focus:border-emerald-500"
-                } py-4 px-5 pr-12 rounded-xl placeholder:text-gray-500 transition-all duration-300 focus:shadow-lg focus:shadow-emerald-500/20 disabled:opacity-50`}
-                type={showConfirmPassword ? "text" : "password"}
-                placeholder="Confirm Password"
-                autoComplete="new-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
-                aria-label={
-                  showConfirmPassword ? "Hide password" : "Show password"
-                }
-              >
-                {showConfirmPassword ? (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.29 3.29m0 0L3 3m3.29 3.29L3 3"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    />
-                  </svg>
-                )}
-              </button>
+          {errors.general && (
+            <div className="mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs sm:text-sm flex items-start gap-2.5">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <div className="flex-1 leading-snug">{errors.general}</div>
             </div>
-            {errors.confirmPassword && (
-              <p className="mt-1 text-sm text-red-400">
-                {errors.confirmPassword}
-              </p>
-            )}
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-focus-within:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
-          </div>
+          )}
 
-          <button
-            className="relative mt-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold py-4 px-6 rounded-xl overflow-hidden group transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer"
-            type="submit"
-            disabled={isSubmitting}
-            aria-label={isSubmitting ? "Creating account..." : "Sign up"}
-            aria-busy={isSubmitting}
-          >
-            <span className="relative z-10 flex items-center justify-center gap-2">
-              {isSubmitting ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Creating account...
-                </>
-              ) : (
-                "Sign Up"
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Full Name */}
+            <div>
+              <label
+                htmlFor="signup-name"
+                className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5"
+              >
+                Full Name
+              </label>
+              <div className="relative">
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                <input
+                  id="signup-name"
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Sarah Jenkins"
+                  autoComplete="name"
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl glass-input text-sm ${
+                    errors.name ? "border-red-500/60 focus:ring-red-500/30" : ""
+                  }`}
+                />
+              </div>
+              {errors.name && (
+                <p className="text-red-400 text-xs mt-1 pl-1">{errors.name}</p>
               )}
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-          </button>
-        </form>
+            </div>
 
-        <p className="text-center text-gray-400 mt-8">
-          Already have an account?{" "}
-          <button
-            type="button"
-            onClick={() => navigate("/login")}
-            className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors duration-200 bg-transparent border-none cursor-pointer"
-          >
-            Sign in
-          </button>
-        </p>
+            {/* Email */}
+            <div>
+              <label
+                htmlFor="signup-email"
+                className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5"
+              >
+                Work Email
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                <input
+                  id="signup-email"
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="sarah@company.com"
+                  autoComplete="email"
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl glass-input text-sm ${
+                    errors.email ? "border-red-500/60 focus:ring-red-500/30" : ""
+                  }`}
+                />
+              </div>
+              {errors.email && (
+                <p className="text-red-400 text-xs mt-1 pl-1">{errors.email}</p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <label
+                htmlFor="signup-password"
+                className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                <input
+                  id="signup-password"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="•••••••• (Min 6 characters)"
+                  autoComplete="new-password"
+                  className={`w-full pl-10 pr-11 py-3 rounded-xl glass-input text-sm ${
+                    errors.password ? "border-red-500/60 focus:ring-red-500/30" : ""
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-zinc-200 cursor-pointer"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-red-400 text-xs mt-1 pl-1">{errors.password}</p>
+              )}
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label
+                htmlFor="signup-confirm-password"
+                className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5"
+              >
+                Confirm Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                <input
+                  id="signup-confirm-password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                  className={`w-full pl-10 pr-11 py-3 rounded-xl glass-input text-sm ${
+                    errors.confirmPassword ? "border-red-500/60 focus:ring-red-500/30" : ""
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-zinc-200 cursor-pointer"
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                >
+                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              {errors.confirmPassword && (
+                <p className="text-red-400 text-xs mt-1 pl-1">{errors.confirmPassword}</p>
+              )}
+            </div>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full btn-primary-gradient py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-indigo-600/30 mt-6"
+            >
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Creating account...
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  Complete Registration
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              )}
+            </button>
+          </form>
+
+          <div className="pt-6 mt-6 border-t border-white/10 text-center">
+            <p className="text-xs text-zinc-400">
+              Already registered?{" "}
+              <Link
+                to="/login"
+                className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+              >
+                Sign In
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
