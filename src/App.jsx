@@ -18,6 +18,7 @@ import { useAuth } from "./hooks/useAuth.js";
 import useToast from "./hooks/useToast.js";
 import logger from "./utils/logger.js";
 import RouteErrorBoundary from "./components/ErrorBoundary/RouteErrorBoundary.jsx";
+import AIAssistant from "./components/AI/AIAssistant.jsx";
 
 /**
  * Protected Route Component
@@ -119,93 +120,98 @@ const App = () => {
   });
 
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<LandingPage />} />
+    <>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
 
-      {/* Auth Routes - redirect to dashboard if already logged in */}
-      <Route
-        path="/login"
-        element={
-          <AuthRoute>
-            <RouteErrorBoundary fallbackMessage="An error occurred in the authentication section.">
-              <Login />
+        {/* Auth Routes - redirect to dashboard if already logged in */}
+        <Route
+          path="/login"
+          element={
+            <AuthRoute>
+              <RouteErrorBoundary fallbackMessage="An error occurred in the authentication section.">
+                <Login />
+              </RouteErrorBoundary>
+            </AuthRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <AuthRoute>
+              <RouteErrorBoundary fallbackMessage="An error occurred in the signup section.">
+                <Signup />
+              </RouteErrorBoundary>
+            </AuthRoute>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <AuthRoute>
+              <RouteErrorBoundary fallbackMessage="An error occurred in password recovery.">
+                <ForgotPassword />
+              </RouteErrorBoundary>
+            </AuthRoute>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <RouteErrorBoundary fallbackMessage="An error occurred in password reset.">
+              <ResetPassword />
             </RouteErrorBoundary>
-          </AuthRoute>
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          <AuthRoute>
-            <RouteErrorBoundary fallbackMessage="An error occurred in the signup section.">
-              <Signup />
-            </RouteErrorBoundary>
-          </AuthRoute>
-        }
-      />
-      <Route
-        path="/forgot-password"
-        element={
-          <AuthRoute>
-            <RouteErrorBoundary fallbackMessage="An error occurred in password recovery.">
-              <ForgotPassword />
-            </RouteErrorBoundary>
-          </AuthRoute>
-        }
-      />
-      <Route
-        path="/reset-password"
-        element={
-          <RouteErrorBoundary fallbackMessage="An error occurred in password reset.">
-            <ResetPassword />
-          </RouteErrorBoundary>
-        }
-      />
+          }
+        />
 
-      {/* Protected Routes */}
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute requiredRole="admin">
-            <RouteErrorBoundary
-              fallbackMessage="An error occurred in the admin dashboard."
-              showDetails={true}
-            >
-              <AdminDashboard />
-            </RouteErrorBoundary>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/employee"
-        element={
-          <ProtectedRoute requiredRole="employee">
-            <RouteErrorBoundary
-              fallbackMessage="An error occurred in the employee dashboard."
-              showDetails={true}
-            >
-              <EmployeeDashboard />
-            </RouteErrorBoundary>
-          </ProtectedRoute>
-        }
-      />
+        {/* Protected Routes */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <RouteErrorBoundary
+                fallbackMessage="An error occurred in the admin dashboard."
+                showDetails={true}
+              >
+                <AdminDashboard />
+              </RouteErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/employee"
+          element={
+            <ProtectedRoute requiredRole="employee">
+              <RouteErrorBoundary
+                fallbackMessage="An error occurred in the employee dashboard."
+                showDetails={true}
+              >
+                <EmployeeDashboard />
+              </RouteErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Company Registration */}
-      <Route
-        path="/register-company"
-        element={
-          <AuthRoute>
-            <RouteErrorBoundary fallbackMessage="An error occurred in company registration.">
-              <CompanyRegistration />
-            </RouteErrorBoundary>
-          </AuthRoute>
-        }
-      />
+        {/* Company Registration */}
+        <Route
+          path="/register-company"
+          element={
+            <AuthRoute>
+              <RouteErrorBoundary fallbackMessage="An error occurred in company registration.">
+                <CompanyRegistration />
+              </RouteErrorBoundary>
+            </AuthRoute>
+          }
+        />
 
-      {/* Fallback - redirect unknown routes to home */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Fallback - redirect unknown routes to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+
+      {/* Global Floating AI Workspace Assistant */}
+      <AIAssistant />
+    </>
   );
 };
 
