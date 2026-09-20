@@ -1,58 +1,20 @@
 import React, { useState } from "react";
+import {
+  Calendar,
+  CheckCircle2,
+  AlertCircle,
+  PlayCircle,
+  Sparkles,
+  Clock,
+  X,
+  Send,
+} from "lucide-react";
 
 /**
- * Get card styling based on task status
- */
-const getTaskStyle = (task) => {
-  if (task.completed) {
-    return {
-      bg: "bg-zinc-800/60",
-      border: "border-emerald-500/30",
-      badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-      badgeText: "Completed",
-      accent: "emerald",
-    };
-  }
-  if (task.failed) {
-    return {
-      bg: "bg-zinc-800/60",
-      border: "border-rose-500/30",
-      badge: "bg-rose-500/15 text-rose-400 border-rose-500/30",
-      badgeText: "Failed",
-      accent: "rose",
-    };
-  }
-  if (task.newTask) {
-    return {
-      bg: "bg-zinc-800/60",
-      border: "border-violet-500/30",
-      badge: "bg-violet-500/15 text-violet-400 border-violet-500/30",
-      badgeText: "New",
-      accent: "violet",
-    };
-  }
-  if (task.active) {
-    return {
-      bg: "bg-zinc-800/60",
-      border: "border-amber-500/30",
-      badge: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-      badgeText: "In Progress",
-      accent: "amber",
-    };
-  }
-  return {
-    bg: "bg-zinc-800/60",
-    border: "border-zinc-600/30",
-    badge: "bg-zinc-500/15 text-zinc-400 border-zinc-500/30",
-    badgeText: "Pending",
-    accent: "zinc",
-  };
-};
-
-/**
- * Format date for display
+ * Format date helper
  */
 const formatDate = (dateString) => {
+  if (!dateString) return "No due date";
   const date = new Date(dateString);
   return date.toLocaleDateString("en-US", {
     day: "numeric",
@@ -61,7 +23,7 @@ const formatDate = (dateString) => {
 };
 
 /**
- * Task Card Component - Clean, accessible design with actions
+ * Modern Task Card for Employee Workspace
  */
 const TaskCard = ({
   task,
@@ -70,7 +32,6 @@ const TaskCard = ({
   onCompleteTask,
   onFailTask,
 }) => {
-  const style = getTaskStyle(task);
   const [showFailModal, setShowFailModal] = useState(false);
   const [failReason, setFailReason] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -96,7 +57,7 @@ const TaskCard = ({
   const handleFail = async (e) => {
     e.stopPropagation();
     if (!failReason.trim()) {
-      alert("Please provide a reason");
+      alert("Please provide a brief reason for flagging this deliverable as blocked/failed.");
       return;
     }
     if (onFailTask) {
@@ -108,75 +69,94 @@ const TaskCard = ({
     }
   };
 
+  // Status Badge configurations
+  const getStatusBadge = () => {
+    if (task.completed) {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+          <CheckCircle2 className="w-3.5 h-3.5" />
+          Completed
+        </span>
+      );
+    }
+    if (task.failed) {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/30">
+          <AlertCircle className="w-3.5 h-3.5" />
+          Blocked
+        </span>
+      );
+    }
+    if (task.active) {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+          <PlayCircle className="w-3.5 h-3.5 animate-pulse" />
+          In Progress
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-violet-500/15 text-violet-400 border border-violet-500/30">
+        <Sparkles className="w-3.5 h-3.5" />
+        New Assignment
+      </span>
+    );
+  };
+
   return (
     <>
       <div
-        className={`
-          shrink-0 h-56 w-75 p-4 rounded-xl
-          ${style.bg} ${style.border}
-          border
-          hover:border-zinc-500/50
-          transition-all duration-300 ease-out
-          cursor-pointer group
-          relative overflow-hidden
-          animate-cardSlide
-        `}
-        style={{ animationDelay: `${index * 60}ms` }}
+        className="glass-card rounded-2xl p-5 border border-white/10 hover:border-indigo-500/40 transition-all duration-300 flex flex-col justify-between"
+        style={{ animationDelay: `${index * 40}ms` }}
         role="article"
-        aria-label={`Task: ${task.title}`}
       >
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <span
-            className={`
-              text-xs font-medium px-2.5 py-1 rounded-md
-              border ${style.badge}
-            `}
-          >
-            {style.badgeText}
-          </span>
-          <span className="text-xs text-zinc-500 font-medium">
-            {formatDate(task.date)}
-          </span>
+        <div>
+          {/* Card Header */}
+          <div className="flex items-center justify-between gap-2 mb-3">
+            {getStatusBadge()}
+            <div className="flex items-center gap-1 text-xs text-zinc-400 font-medium">
+              <Calendar className="w-3.5 h-3.5 text-zinc-500" />
+              <span>{formatDate(task.date)}</span>
+            </div>
+          </div>
+
+          {/* Category Tag */}
+          <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
+            {task.category || "General"}
+          </div>
+
+          {/* Task Title */}
+          <h3 className="font-display font-semibold text-white text-base leading-snug mb-2">
+            {task.title}
+          </h3>
+
+          {/* Task Description */}
+          <p className="text-xs text-zinc-300 leading-relaxed line-clamp-3 mb-5">
+            {task.description}
+          </p>
         </div>
 
-        {/* Category */}
-        <div className="mt-2">
-          <span className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
-            {task.category}
-          </span>
-        </div>
-
-        {/* Title */}
-        <h3 className="mt-1 text-base font-semibold text-white leading-snug line-clamp-2">
-          {task.title}
-        </h3>
-
-        {/* Description */}
-        <p className="text-sm mt-1.5 text-zinc-400 leading-relaxed line-clamp-2">
-          {task.description}
-        </p>
-
-        {/* Action Buttons */}
-        <div className="absolute bottom-3 left-4 right-4 flex gap-2">
+        {/* Card Action Footer */}
+        <div className="pt-4 border-t border-white/5 flex items-center justify-between gap-2">
           {task.newTask && (
             <button
               onClick={handleAccept}
               disabled={isLoading}
-              className="flex-1 bg-violet-600 hover:bg-violet-500 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-              aria-label="Accept this task"
+              className="w-full btn-primary-gradient py-2.5 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-indigo-600/25"
             >
-              {isLoading ? "..." : "Accept Task"}
+              <CheckCircle2 className="w-4 h-4" />
+              {isLoading ? "Accepting..." : "Accept Task"}
             </button>
           )}
+
           {task.active && (
-            <>
+            <div className="flex items-center gap-2 w-full">
               <button
                 onClick={handleComplete}
                 disabled={isLoading}
-                className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                aria-label="Mark task as completed"
+                className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-md shadow-emerald-600/20"
               >
+                <CheckCircle2 className="w-4 h-4" />
                 {isLoading ? "..." : "Complete"}
               </button>
               <button
@@ -185,70 +165,76 @@ const TaskCard = ({
                   setShowFailModal(true);
                 }}
                 disabled={isLoading}
-                className="bg-rose-600 hover:bg-rose-500 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                aria-label="Mark task as failed"
+                className="bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 py-2.5 px-3 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
               >
-                Fail
+                Report Blocked
               </button>
-            </>
+            </div>
           )}
+
           {(task.completed || task.failed) && (
-            <span className="text-xs text-zinc-500 py-2">
-              {task.completed ? "✓ Completed" : "✗ Failed"}
-            </span>
+            <div className="w-full text-center py-1.5 text-xs font-medium text-zinc-500">
+              {task.completed
+                ? "✓ Archived as Completed"
+                : "✗ Flagged with Blocker Note"}
+            </div>
           )}
         </div>
       </div>
 
-      {/* Fail Modal */}
+      {/* Blocked / Failure Reason Modal */}
       {showFailModal && (
         <div
-          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 cursor-pointer"
+          className="fixed inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center z-50 p-4"
           onClick={() => setShowFailModal(false)}
-          role="button"
-          tabIndex={0}
-          aria-label="Close fail modal"
-          onKeyDown={(e) => {
-            // Only close on Escape key, prevent Space/Enter from closing
-            if (e.key === "Escape") {
-              setShowFailModal(false);
-            }
-          }}
         >
           <div
-            className="bg-zinc-800 p-6 rounded-xl w-full max-w-md mx-4 border border-zinc-700"
+            className="glass-panel bg-[#0d1326] border border-white/15 rounded-3xl p-6 w-full max-w-md shadow-2xl animate-fadeIn"
             onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => {
-              // Prevent Space/Enter from bubbling up to backdrop
-              if (e.key === " " || e.key === "Enter") {
-                e.stopPropagation();
-              }
-            }}
           >
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Why did this task fail?
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400">
+                  <AlertCircle className="w-5 h-5" />
+                </div>
+                <h3 className="font-display font-bold text-base text-white">
+                  Report Task Blocker / Failure
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowFailModal(false)}
+                className="p-1 text-zinc-400 hover:text-white rounded-lg cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="text-xs text-zinc-400 mb-3">
+              Describe what is blocking this task so your administrator can assist.
+            </p>
+
             <textarea
               value={failReason}
               onChange={(e) => setFailReason(e.target.value)}
-              className="w-full bg-zinc-900 text-white border border-zinc-700 rounded-lg p-3 text-sm resize-none focus:outline-none focus:border-violet-500"
-              rows={3}
-              placeholder="Enter the reason..."
+              className="w-full glass-input rounded-xl p-3 text-xs leading-relaxed resize-none h-24"
+              placeholder="e.g. Awaiting API credentials from third-party payment vendor..."
               autoFocus
             />
+
             <div className="flex gap-3 mt-4">
               <button
                 onClick={() => setShowFailModal(false)}
-                className="flex-1 bg-zinc-700 hover:bg-zinc-600 text-white py-2 rounded-lg text-sm transition-colors"
+                className="flex-1 py-2.5 rounded-xl btn-secondary-ghost text-xs font-semibold cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleFail}
                 disabled={isLoading}
-                className="flex-1 bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-lg text-sm transition-colors disabled:opacity-50"
+                className="flex-1 bg-rose-600 hover:bg-rose-500 text-white py-2.5 rounded-xl text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5"
               >
-                {isLoading ? "Submitting..." : "Mark as Failed"}
+                <Send className="w-3.5 h-3.5" />
+                {isLoading ? "Submitting..." : "Submit Blocker"}
               </button>
             </div>
           </div>
@@ -259,122 +245,102 @@ const TaskCard = ({
 };
 
 /**
- * Empty State Component
- */
-const EmptyState = () => (
-  <div className="flex flex-col items-center justify-center py-12 px-8 text-center">
-    <div className="w-14 h-14 rounded-xl bg-zinc-800 flex items-center justify-center mb-3">
-      <svg
-        className="w-7 h-7 text-zinc-500"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={1.5}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-        />
-      </svg>
-    </div>
-    <h3 className="text-lg font-medium text-white mb-1">No Tasks Yet</h3>
-    <p className="text-sm text-zinc-500 max-w-xs">
-      Tasks will appear here once assigned by your admin.
-    </p>
-  </div>
-);
-
-/**
- * Task List Component
- * Displays employee tasks in a horizontal scrollable list
+ * Main Task List Component
  */
 const TaskList = ({ data, onAcceptTask, onCompleteTask, onFailTask }) => {
+  const [filter, setFilter] = useState("all");
   const tasks = data?.tasks || [];
 
+  const filteredTasks = tasks.filter((t) => {
+    if (filter === "all") return true;
+    if (filter === "new") return t.newTask;
+    if (filter === "active") return t.active;
+    if (filter === "completed") return t.completed;
+    if (filter === "failed") return t.failed;
+    return true;
+  });
+
+  const filterCounts = {
+    all: tasks.length,
+    new: tasks.filter((t) => t.newTask).length,
+    active: tasks.filter((t) => t.active).length,
+    completed: tasks.filter((t) => t.completed).length,
+    failed: tasks.filter((t) => t.failed).length,
+  };
+
   return (
-    <div className="mt-8">
-      {/* Section Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <h2 className="text-lg font-semibold text-white">My Tasks</h2>
-          <span className="text-xs text-zinc-500 bg-zinc-800 px-2 py-0.5 rounded-md">
-            {tasks.length}
-          </span>
+    <div className="mt-8 space-y-5">
+      {/* Section Header with Status Filters */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="font-display font-bold text-xl text-white">
+            Assigned Deliverables
+          </h2>
+          <p className="text-xs text-zinc-400 mt-0.5">
+            Manage your personal task queue and update progress
+          </p>
         </div>
 
-        {tasks.length > 3 && (
-          <span className="text-xs text-zinc-500 flex items-center gap-1">
-            Scroll for more
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </span>
-        )}
+        {/* Filter Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+          {[
+            { key: "all", label: "All Tasks" },
+            { key: "new", label: "New" },
+            { key: "active", label: "In Progress" },
+            { key: "completed", label: "Completed" },
+            { key: "failed", label: "Blocked" },
+          ].map((f) => {
+            const isSelected = filter === f.key;
+            return (
+              <button
+                key={f.key}
+                type="button"
+                onClick={() => setFilter(f.key)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                  isSelected
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30 border border-indigo-500"
+                    : "bg-white/5 text-zinc-400 hover:text-white border border-white/5"
+                }`}
+              >
+                {f.label}{" "}
+                <span className="ml-1 opacity-70 font-mono text-[10px]">
+                  ({filterCounts[f.key]})
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Task Cards */}
-      {tasks.length > 0 ? (
-        <div
-          className="
-            py-2 -mx-2 px-2
-            flex gap-4 overflow-x-auto
-            scroll-smooth snap-x snap-mandatory
-            scrollbar-none
-          "
-        >
-          {tasks.map((task, index) => (
-            <div key={task._id || index} className="snap-start">
-              <TaskCard
-                task={task}
-                index={index}
-                onAcceptTask={onAcceptTask}
-                onCompleteTask={onCompleteTask}
-                onFailTask={onFailTask}
-              />
-            </div>
+      {/* Grid of Task Cards */}
+      {filteredTasks.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredTasks.map((task, index) => (
+            <TaskCard
+              key={task._id || index}
+              task={task}
+              index={index}
+              onAcceptTask={onAcceptTask}
+              onCompleteTask={onCompleteTask}
+              onFailTask={onFailTask}
+            />
           ))}
         </div>
       ) : (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-800/30">
-          <EmptyState />
+        <div className="glass-panel p-12 rounded-2xl border border-white/10 text-center">
+          <div className="w-12 h-12 mx-auto mb-3 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-zinc-500">
+            <CheckCircle2 className="w-6 h-6" />
+          </div>
+          <h3 className="font-display font-semibold text-white text-base mb-1">
+            No tasks found in this view
+          </h3>
+          <p className="text-xs text-zinc-400 max-w-sm mx-auto">
+            {filter === "all"
+              ? "Your administrator has not assigned any deliverables to your queue yet."
+              : `No tasks currently match the "${filter}" filter.`}
+          </p>
         </div>
       )}
-
-      <style>{`
-        /* Hide scrollbar */
-        .scrollbar-none::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-none {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        @keyframes cardSlide {
-          from {
-            opacity: 0;
-            transform: translateX(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        .animate-cardSlide {
-          animation: cardSlide 0.4s ease-out forwards;
-          opacity: 0;
-        }
-      `}</style>
     </div>
   );
 };

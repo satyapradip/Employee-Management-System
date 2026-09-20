@@ -6,9 +6,19 @@ import api from "../../services/api.js";
 import { useAuth } from "../../hooks/useAuth";
 import useToast from "../../hooks/useToast.js";
 import logger from "../../utils/logger.js";
+import {
+  Sparkles,
+  Calendar,
+  ArrowRight,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  PlayCircle,
+  TrendingUp,
+} from "lucide-react";
 
 /**
- * Welcome Banner Component - Compact version with better contrast
+ * Modernized Welcome Banner Component
  */
 const WelcomeBanner = ({ name }) => {
   const greeting = useMemo(() => {
@@ -18,36 +28,43 @@ const WelcomeBanner = ({ name }) => {
     return "Good Evening";
   }, []);
 
-  return (
-    <div id="employeedashboard" className="mb-6 animate-slideDown">
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-zinc-800 to-zinc-800/80 p-5 border border-zinc-700/50">
-        {/* Subtle accent line */}
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-500" />
+  const formattedDate = useMemo(() => {
+    return new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "short",
+      day: "numeric",
+    });
+  }, []);
 
-        <div className="relative z-10 flex items-center justify-between">
+  return (
+    <div className="mb-6 animate-fadeIn">
+      <div className="relative overflow-hidden glass-panel rounded-2xl border border-white/10 p-6 shadow-2xl">
+        {/* Subtle accent bar */}
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400" />
+
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <p className="text-zinc-400 text-sm font-medium mb-0.5 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               {greeting}
-            </p>
-            <h1 className="text-2xl font-semibold text-white">
+            </div>
+            <h1 className="font-display font-bold text-2xl sm:text-3xl text-white tracking-tight">
               Welcome back,{" "}
-              <span className="text-violet-400">{name || "Employee"}</span>
+              <span className="text-gradient-accent">{name || "Employee"}</span>
             </h1>
+            <p className="text-xs sm:text-sm text-zinc-400 mt-1">
+              Here is your personal deliverable queue and sprint velocity.
+            </p>
           </div>
 
-          {/* Compact Date Widget */}
-          <div className="hidden md:flex items-center gap-3 text-zinc-400">
+          <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2.5 rounded-xl self-start sm:self-auto">
+            <Calendar className="w-4 h-4 text-indigo-400" />
             <div className="text-right">
-              <span className="block text-xs uppercase tracking-wider text-zinc-500">
+              <span className="block text-[10px] uppercase font-bold text-zinc-500 tracking-wider">
                 Today
               </span>
-              <span className="block text-lg font-semibold text-white">
-                {new Date().toLocaleDateString("en-US", {
-                  weekday: "short",
-                  month: "short",
-                  day: "numeric",
-                })}
+              <span className="block text-xs font-semibold text-white">
+                {formattedDate}
               </span>
             </div>
           </div>
@@ -58,9 +75,9 @@ const WelcomeBanner = ({ name }) => {
 };
 
 /**
- * Next Best Action Component - Guides user workflow
+ * Next Best Action Component - Focuses Employee on Most Immediate Deliverable
  */
-const NextBestAction = ({ data }) => {
+const NextBestAction = ({ data, onAcceptTask }) => {
   const getNextAction = useMemo(() => {
     const tasks = data?.tasks || [];
     const newTasks = tasks.filter((t) => t.newTask);
@@ -68,147 +85,118 @@ const NextBestAction = ({ data }) => {
 
     if (newTasks.length > 0) {
       return {
-        title: "Review New Task",
-        description: `You have ${newTasks.length} new task${newTasks.length > 1 ? "s" : ""} waiting for your attention`,
-        action: "Accept Task",
-        icon: (
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-        ),
-        accentColor: "violet",
+        title: "Review & Accept Priority Task",
+        description: `You have ${newTasks.length} new task${
+          newTasks.length > 1 ? "s" : ""
+        } awaiting acceptance in your queue.`,
+        actionLabel: "Accept First Task",
+        taskId: newTasks[0]?._id,
+        icon: Sparkles,
+        color: "violet",
         taskTitle: newTasks[0]?.title,
       };
     }
+
     if (activeTasks.length > 0) {
       return {
-        title: "Continue Working",
-        description: `You have ${activeTasks.length} task${activeTasks.length > 1 ? "s" : ""} in progress`,
-        action: "View Task",
-        icon: (
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-        ),
-        accentColor: "amber",
+        title: "Focus on Active Execution",
+        description: `You have ${activeTasks.length} task${
+          activeTasks.length > 1 ? "s" : ""
+        } currently in flight.`,
+        actionLabel: null,
+        taskId: null,
+        icon: Clock,
+        color: "amber",
         taskTitle: activeTasks[0]?.title,
       };
     }
+
     return {
-      title: "All Caught Up!",
-      description: "No pending tasks. Enjoy your productivity streak!",
-      action: null,
-      icon: (
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-      ),
-      accentColor: "emerald",
+      title: "Queue Clear — All Tasks Delivered!",
+      description: "No pending tasks require immediate action. Outstanding execution!",
+      actionLabel: null,
+      taskId: null,
+      icon: CheckCircle2,
+      color: "emerald",
       taskTitle: null,
     };
   }, [data?.tasks]);
 
-  const colorMap = {
+  const colorStyles = {
     violet: {
-      bg: "bg-violet-500/10",
-      border: "border-violet-500/20",
-      text: "text-violet-400",
-      btn: "bg-violet-600 hover:bg-violet-500",
+      bg: "bg-indigo-950/40",
+      border: "border-indigo-500/30",
+      text: "text-indigo-400",
+      btn: "btn-primary-gradient",
     },
     amber: {
-      bg: "bg-amber-500/10",
-      border: "border-amber-500/20",
+      bg: "bg-amber-950/30",
+      border: "border-amber-500/30",
       text: "text-amber-400",
-      btn: "bg-amber-600 hover:bg-amber-500",
+      btn: "bg-amber-600 hover:bg-amber-500 text-white",
     },
     emerald: {
-      bg: "bg-emerald-500/10",
-      border: "border-emerald-500/20",
+      bg: "bg-emerald-950/30",
+      border: "border-emerald-500/30",
       text: "text-emerald-400",
-      btn: "bg-emerald-600 hover:bg-emerald-500",
+      btn: "bg-emerald-600 hover:bg-emerald-500 text-white",
     },
   };
-  const colors = colorMap[getNextAction.accentColor];
+
+  const style = colorStyles[getNextAction.color] || colorStyles.violet;
+  const Icon = getNextAction.icon;
 
   return (
-    <div className="mb-6 animate-fadeIn" style={{ animationDelay: "100ms" }}>
+    <div className="mb-6 animate-fadeIn">
       <div
-        className={`relative overflow-hidden rounded-xl ${colors.bg} border ${colors.border} p-4`}
+        className={`glass-panel rounded-2xl border ${style.border} ${style.bg} p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4`}
       >
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div
-              className={`w-10 h-10 rounded-lg ${colors.bg} border ${colors.border} flex items-center justify-center ${colors.text}`}
-            >
-              {getNextAction.icon}
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
-                  Next Action
-                </span>
-              </div>
-              <h3 className="text-white font-medium">{getNextAction.title}</h3>
-              <p className="text-sm text-zinc-400">
-                {getNextAction.taskTitle ? (
-                  <span className={colors.text}>
-                    "{getNextAction.taskTitle}"
-                  </span>
-                ) : (
-                  getNextAction.description
-                )}
-              </p>
-            </div>
+        <div className="flex items-center gap-4">
+          <div
+            className={`w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 ${style.text}`}
+          >
+            <Icon className="w-5 h-5" />
           </div>
-          {getNextAction.action && (
-            <button
-              className={`${colors.btn} text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors shrink-0`}
-            >
-              {getNextAction.action}
-            </button>
-          )}
+          <div>
+            <span className="text-[10px] font-bold tracking-wider uppercase text-zinc-500">
+              Recommended Next Action
+            </span>
+            <h3 className="font-display font-bold text-white text-base">
+              {getNextAction.title}
+            </h3>
+            <p className="text-xs text-zinc-300 mt-0.5">
+              {getNextAction.taskTitle ? (
+                <>
+                  Focus:{" "}
+                  <span className={`${style.text} font-semibold`}>
+                    &quot;{getNextAction.taskTitle}&quot;
+                  </span>
+                </>
+              ) : (
+                getNextAction.description
+              )}
+            </p>
+          </div>
         </div>
+
+        {getNextAction.actionLabel && getNextAction.taskId && (
+          <button
+            onClick={() => onAcceptTask(getNextAction.taskId)}
+            className={`${style.btn} px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer shrink-0 shadow-lg`}
+          >
+            <CheckCircle2 className="w-4 h-4" />
+            {getNextAction.actionLabel}
+          </button>
+        )}
       </div>
     </div>
   );
 };
 
 /**
- * Employee Dashboard Component
- * Uses AuthContext for user data and logout
+ * Main Employee Dashboard Component
  */
 const EmployeeDashboard = () => {
-  // Get user and logout from AuthContext
   const { user, logout } = useAuth();
   const showToast = useToast();
 
@@ -228,7 +216,6 @@ const EmployeeDashboard = () => {
         setIsLoading(true);
         const response = await api.tasks.getAll();
         if (response.success) {
-          // Transform API tasks to match frontend format
           const transformedTasks = response.data.tasks.map((task) => ({
             ...task,
             newTask: task.status === "new",
@@ -242,100 +229,83 @@ const EmployeeDashboard = () => {
         }
       } catch (err) {
         logger.error("Failed to fetch tasks:", err);
-        // Show error toast only on initial load failure
         showToast("Failed to load tasks", "error");
       } finally {
         setIsLoading(false);
       }
     };
     fetchTasks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [showToast]);
 
-  // Handle task actions
   const handleAcceptTask = async (taskId) => {
     try {
-      logger.info("Accepting task:", taskId);
       const response = await api.tasks.accept(taskId);
       if (response.success) {
-        // Update local state
         setTasks((prev) =>
           prev.map((t) =>
             t._id === taskId
               ? { ...t, status: "active", active: true, newTask: false }
-              : t,
-          ),
+              : t
+          )
         );
         setStats((prev) => ({
           ...prev,
           new: Math.max(0, prev.new - 1),
           active: prev.active + 1,
         }));
-        showToast("✓ Task accepted successfully!", "success");
-        logger.info("Task accepted:", taskId);
+        showToast("Task accepted! Moved to In Progress.", "success");
       }
     } catch (err) {
-      const errorMsg = err.message || "Failed to accept task";
-      logger.error("Accept task error:", err);
-      showToast(errorMsg, "error");
+      showToast(err.message || "Failed to accept task", "error");
     }
   };
 
   const handleCompleteTask = async (taskId) => {
     try {
-      logger.info("Completing task:", taskId);
       const response = await api.tasks.complete(taskId);
       if (response.success) {
         setTasks((prev) =>
           prev.map((t) =>
             t._id === taskId
               ? { ...t, status: "completed", completed: true, active: false }
-              : t,
-          ),
+              : t
+          )
         );
         setStats((prev) => ({
           ...prev,
           active: Math.max(0, prev.active - 1),
           completed: prev.completed + 1,
         }));
-        showToast("✓ Task completed successfully!", "success");
-        logger.info("Task completed:", taskId);
+        showToast("Deliverable completed successfully!", "success");
       }
     } catch (err) {
-      const errorMsg = err.message || "Failed to complete task";
-      logger.error("Complete task error:", err);
-      showToast(errorMsg, "error");
+      showToast(err.message || "Failed to complete task", "error");
     }
   };
 
   const handleFailTask = async (taskId, reason) => {
     try {
-      logger.info("Marking task as failed:", taskId, "Reason:", reason);
       const response = await api.tasks.fail(taskId, reason);
       if (response.success) {
         setTasks((prev) =>
           prev.map((t) =>
             t._id === taskId
               ? { ...t, status: "failed", failed: true, active: false }
-              : t,
-          ),
+              : t
+          )
         );
         setStats((prev) => ({
           ...prev,
           active: Math.max(0, prev.active - 1),
           failed: prev.failed + 1,
         }));
-        showToast("⚠ Task marked as failed", "warning");
-        logger.info("Task marked as failed:", taskId);
+        showToast("Task flagged with blocker notification.", "warning");
       }
     } catch (err) {
-      const errorMsg = err.message || "Failed to mark task as failed";
-      logger.error("Fail task error:", err);
-      showToast(errorMsg, "error");
+      showToast(err.message || "Failed to report task failure", "error");
     }
   };
 
-  // Create taskData object for child components
   const taskData = {
     tasks,
     stats,
@@ -344,72 +314,38 @@ const EmployeeDashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
-          <div className="text-white">Loading tasks...</div>
+      <div className="min-h-screen bg-[#070b14] flex items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="w-10 h-10 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-white text-sm font-medium">Loading workspace deliverables...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-900 overflow-hidden">
-      {/* Subtle background gradient */}
-      <div className="fixed inset-0 bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800" />
+    <div className="min-h-screen bg-[#070b14] text-slate-100 p-4 sm:p-6 md:p-8 lg:p-10 relative overflow-x-hidden">
+      {/* Ambient background glows */}
+      <div className="glow-ambient-indigo top-[-100px] left-1/4 pointer-events-none" />
+      <div className="glow-ambient-cyan bottom-[-50px] right-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-grid-subtle pointer-events-none opacity-40" />
 
-      {/* Main content wrapper - removes right scrollbar */}
-      <div className="relative z-10 h-screen overflow-y-auto overflow-x-hidden scrollbar-none">
-        <div className="p-6 md:p-8 lg:px-12 text-white max-w-7xl mx-auto">
-          <Header userName={user?.name || user?.email} onLogout={logout} />
+      <div className="relative z-10 max-w-7xl mx-auto space-y-6">
+        <Header userName={user?.name || user?.email} onLogout={logout} />
 
-          <WelcomeBanner name={user?.name} />
+        <WelcomeBanner name={user?.name} />
 
-          <NextBestAction data={taskData} onAcceptTask={handleAcceptTask} />
+        <NextBestAction data={taskData} onAcceptTask={handleAcceptTask} />
 
-          <TaskListNumber data={taskData} />
+        <TaskListNumber data={taskData} />
 
-          <TaskList
-            data={taskData}
-            onAcceptTask={handleAcceptTask}
-            onCompleteTask={handleCompleteTask}
-            onFailTask={handleFailTask}
-          />
-        </div>
+        <TaskList
+          data={taskData}
+          onAcceptTask={handleAcceptTask}
+          onCompleteTask={handleCompleteTask}
+          onFailTask={handleFailTask}
+        />
       </div>
-
-      <style>{`
-        /* Hide scrollbar for Chrome, Safari and Opera */
-        .scrollbar-none::-webkit-scrollbar {
-          display: none;
-        }
-        /* Hide scrollbar for IE, Edge and Firefox */
-        .scrollbar-none {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-slideDown {
-          animation: slideDown 0.4s ease-out forwards;
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.4s ease-out forwards;
-          opacity: 0;
-        }
-      `}</style>
     </div>
   );
 };
