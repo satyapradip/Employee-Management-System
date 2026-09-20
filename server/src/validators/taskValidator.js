@@ -25,6 +25,8 @@ export const createTaskValidation = [
       "Backend",
       "Database",
       "DevOps",
+      "Security",
+      "Design",
       "Testing",
       "Bug Fix",
       "Feature",
@@ -34,6 +36,7 @@ export const createTaskValidation = [
     .withMessage("Invalid category"),
   body("priority")
     .optional()
+    .toLowerCase()
     .isIn(["low", "medium", "high", "urgent"])
     .withMessage("Invalid priority"),
   body("assignedTo")
@@ -66,6 +69,8 @@ export const updateTaskValidation = [
       "Backend",
       "Database",
       "DevOps",
+      "Security",
+      "Design",
       "Testing",
       "Bug Fix",
       "Feature",
@@ -75,6 +80,7 @@ export const updateTaskValidation = [
     .withMessage("Invalid category"),
   body("priority")
     .optional()
+    .toLowerCase()
     .isIn(["low", "medium", "high", "urgent"])
     .withMessage("Invalid priority"),
   body("assignedTo").optional().isMongoId().withMessage("Invalid employee ID"),

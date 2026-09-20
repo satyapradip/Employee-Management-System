@@ -21,6 +21,8 @@ const taskSchema = new mongoose.Schema(
         "Backend",
         "Database",
         "DevOps",
+        "Security",
+        "Design",
         "Testing",
         "Bug Fix",
         "Feature",
