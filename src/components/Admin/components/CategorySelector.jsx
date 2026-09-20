@@ -1,33 +1,35 @@
 import React from "react";
-import { Icons } from "./Icons.jsx";
+import { Tag } from "lucide-react";
 import { CATEGORIES } from "../../../constants/taskConstants";
 
 /**
- * Category Selector Component
- * Grid of category buttons for task creation
+ * Modern Category Selector Component
  */
 const CategorySelector = ({ selected, onSelect }) => {
   return (
     <div>
-      <label className="flex items-center gap-2 text-sm font-medium text-zinc-300 mb-3">
-        <Icons.Tag className="h-4 w-4" />
+      <label className="flex items-center gap-2 text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-2.5">
+        <Tag className="w-3.5 h-3.5 text-indigo-400" />
         Category
       </label>
-      <div className="grid grid-cols-4 gap-2">
-        {CATEGORIES.map((category) => (
-          <button
-            key={category}
-            type="button"
-            onClick={() => onSelect(category)}
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-              selected === category
-                ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/50"
-                : "bg-zinc-800/50 text-zinc-400 border border-zinc-700 hover:border-zinc-600"
-            }`}
-          >
-            {category}
-          </button>
-        ))}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {CATEGORIES.map((category) => {
+          const isSelected = selected === category;
+          return (
+            <button
+              key={category}
+              type="button"
+              onClick={() => onSelect(category)}
+              className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                isSelected
+                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30 border border-indigo-500"
+                  : "bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10 border border-white/5"
+              }`}
+            >
+              {category}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

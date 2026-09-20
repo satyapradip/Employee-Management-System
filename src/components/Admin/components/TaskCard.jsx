@@ -2,23 +2,33 @@ import React, { useState } from "react";
 import { Icons } from "./Icons.jsx";
 import { getStatusIconName } from "../utils/iconHelpers";
 import {
-  getStatusColor,
   getPriorityColor,
   formatDate,
   getInitials,
   formatStatus,
 } from "../utils/taskHelpers";
+import { Calendar, Trash2, ChevronDown, ChevronUp, User } from "lucide-react";
 
 /**
- * Status Badge Component
+ * Modern Status Badge Component
  */
 const StatusBadge = ({ status }) => {
   const iconName = getStatusIconName(status);
   const IconComponent = iconName ? Icons[iconName] : null;
 
+  const badgeStyles = {
+    new: "bg-violet-500/15 text-violet-300 border-violet-500/30",
+    "in-progress": "bg-amber-500/15 text-amber-300 border-amber-500/30",
+    active: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+    completed: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+    failed: "bg-rose-500/15 text-rose-300 border-rose-500/30",
+  };
+
+  const style = badgeStyles[status] || "bg-zinc-700/20 text-zinc-300 border-zinc-600/30";
+
   return (
     <span
-      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(status)}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${style}`}
     >
       {IconComponent && <IconComponent className="h-3.5 w-3.5" />}
       {formatStatus(status)}
@@ -31,10 +41,12 @@ const StatusBadge = ({ status }) => {
  */
 const AssigneeInfo = ({ name }) => (
   <div className="flex items-center gap-2">
-    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-xs font-bold text-white">
+    <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
       {getInitials(name)}
     </div>
-    <span className="text-zinc-400 text-sm">{name}</span>
+    <span className="text-zinc-300 text-xs font-medium truncate max-w-[120px]">
+      {name || "Unassigned"}
+    </span>
   </div>
 );
 
@@ -42,110 +54,119 @@ const AssigneeInfo = ({ name }) => (
  * Due Date Component
  */
 const DueDate = ({ date }) => (
-  <div className="flex items-center gap-1.5 text-zinc-500 text-sm">
-    <Icons.Calendar className="h-4 w-4" />
-    {formatDate(date)}
+  <div className="flex items-center gap-1.5 text-zinc-400 text-xs font-medium">
+    <Calendar className="w-3.5 h-3.5 text-zinc-500" />
+    <span>{formatDate(date)}</span>
   </div>
 );
 
 /**
  * Task Card Component
- * Displays individual task information in a card format
- * With edit and delete functionality
  */
 const TaskCard = ({ task, index, onDelete }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div
-      className="group bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-5 hover:border-zinc-600 hover:bg-zinc-800/80 transition-all duration-300 hover:shadow-xl hover:shadow-black/20 hover:scale-[1.01] animate-cardFadeIn"
-      style={{ animationDelay: `${index * 50}ms` }}
+      className="group glass-card rounded-2xl p-5 border border-white/10 hover:border-indigo-500/40 transition-all duration-300 flex flex-col justify-between"
+      style={{ animationDelay: `${index * 40}ms` }}
     >
-      {/* Card Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <div
-            className={`w-2 h-2 rounded-full ${getPriorityColor(task.priority)}`}
-          />
-          <span className="text-xs text-zinc-500 uppercase tracking-wide">
-            {task.category}
-          </span>
+      <div>
+        {/* Card Header: Category & Priority + Status Badge */}
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="flex items-center gap-2">
+            <span
+              className={`w-2 h-2 rounded-full ${getPriorityColor(
+                task.priority
+              )} shadow-sm`}
+            />
+            <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
+              {task.category || "General"}
+            </span>
+            <span className="text-[10px] text-zinc-500">·</span>
+            <span className="text-[11px] font-medium text-zinc-400 capitalize">
+              {task.priority} Priority
+            </span>
+          </div>
+          <StatusBadge status={task.status} />
         </div>
-        <StatusBadge status={task.status} />
+
+        {/* Task Title */}
+        <h3 className="text-white font-display font-semibold text-base mb-1.5 group-hover:text-indigo-300 transition-colors leading-snug">
+          {task.title}
+        </h3>
+
+        {/* Task Description */}
+        <p className="text-zinc-400 text-xs leading-relaxed mb-4 line-clamp-2">
+          {task.description}
+        </p>
       </div>
 
-      {/* Task Title */}
-      <h3 className="text-white font-semibold text-lg mb-2 group-hover:text-blue-400 transition-colors">
-        {task.title}
-      </h3>
+      {/* Card Footer: Assignee & Date */}
+      <div>
+        <div className="flex items-center justify-between pt-3 border-t border-white/5">
+          <AssigneeInfo name={task.assignedTo} />
+          <DueDate date={task.date} />
+        </div>
 
-      {/* Task Description */}
-      <p className="text-zinc-400 text-sm mb-4 line-clamp-2">
-        {task.description}
-      </p>
+        {/* Hover / Expand Actions */}
+        <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-white/5">
+          <button
+            type="button"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="flex items-center gap-1 text-xs font-semibold text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            aria-expanded={isExpanded}
+          >
+            {isExpanded ? (
+              <>
+                <ChevronUp className="w-3.5 h-3.5" />
+                Hide Details
+              </>
+            ) : (
+              <>
+                <ChevronDown className="w-3.5 h-3.5" />
+                View Details
+              </>
+            )}
+          </button>
 
-      {/* Card Footer */}
-      <div className="flex items-center justify-between pt-3 border-t border-zinc-700/50">
-        <AssigneeInfo name={task.assignedTo} />
-        <DueDate date={task.date} />
-      </div>
+          <button
+            type="button"
+            onClick={onDelete}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-rose-400 hover:bg-rose-500/15 hover:text-rose-300 transition-colors text-xs font-semibold cursor-pointer"
+            aria-label="Delete this task"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            Delete
+          </button>
+        </div>
 
-      {/* Hover Actions */}
-      <div className="flex items-center gap-2 mt-4 pt-3 border-t border-zinc-700/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <button
-          type="button"
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-700/50 text-zinc-300 hover:bg-zinc-700 transition-colors text-sm cursor-pointer"
-          aria-label={isExpanded ? "Hide task details" : "Show task details"}
-          aria-expanded={isExpanded}
-        >
-          <Icons.Description className="h-3.5 w-3.5" aria-hidden="true" />
-          Details
-        </button>
-        <button
-          type="button"
-          onClick={onDelete}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors text-sm cursor-pointer"
-          aria-label="Delete this task"
-        >
-          <Icons.Trash className="h-3.5 w-3.5" aria-hidden="true" />
-          Delete
-        </button>
-      </div>
-
-      {/* Expanded Details */}
-      {isExpanded && (
-        <div className="mt-4 pt-4 border-t border-zinc-700/50 space-y-3 animate-fadeIn">
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div>
-              <span className="text-zinc-500">Priority:</span>
-              <span className="ml-2 text-white capitalize">
-                {task.priority}
-              </span>
+        {/* Expanded Details Section */}
+        {isExpanded && (
+          <div className="mt-3 p-3.5 rounded-xl bg-zinc-900/80 border border-white/5 space-y-2 text-xs animate-fadeIn">
+            <div className="grid grid-cols-2 gap-2 text-zinc-400">
+              <div>
+                <span className="text-zinc-500">Created:</span>{" "}
+                <span className="text-zinc-300 font-medium">
+                  {task.createdAt ? formatDate(task.createdAt) : "N/A"}
+                </span>
+              </div>
+              <div>
+                <span className="text-zinc-500">Target Date:</span>{" "}
+                <span className="text-zinc-300 font-medium">
+                  {formatDate(task.date)}
+                </span>
+              </div>
             </div>
             <div>
-              <span className="text-zinc-500">Status:</span>
-              <span className="ml-2 text-white">
-                {formatStatus(task.status)}
-              </span>
-            </div>
-            <div>
-              <span className="text-zinc-500">Created:</span>
-              <span className="ml-2 text-white">
-                {task.createdAt ? formatDate(task.createdAt) : "N/A"}
-              </span>
-            </div>
-            <div>
-              <span className="text-zinc-500">Due:</span>
-              <span className="ml-2 text-white">{formatDate(task.date)}</span>
+              <span className="text-zinc-500 block mb-1">Full Scope:</span>
+              <p className="text-zinc-300 leading-relaxed bg-black/20 p-2.5 rounded-lg">
+                {task.description}
+              </p>
             </div>
           </div>
-          <div>
-            <span className="text-zinc-500 text-sm">Description:</span>
-            <p className="mt-1 text-zinc-300 text-sm">{task.description}</p>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

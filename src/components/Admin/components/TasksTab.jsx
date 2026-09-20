@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import { Icons } from "./Icons.jsx";
 import SearchBar from "./SearchBar";
 import FilterPills from "./FilterPills";
 import TaskCard from "./TaskCard";
 import EmptyState from "./EmptyState";
 import DeleteConfirmModal from "./DeleteConfirmModal";
-import { TaskListSkeleton } from "./LoadingStates";
+import { ListTodo } from "lucide-react";
 
 /**
  * Tasks Tab Component
- * Displays all tasks with search, filter, and CRUD functionality
+ * Displays all assigned tasks with search, filter, and CRUD controls
  */
 const TasksTab = ({
   filteredTasks,
@@ -30,7 +29,6 @@ const TasksTab = ({
     taskTitle: "",
   });
 
-  // Handle delete click
   const handleDeleteClick = (task) => {
     setDeleteModal({
       isOpen: true,
@@ -39,7 +37,6 @@ const TasksTab = ({
     });
   };
 
-  // Confirm delete
   const handleConfirmDelete = async () => {
     if (deleteModal.taskId) {
       await onDeleteTask(deleteModal.taskId);
@@ -47,24 +44,25 @@ const TasksTab = ({
     }
   };
 
-  // Close delete modal
   const handleCloseDeleteModal = () => {
     setDeleteModal({ isOpen: false, taskId: null, taskTitle: "" });
   };
 
   return (
     <>
-      {/* Header with Search & Filters */}
-      <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b border-zinc-800 p-6">
+      {/* Search and Filters Header */}
+      <div className="p-6 border-b border-white/10 bg-gradient-to-r from-indigo-950/20 to-transparent">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-              <Icons.Tasks className="h-5 w-5 text-white" />
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+              <ListTodo className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">All Tasks</h2>
-              <p className="text-zinc-400 text-sm">
-                Manage and track all assigned tasks
+              <h2 className="font-display font-bold text-lg text-white">
+                Task Registry
+              </h2>
+              <p className="text-zinc-400 text-xs">
+                Inspect, filter, and govern team deliverables
               </p>
             </div>
           </div>
@@ -72,7 +70,7 @@ const TasksTab = ({
         </div>
 
         {/* Filter Pills */}
-        <div className="mt-4">
+        <div className="mt-5">
           <FilterPills
             activeFilter={activeFilter}
             setActiveFilter={setActiveFilter}
@@ -81,8 +79,8 @@ const TasksTab = ({
         </div>
       </div>
 
-      {/* Task List */}
-      <div className="p-6 max-h-150 overflow-y-auto custom-scrollbar">
+      {/* Task Cards Grid */}
+      <div className="p-6 max-h-[640px] overflow-y-auto">
         {filteredTasks.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredTasks.map((task, index) => (
@@ -107,7 +105,7 @@ const TasksTab = ({
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
         title="Delete Task"
-        message={`Are you sure you want to delete "${deleteModal.taskTitle}"? This action cannot be undone.`}
+        message={`Are you sure you want to permanently remove "${deleteModal.taskTitle}"? This cannot be undone.`}
         isLoading={isSubmitting}
       />
     </>

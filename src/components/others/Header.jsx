@@ -1,11 +1,14 @@
 import React from "react";
+import { useAuth } from "../../hooks/useAuth";
+import { LogOut, Bell, Shield, User, Sparkles } from "lucide-react";
 
 /**
- * Header Component
- * Displays greeting and logout button for dashboard
+ * Modernized Dashboard Header Component
+ * Shared between Admin and Employee workspaces
  */
-const Header = ({ userName = "Admin", onLogout }) => {
-  // Get current hour for dynamic greeting
+const Header = ({ userName = "User", onLogout }) => {
+  const { user } = useAuth();
+
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good Morning";
@@ -13,85 +16,74 @@ const Header = ({ userName = "Admin", onLogout }) => {
     return "Good Evening";
   };
 
-  return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 rounded-2xl border border-zinc-700/50 p-6 shadow-2xl">
-      {/* Background Glow Effect */}
-      <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl" />
-      <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl" />
+  const initial = (userName?.charAt(0) || "U").toUpperCase();
+  const role = user?.role || "user";
+  const isAdmin = role === "admin";
 
-      <div className="relative flex items-center justify-between">
-        {/* Left Section - Greeting */}
+  return (
+    <div className="relative overflow-hidden glass-panel rounded-2xl border border-white/10 p-5 sm:p-6 shadow-2xl shadow-black/40 mb-8">
+      {/* Background Subtle Gradient Accents */}
+      <div className="absolute top-0 right-0 w-80 h-36 bg-gradient-to-l from-indigo-500/10 via-purple-500/5 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-1/3 w-64 h-24 bg-cyan-500/5 blur-2xl pointer-events-none" />
+
+      <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Left Section: Avatar + Greeting + Role Badge */}
         <div className="flex items-center gap-4">
-          {/* Avatar */}
-          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-emerald-500/25">
-            {userName.charAt(0).toUpperCase()}
+          <div
+            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center font-display font-bold text-white text-lg sm:text-xl shadow-lg ${
+              isAdmin
+                ? "bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 shadow-indigo-500/25"
+                : "bg-gradient-to-tr from-cyan-600 via-teal-500 to-emerald-500 shadow-cyan-500/25"
+            }`}
+          >
+            {initial}
           </div>
 
-          {/* Greeting Text */}
           <div>
-            <p className="text-zinc-400 text-sm font-medium">
-              {getGreeting()}{" "}
-              <span className="animate-wave inline-block">👋</span>
-            </p>
-            <h1 className="text-2xl md:text-3xl font-bold text-white mt-0.5">
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="text-xs text-zinc-400 font-medium">
+                {getGreeting()},
+              </span>
+              <span
+                className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+                  isAdmin
+                    ? "bg-indigo-500/15 text-indigo-300 border-indigo-500/30"
+                    : "bg-cyan-500/15 text-cyan-300 border-cyan-500/30"
+                }`}
+              >
+                {isAdmin ? <Shield className="w-3 h-3" /> : <User className="w-3 h-3" />}
+                {isAdmin ? "Admin Portal" : "Employee Portal"}
+              </span>
+            </div>
+
+            <h1 className="font-display font-bold text-xl sm:text-2xl text-white tracking-tight">
               {userName}
-              <span className="text-emerald-400">.</span>
             </h1>
           </div>
         </div>
 
-        {/* Right Section - Actions */}
-        <div className="flex items-center gap-3">
-          {/* Notification Bell */}
+        {/* Right Section: Actions */}
+        <div className="flex items-center gap-3 self-end sm:self-auto">
+          {/* Notification Button */}
           <button
             type="button"
-            className="relative p-3 rounded-xl bg-zinc-800/80 border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-600 transition-all duration-300 cursor-pointer"
+            className="relative p-2.5 rounded-xl bg-white/5 border border-white/10 text-zinc-300 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
             aria-label="View notifications"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-              />
-            </svg>
-            {/* Notification Badge */}
-            <span
-              className="absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full"
-              aria-label="You have new notifications"
-            />
+            <Bell className="w-4 h-4" />
+            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-400 animate-ping" />
+            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-500" />
           </button>
 
           {/* Logout Button */}
           <button
             type="button"
             onClick={onLogout}
-            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 transition-all duration-300 cursor-pointer"
-            aria-label="Log out of your account"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 text-xs sm:text-sm font-semibold transition-all cursor-pointer"
+            aria-label="Sign out"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
-            <span className="font-medium hidden sm:inline cursor-pointer">Logout</span>
+            <LogOut className="w-4 h-4" />
+            <span>Logout</span>
           </button>
         </div>
       </div>

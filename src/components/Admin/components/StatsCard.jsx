@@ -1,29 +1,54 @@
 import React from "react";
 
 /**
- * Stats Card Component
+ * Modern Stats Card Component
  */
-// eslint-disable-next-line no-unused-vars
-const StatsCard = ({ icon: Icon, label, value, color }) => {
-  const colorClasses = {
-    emerald: "from-emerald-400 to-emerald-600 shadow-emerald-500/20",
-    blue: "from-blue-400 to-blue-600 shadow-blue-500/20",
-    amber: "from-amber-400 to-amber-600 shadow-amber-500/20",
-    red: "from-red-400 to-red-600 shadow-red-500/20",
+const StatsCard = ({ icon, label, value, color }) => {
+  const colorSchemes = {
+    emerald: {
+      bg: "bg-emerald-500/10",
+      border: "border-emerald-500/20",
+      iconBg: "bg-emerald-500/20 text-emerald-400",
+      text: "text-emerald-400",
+    },
+    blue: {
+      bg: "bg-indigo-500/10",
+      border: "border-indigo-500/20",
+      iconBg: "bg-indigo-500/20 text-indigo-400",
+      text: "text-indigo-400",
+    },
+    amber: {
+      bg: "bg-amber-500/10",
+      border: "border-amber-500/20",
+      iconBg: "bg-amber-500/20 text-amber-400",
+      text: "text-amber-400",
+    },
+    red: {
+      bg: "bg-rose-500/10",
+      border: "border-rose-500/20",
+      iconBg: "bg-rose-500/20 text-rose-400",
+      text: "text-rose-400",
+    },
   };
 
+  const scheme = colorSchemes[color] || colorSchemes.blue;
+
   return (
-    <div className="bg-zinc-800/50 rounded-xl p-4 border border-zinc-700/50 hover:border-zinc-600 transition-all duration-300">
-      <div className="flex items-center gap-3">
+    <div
+      className={`glass-card rounded-2xl p-4 border ${scheme.border} transition-all duration-300 hover:scale-[1.02]`}
+    >
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+          {label}
+        </span>
         <div
-          className={`w-10 h-10 rounded-lg bg-gradient-to-br ${colorClasses[color]} flex items-center justify-center shadow-lg`}
+          className={`w-7 h-7 rounded-lg ${scheme.iconBg} flex items-center justify-center`}
         >
-          <Icon className="h-5 w-5 text-white" />
+          {icon && React.createElement(icon, { className: "h-4 w-4" })}
         </div>
-        <div>
-          <p className="text-2xl font-bold text-white">{value}</p>
-          <p className="text-xs text-zinc-400">{label}</p>
-        </div>
+      </div>
+      <div className="font-display text-2xl font-bold text-white">
+        {value ?? 0}
       </div>
     </div>
   );

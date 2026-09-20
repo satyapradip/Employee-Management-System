@@ -2,7 +2,7 @@ import React from "react";
 import { STATUSES } from "../../../constants/taskConstants";
 
 /**
- * Filter Pills Component
+ * Filter Pills Component with modern pill active states
  */
 const FilterPills = ({ activeFilter, setActiveFilter, stats }) => {
   const getFilterCount = (filter) => {
@@ -13,25 +13,29 @@ const FilterPills = ({ activeFilter, setActiveFilter, stats }) => {
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      {STATUSES.map((filter) => (
-        <button
-          key={filter}
-          type="button"
-          onClick={() => setActiveFilter(filter)}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer ${
-            activeFilter === filter
-              ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
-              : "bg-zinc-800/50 text-zinc-400 border border-zinc-700 hover:border-zinc-600"
-          }`}
-          aria-label={`Filter by ${filter} (${getFilterCount(filter)} tasks)`}
-          aria-pressed={activeFilter === filter}
-        >
-          {filter.charAt(0).toUpperCase() + filter.slice(1).replace("-", " ")}
-          <span className="ml-1.5 text-xs opacity-70">
-            ({getFilterCount(filter)})
-          </span>
-        </button>
-      ))}
+      {STATUSES.map((filter) => {
+        const isSelected = activeFilter === filter;
+        const count = getFilterCount(filter);
+        return (
+          <button
+            key={filter}
+            type="button"
+            onClick={() => setActiveFilter(filter)}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+              isSelected
+                ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30 border border-indigo-500"
+                : "bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10 border border-white/5"
+            }`}
+            aria-label={`Filter by ${filter} (${count} tasks)`}
+            aria-pressed={isSelected}
+          >
+            {filter.charAt(0).toUpperCase() + filter.slice(1).replace("-", " ")}
+            <span className="ml-1.5 opacity-80 font-mono text-[11px]">
+              ({count})
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 };

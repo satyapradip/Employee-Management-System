@@ -3,10 +3,10 @@ import { Icons } from "./Icons.jsx";
 import StatsCard from "./StatsCard";
 import RecentActivity from "./RecentActivity";
 import QuickActions from "./QuickActions";
+import { RotateCw, CheckCircle2, Clock, AlertCircle, PlayCircle } from "lucide-react";
 
 /**
- * Sidebar Component
- * Contains stats, recent activity, and quick actions
+ * Modernized Admin Sidebar Component
  */
 const Sidebar = ({
   stats,
@@ -16,54 +16,55 @@ const Sidebar = ({
   isLoading = false,
 }) => {
   return (
-    <div className="space-y-4">
-      {/* Refresh Button */}
-      <div className="flex justify-end">
+    <div className="space-y-5">
+      {/* Refresh Action Bar */}
+      <div className="flex items-center justify-between glass-panel px-4 py-3 rounded-2xl border border-white/10">
+        <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+          Live Telemetry
+        </span>
         <button
           onClick={onRefresh}
           disabled={isLoading}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-400 hover:text-white bg-zinc-800/50 hover:bg-zinc-800 rounded-lg transition-colors disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-all disabled:opacity-50 cursor-pointer"
         >
-          <Icons.Refresh
-            className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
-          />
-          {isLoading ? "Refreshing..." : "Refresh"}
+          <RotateCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-indigo-400" : ""}`} />
+          {isLoading ? "Syncing..." : "Sync"}
         </button>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-3">
         <StatsCard
-          icon={Icons.Check}
+          icon={CheckCircle2}
           label="Completed"
           value={stats.completed}
           color="emerald"
         />
         <StatsCard
-          icon={Icons.Refresh}
+          icon={PlayCircle}
           label="In Progress"
           value={stats.inProgress}
           color="blue"
         />
         <StatsCard
-          icon={Icons.Clock}
+          icon={Clock}
           label="Pending"
           value={stats.pending}
           color="amber"
         />
         <StatsCard
-          icon={Icons.X}
+          icon={AlertCircle}
           label="Failed"
           value={stats.failed}
           color="red"
         />
       </div>
 
+      {/* Quick Actions Component */}
+      <QuickActions onCreateTask={onCreateTask} onManageTeam={onManageTeam} />
+
       {/* Recent Activity */}
       <RecentActivity />
-
-      {/* Quick Actions */}
-      <QuickActions onCreateTask={onCreateTask} onManageTeam={onManageTeam} />
     </div>
   );
 };

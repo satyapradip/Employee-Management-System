@@ -1,8 +1,7 @@
 import React from "react";
 
 /**
- * Form Input Component
- * Reusable input with label and icon
+ * Modernized Form Input Component
  */
 const FormInput = ({
   label,
@@ -18,12 +17,12 @@ const FormInput = ({
   rows = 3,
 }) => {
   const baseInputClass =
-    "w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300";
+    "w-full px-4 py-2.5 glass-input rounded-xl text-sm placeholder:text-zinc-500 transition-all";
 
   return (
     <div>
-      <label className="flex items-center gap-2 text-sm font-medium text-zinc-300 mb-2">
-        {Icon && <Icon className="h-4 w-4" />}
+      <label className="flex items-center gap-2 text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-2">
+        {Icon && <Icon className="w-3.5 h-3.5 text-indigo-400" />}
         {label}
       </label>
 
@@ -43,11 +42,13 @@ const FormInput = ({
           value={value}
           onChange={onChange}
           required={required}
-          className={baseInputClass}
+          className={`${baseInputClass} cursor-pointer`}
         >
-          <option value="">{placeholder}</option>
+          <option value="" className="bg-[#090e1c] text-zinc-400">
+            {placeholder}
+          </option>
           {options.map((option) => (
-            <option key={option} value={option}>
+            <option key={option} value={option} className="bg-[#090e1c] text-white">
               {option}
             </option>
           ))}

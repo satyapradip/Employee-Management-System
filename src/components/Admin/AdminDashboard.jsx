@@ -17,17 +17,15 @@ import "./styles/animations.css";
 
 /**
  * Admin Dashboard Component
- * Main dashboard for admin users with task management
- * Connected to backend API for real-time data
- * Uses AuthContext for user data and logout
+ * Main command center for administrators
  */
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("tasks");
 
-  // Get user and logout from AuthContext
+  // AuthContext state
   const { user, logout } = useAuth();
 
-  // Use custom hooks for data management
+  // Task management hook
   const {
     filteredTasks,
     stats,
@@ -44,7 +42,7 @@ const AdminDashboard = () => {
     error,
   } = useTaskManager();
 
-  // Fetch employees for task assignment + CRUD
+  // Employee management hook
   const {
     employees,
     employeeOptions,
@@ -56,13 +54,10 @@ const AdminDashboard = () => {
     toggleActive,
   } = useEmployees();
 
-  // Fetch analytics data
-  const {
-    stats: analyticsStats,
-    isLoading: analyticsLoading,
-  } = useAnalytics();
+  // Analytics hook
+  const { stats: analyticsStats, isLoading: analyticsLoading } = useAnalytics();
 
-  // Handle task creation with employee ID
+  // Handle task creation
   const handleCreateTask = async (taskData) => {
     const result = await addTask(taskData);
     if (result?.success) {
@@ -71,112 +66,120 @@ const AdminDashboard = () => {
     return result;
   };
 
-  // Show loading state while initial data loads
+  // Initial loading state
   if (isLoading && !filteredTasks.length) {
     return (
-      <div className="min-h-screen w-full p-6 md:p-10 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
-        <Header userName={user?.name || "Admin"} onLogout={logout} />
-        <div className="mt-8">
-          <FullPageLoader message="Loading tasks..." />
+      <div className="min-h-screen w-full p-4 sm:p-6 md:p-10 bg-[#070b14] text-slate-100 flex flex-col justify-center items-center">
+        <div className="w-full max-w-7xl">
+          <Header userName={user?.name || "Admin"} onLogout={logout} />
+          <div className="mt-8">
+            <FullPageLoader message="Loading tasks and workspace telemetry..." />
+          </div>
         </div>
       </div>
     );
   }
 
-  // Show error state if fetch failed
+  // Initial error state
   if (error && !filteredTasks.length) {
     return (
-      <div className="min-h-screen w-full p-6 md:p-10 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
-        <Header userName={user?.name || "Admin"} onLogout={logout} />
-        <div className="mt-8 bg-zinc-900/80 backdrop-blur-xl rounded-2xl border border-zinc-800 shadow-2xl">
-          <ErrorState message={error} onRetry={refreshTasks} />
+      <div className="min-h-screen w-full p-4 sm:p-6 md:p-10 bg-[#070b14] text-slate-100">
+        <div className="max-w-7xl mx-auto">
+          <Header userName={user?.name || "Admin"} onLogout={logout} />
+          <div className="mt-8 glass-panel rounded-2xl border border-red-500/30 p-8 shadow-2xl">
+            <ErrorState message={error} onRetry={refreshTasks} />
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen w-full p-6 md:p-10 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
-      <Header userName={user?.name || "Admin"} onLogout={logout} />
+    <div className="min-h-screen w-full p-4 sm:p-6 md:p-8 lg:p-10 bg-[#070b14] text-slate-100 relative overflow-x-hidden">
+      {/* Ambient background glows */}
+      <div className="glow-ambient-indigo top-[-100px] left-1/3 pointer-events-none" />
+      <div className="glow-ambient-cyan bottom-[-50px] right-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-grid-subtle pointer-events-none opacity-40" />
 
-      {/* Main Content Grid */}
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Left Content - Tabs */}
-        <div className="lg:col-span-3">
-          {/* Tab Navigation */}
-          <TabNavigation
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            taskCount={stats.total}
-            employeeCount={employees.length}
-            analyticsEnabled={true}
-          />
+      <div className="relative z-10 max-w-7xl mx-auto">
+        {/* Header */}
+        <Header userName={user?.name || "Admin"} onLogout={logout} />
 
-          {/* Tab Content */}
-          <div
-            className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl border border-zinc-800 shadow-2xl overflow-hidden animate-fadeIn"
-            key={activeTab}
-          >
-            {/* All Tasks Tab */}
-            {activeTab === "tasks" && (
-              <TasksTab
-                filteredTasks={filteredTasks}
-                stats={stats}
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                activeFilter={activeFilter}
-                setActiveFilter={setActiveFilter}
-                onUpdateTask={updateTask}
-                onDeleteTask={deleteTask}
-                isSubmitting={isSubmitting}
-                employees={employees}
-              />
-            )}
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+          {/* Main Workspace Area (3 Cols) */}
+          <div className="lg:col-span-3 space-y-4">
+            {/* Tab Navigation Pill Bar */}
+            <TabNavigation
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              taskCount={stats.total}
+              employeeCount={employees.length}
+              analyticsEnabled={true}
+            />
 
-            {/* Create Task Tab */}
-            {activeTab === "create" && (
-              <CreateTaskTab
-                onCreateTask={handleCreateTask}
-                onTabChange={setActiveTab}
-                employees={employeeOptions}
-                isLoading={employeesLoading}
-                isSubmitting={isSubmitting}
-              />
-            )}
+            {/* Tab Content Panels */}
+            <div
+              className="glass-panel rounded-2xl border border-white/10 shadow-2xl shadow-black/50 overflow-hidden animate-fadeIn"
+              key={activeTab}
+            >
+              {activeTab === "tasks" && (
+                <TasksTab
+                  filteredTasks={filteredTasks}
+                  stats={stats}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                  activeFilter={activeFilter}
+                  setActiveFilter={setActiveFilter}
+                  onUpdateTask={updateTask}
+                  onDeleteTask={deleteTask}
+                  isSubmitting={isSubmitting}
+                  employees={employees}
+                />
+              )}
 
-            {/* Employees Tab */}
-            {activeTab === "employees" && (
-              <EmployeesTab
-                employees={employees}
-                isLoading={employeesLoading}
-                isSubmitting={employeesSubmitting}
-                onCreateEmployee={createEmployee}
-                onUpdateEmployee={updateEmployee}
-                onDeleteEmployee={deleteEmployee}
-                onToggleActive={toggleActive}
-              />
-            )}
+              {activeTab === "create" && (
+                <CreateTaskTab
+                  onCreateTask={handleCreateTask}
+                  onTabChange={setActiveTab}
+                  employees={employeeOptions}
+                  isLoading={employeesLoading}
+                  isSubmitting={isSubmitting}
+                />
+              )}
 
-            {/* Analytics Tab */}
-            {activeTab === "analytics" && (
-              <AnalyticsTab
-                stats={analyticsStats}
-                employees={employees}
-                isLoading={analyticsLoading}
-              />
-            )}
+              {activeTab === "employees" && (
+                <EmployeesTab
+                  employees={employees}
+                  isLoading={employeesLoading}
+                  isSubmitting={employeesSubmitting}
+                  onCreateEmployee={createEmployee}
+                  onUpdateEmployee={updateEmployee}
+                  onDeleteEmployee={deleteEmployee}
+                  onToggleActive={toggleActive}
+                />
+              )}
+
+              {activeTab === "analytics" && (
+                <AnalyticsTab
+                  stats={analyticsStats}
+                  employees={employees}
+                  isLoading={analyticsLoading}
+                />
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Right Sidebar */}
-        <div className="lg:col-span-1">
-          <Sidebar
-            stats={stats}
-            onCreateTask={() => setActiveTab("create")}
-            onManageTeam={() => setActiveTab("employees")}
-            onRefresh={refreshTasks}
-            isLoading={isLoading}
-          />
+          {/* Right Sidebar (1 Col) */}
+          <div className="lg:col-span-1">
+            <Sidebar
+              stats={stats}
+              onCreateTask={() => setActiveTab("create")}
+              onManageTeam={() => setActiveTab("employees")}
+              onRefresh={refreshTasks}
+              isLoading={isLoading}
+            />
+          </div>
         </div>
       </div>
     </div>
