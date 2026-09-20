@@ -33,6 +33,7 @@ router.post(
 );
 router.post("/register", registerValidation, validate, register);
 router.post("/login", loginValidation, validate, login);
+router.post("/logout", logout);
 router.post(
   "/forgot-password",
   forgotPasswordValidation,
@@ -58,6 +59,5 @@ router.put(
   validate,
   changePassword,
 );
-router.post("/logout", logout);
 
 export default router;
