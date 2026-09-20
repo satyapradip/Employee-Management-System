@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import useToast from "../../hooks/useToast.js";
 import { validateEmail, validatePassword } from "../../utils/validation.js";
 import {
   Shield,
@@ -31,6 +32,8 @@ const ROLES = [
 ];
 
 const Login = () => {
+  const navigate = useNavigate();
+  const showToast = useToast();
   const [selectedRole, setSelectedRole] = useState("admin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -122,19 +125,17 @@ const Login = () => {
       if (!result.success) {
         setLoginError(result.error || "Login failed. Please verify your credentials.");
       } else {
-        // Verify the logged-in user matches the selected role
-        const user = result.user || result.data?.user;
-        if (user && user.role !== selectedRole) {
-          setLoginError(
-            `This account is registered as ${
-              user.role === "admin" ? "an Admin" : "an Employee"
-            }. Please toggle the role above to proceed.`
-          );
-          return;
-        }
+        const loggedInUser = result.user || result.data?.user;
+        const targetRoute = loggedInUser?.role === "admin" ? "/admin" : "/employee";
+        showToast(`Welcome back, ${loggedInUser?.name || "Member"}!`, "success");
+        navigate(targetRoute, { replace: true });
 
-        setEmail("");
-        setPassword("");
+        // Immediate fallback in case router state needs a sync tick
+        setTimeout(() => {
+          if (window.location.pathname === "/login") {
+            window.location.href = targetRoute;
+          }
+        }, 120);
       }
     } catch (error) {
       setLoginError(
@@ -207,6 +208,43 @@ const Login = () => {
             <p className="text-center text-[11px] text-zinc-400 mt-2 font-medium">
               {ROLES.find((r) => r.key === selectedRole)?.subtitle}
             </p>
+          </div>
+
+          {/* Quick Demo Credentials Autofill */}
+          <div className="mb-5 p-2.5 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between gap-2">
+            <span className="text-[11px] text-zinc-400 font-medium pl-1">
+              Quick Fill:
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedRole("admin");
+                  setEmail("satyapradip@gmail.com");
+                  setPassword("admin123");
+                  setLoginError(null);
+                  setErrors({});
+                }}
+                className="px-2.5 py-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 hover:text-white text-[11px] font-semibold border border-indigo-500/30 transition-all cursor-pointer flex items-center gap-1"
+              >
+                <Shield className="w-3 h-3" />
+                Admin
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedRole("employee");
+                  setEmail("supritimaity59@gmail.com");
+                  setPassword("123456");
+                  setLoginError(null);
+                  setErrors({});
+                }}
+                className="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 hover:text-white text-[11px] font-semibold border border-cyan-500/30 transition-all cursor-pointer flex items-center gap-1"
+              >
+                <UserCheck className="w-3 h-3" />
+                Employee
+              </button>
+            </div>
           </div>
 
           {/* Error Alert Box */}
