@@ -25,11 +25,15 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
+      if (
+        allowedOrigins.includes(origin) ||
+        /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
+        env.NODE_ENV === "development"
+      ) {
         callback(null, true);
       } else {
         console.warn(`CORS blocked origin: ${origin}`);
-        callback(null, env.NODE_ENV === "development"); // Strict in production
+        callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
@@ -64,11 +68,13 @@ if (env.NODE_ENV === "production") {
     }),
   );
 } else {
-  // Development - More permissive for easier debugging
+  // Development - Disable HSTS and restrictive policies to prevent Chrome localhost fetch blocking
   app.use(
     helmet({
-      contentSecurityPolicy: false, // Disable strict CSP in dev
-      crossOriginResourcePolicy: { policy: "cross-origin" },
+      contentSecurityPolicy: false,
+      crossOriginResourcePolicy: false,
+      crossOriginOpenerPolicy: false,
+      hsts: false,
     }),
   );
 }
@@ -103,7 +109,7 @@ app.use(globalLimiter);
 // 7. Route-Specific Rate Limiters
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: env.NODE_ENV === "development" ? 100 : 5, // Lenient in dev, strict in prod
+  max: env.NODE_ENV === "development" ? 1000 : 20, // Generous in dev
   message: {
     success: false,
     message: "Too many login attempts, please try again later",
