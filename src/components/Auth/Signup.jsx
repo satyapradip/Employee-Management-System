@@ -124,8 +124,8 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#070b14] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
-      <div className="glow-ambient-indigo top-[-100px] left-1/2 -translate-x-1/2" />
-      <div className="glow-ambient-cyan bottom-[-100px] right-[-50px]" />
+      <div className="glow-ambient-indigo -top-25 left-1/2 -translate-x-1/2" />
+      <div className="glow-ambient-cyan -bottom-25 -right-12.5" />
       <div className="absolute inset-0 bg-grid-subtle pointer-events-none opacity-40" />
 
       <div className="relative z-10 w-full max-w-md">
@@ -139,7 +139,7 @@ const Signup = () => {
 
         <div className="glass-panel p-8 sm:p-10 rounded-3xl border border-white/10 shadow-2xl shadow-black/60">
           <div className="text-center mb-7">
-            <div className="inline-flex p-3 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 mb-4 shadow-lg shadow-indigo-500/25">
+            <div className="inline-flex p-3 rounded-2xl bg-linear-to-tr from-indigo-600 via-indigo-500 to-cyan-400 mb-4 shadow-lg shadow-indigo-500/25">
               <img
                 src="/TeamFlow_logo.png"
                 alt="TeamFlow"

@@ -25,8 +25,11 @@
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    selection-background-color: #6366f1;
-    selection-color: #ffffff;
+  }
+
+  ::selection {
+    background-color: #6366f1;
+    color: #ffffff;
   }
 
   /* Material Symbols utility */
@@ -43,6 +46,7 @@
     word-wrap: normal;
     direction: ltr;
     -webkit-font-feature-settings: 'liga';
+    font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
   }
 }

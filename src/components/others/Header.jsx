@@ -23,7 +23,7 @@ const Header = ({ userName = "User", onLogout }) => {
   return (
     <div className="relative overflow-hidden glass-panel rounded-2xl border border-white/10 p-5 sm:p-6 shadow-2xl shadow-black/40 mb-8">
       {/* Background Subtle Gradient Accents */}
-      <div className="absolute top-0 right-0 w-80 h-36 bg-gradient-to-l from-indigo-500/10 via-purple-500/5 to-transparent pointer-events-none" />
+      <div className="absolute top-0 right-0 w-80 h-36 bg-linear-to-l from-indigo-500/10 via-purple-500/5 to-transparent pointer-events-none" />
       <div className="absolute bottom-0 left-1/3 w-64 h-24 bg-cyan-500/5 blur-2xl pointer-events-none" />
 
       <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -32,8 +32,8 @@ const Header = ({ userName = "User", onLogout }) => {
           <div
             className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center font-display font-bold text-white text-lg sm:text-xl shadow-lg ${
               isAdmin
-                ? "bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 shadow-indigo-500/25"
-                : "bg-gradient-to-tr from-cyan-600 via-teal-500 to-emerald-500 shadow-cyan-500/25"
+                ? "bg-linear-to-tr from-indigo-600 via-indigo-500 to-purple-500 shadow-indigo-500/25"
+                : "bg-linear-to-tr from-cyan-600 via-teal-500 to-emerald-500 shadow-cyan-500/25"
             }`}
           >
             {initial}

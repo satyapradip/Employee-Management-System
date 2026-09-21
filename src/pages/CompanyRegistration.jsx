@@ -187,8 +187,8 @@ export default function CompanyRegistration() {
 
   return (
     <div className="min-h-screen w-full bg-[#070b14] flex items-center justify-center p-4 sm:p-6 lg:p-10 relative overflow-hidden">
-      <div className="glow-ambient-indigo top-[-120px] left-1/2 -translate-x-1/2" />
-      <div className="glow-ambient-cyan bottom-[-100px] right-[-50px]" />
+      <div className="glow-ambient-indigo -top-30 left-1/2 -translate-x-1/2" />
+      <div className="glow-ambient-cyan -bottom-25 -right-12.5" />
       <div className="absolute inset-0 bg-grid-subtle pointer-events-none opacity-40" />
 
       <div className="relative z-10 w-full max-w-4xl">
@@ -204,10 +204,10 @@ export default function CompanyRegistration() {
         {/* Split Onboarding Glass Card */}
         <div className="glass-panel rounded-3xl border border-white/10 shadow-2xl shadow-black/70 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
           {/* Left Column: Organization Benefits Sidebar */}
-          <div className="lg:col-span-5 p-8 sm:p-10 bg-gradient-to-br from-indigo-950/60 via-[#0d1428] to-[#0a0f1d] border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-between">
+          <div className="lg:col-span-5 p-8 sm:p-10 bg-linear-to-br from-indigo-950/60 via-[#0d1428] to-[#0a0f1d] border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-400 p-[1px]">
+                <div className="w-10 h-10 rounded-xl bg-linear-to-tr from-indigo-600 to-cyan-400 p-px">
                   <div className="w-full h-full bg-[#090e1c] rounded-[11px] flex items-center justify-center">
                     <img
                       src="/TeamFlow_logo.png"

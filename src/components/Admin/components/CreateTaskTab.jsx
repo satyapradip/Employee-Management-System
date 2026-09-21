@@ -92,7 +92,7 @@ const CreateTaskTab = ({
   return (
     <>
       {/* Header */}
-      <div className="p-6 border-b border-white/10 bg-gradient-to-r from-emerald-950/20 to-transparent">
+      <div className="p-6 border-b border-white/10 bg-linear-to-r from-emerald-950/20 to-transparent">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
             <PlusCircle className="w-5 h-5" />

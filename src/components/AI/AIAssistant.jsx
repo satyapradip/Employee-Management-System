@@ -520,7 +520,7 @@ const AIAssistant = () => {
       {/* ─── Proactive Thought Bubble (Dismissable Hint) ─── */}
       {!isOpen && showNotification && (
         <div className="hidden sm:flex items-center gap-3 absolute bottom-16 right-0 mb-2 glass-panel p-3.5 rounded-2xl border border-indigo-500/30 shadow-2xl shadow-indigo-950/60 max-w-xs animate-toast-enter">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center text-white shrink-0 shadow">
+          <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center text-white shrink-0 shadow">
             <Bot className="w-4 h-4" />
           </div>
           <div className="text-left">
@@ -552,7 +552,7 @@ const AIAssistant = () => {
             setIsMinimized(false);
             setShowNotification(false);
           }}
-          className="relative group p-3.5 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 text-white shadow-2xl shadow-indigo-600/40 hover:shadow-indigo-500/60 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2.5 cursor-pointer border border-white/20"
+          className="relative group p-3.5 rounded-2xl bg-linear-to-tr from-indigo-600 via-indigo-500 to-cyan-400 text-white shadow-2xl shadow-indigo-600/40 hover:shadow-indigo-500/60 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2.5 cursor-pointer border border-white/20"
           aria-label="Open AI Assistant"
         >
           {/* Pulsing Beacon */}
@@ -577,14 +577,14 @@ const AIAssistant = () => {
           className={`glass-panel border border-white/20 shadow-2xl shadow-black/80 rounded-3xl overflow-hidden transition-all duration-300 flex flex-col ${
             isMinimized
               ? "w-80 h-14"
-              : "w-[92vw] sm:w-[440px] h-[580px] max-h-[86vh]"
+              : "w-[92vw] sm:w-110 h-145 max-h-[86vh]"
           }`}
         >
           {/* Header Bar */}
           <div className="flex items-center justify-between px-4 py-3 bg-[#0c1224]/90 border-b border-white/10 shrink-0">
             <div className="flex items-center gap-2.5">
               <div className="relative">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 flex items-center justify-center text-white shadow-md">
+                <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-indigo-500 via-purple-500 to-cyan-400 flex items-center justify-center text-white shadow-md">
                   <Bot className="w-4 h-4" />
                 </div>
                 <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 border border-[#070b14]" />
@@ -653,7 +653,7 @@ const AIAssistant = () => {
                     <div
                       className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-xs shadow-lg ${
                         msg.sender === "user"
-                          ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-tr-sm"
+                          ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-tr-sm"
                           : "bg-white/5 border border-white/10 text-zinc-200 rounded-tl-sm backdrop-blur-md"
                       }`}
                     >

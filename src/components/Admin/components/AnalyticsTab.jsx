@@ -198,7 +198,7 @@ const AnalyticsTab = ({ stats, employees = [], isLoading = false }) => {
   return (
     <>
       {/* Header */}
-      <div className="p-6 border-b border-white/10 bg-gradient-to-r from-purple-950/20 to-transparent">
+      <div className="p-6 border-b border-white/10 bg-linear-to-r from-purple-950/20 to-transparent">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
             <BarChart3 className="w-5 h-5" />
@@ -315,7 +315,7 @@ const AnalyticsTab = ({ stats, employees = [], isLoading = false }) => {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-[260px] flex items-center justify-center text-xs text-zinc-500">
+              <div className="h-65 flex items-center justify-center text-xs text-zinc-500">
                 No category breakdown available
               </div>
             )}

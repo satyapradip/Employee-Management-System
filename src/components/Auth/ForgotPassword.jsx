@@ -32,8 +32,8 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#070b14] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
-      <div className="glow-ambient-indigo top-[-100px] left-1/2 -translate-x-1/2" />
-      <div className="glow-ambient-cyan bottom-[-100px] right-[-50px]" />
+      <div className="glow-ambient-indigo -top-25 left-1/2 -translate-x-1/2" />
+      <div className="glow-ambient-cyan -bottom-25 -right-12.5" />
       <div className="absolute inset-0 bg-grid-subtle pointer-events-none opacity-40" />
 
       <div className="relative z-10 w-full max-w-md">

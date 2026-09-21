@@ -252,7 +252,7 @@ function Navbar() {
             onClick={() => navigate("/")}
             className="flex items-center gap-3 cursor-pointer group select-none"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-[1px] shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition-shadow">
+            <div className="w-10 h-10 rounded-xl bg-linear-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-px shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition-shadow">
               <div className="w-full h-full bg-[#090e1c] rounded-[11px] flex items-center justify-center">
                 <img
                   src="/TeamFlow_logo.png"
@@ -626,8 +626,8 @@ function InteractiveHeroConsole() {
                 <div
                   className={`h-full transition-all duration-500 ease-out rounded-full ${
                     taskStatus === "completed"
-                      ? "bg-gradient-to-r from-emerald-500 to-teal-400"
-                      : "bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400"
+                      ? "bg-linear-to-r from-emerald-500 to-teal-400"
+                      : "bg-linear-to-r from-indigo-500 via-purple-500 to-cyan-400"
                   }`}
                   style={{ width: `${progress}%` }}
                 />
@@ -638,7 +638,7 @@ function InteractiveHeroConsole() {
             <div className="flex items-center justify-between pt-3 border-t border-white/10 text-xs">
               <div className="flex items-center gap-2.5">
                 <div className="relative">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-white text-[11px] shadow">
+                  <div className="w-7 h-7 rounded-full bg-linear-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-white text-[11px] shadow">
                     JD
                   </div>
                   <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 border border-[#090e1c]" />
@@ -659,7 +659,7 @@ function InteractiveHeroConsole() {
               {taskStatus === "in_progress" ? (
                 <button
                   onClick={handleToggleTask}
-                  className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all active:scale-[0.98] cursor-pointer"
+                  className="w-full py-2.5 px-4 rounded-xl bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all active:scale-[0.98] cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
                   <span>Mark Deliverable Complete (68% → 100%)</span>
@@ -701,7 +701,7 @@ function InteractiveHeroConsole() {
               {[40, 55, 35, 65, 80, 75, 95].map((val, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center gap-1">
                   <div
-                    className="w-full rounded-t-md bg-gradient-to-t from-indigo-600/40 to-cyan-400 transition-all duration-500"
+                    className="w-full rounded-t-md bg-linear-to-t from-indigo-600/40 to-cyan-400 transition-all duration-500"
                     style={{ height: `${val}%` }}
                   />
                   <span className="text-[9px] text-zinc-500 font-mono">
@@ -775,8 +775,8 @@ function HeroSection() {
       <div className="aurora-mesh" />
 
       {/* Ambient Radial Lighting Glows */}
-      <div className="glow-ambient-indigo top-[-120px] left-1/2 -translate-x-1/2" />
-      <div className="glow-ambient-cyan top-[160px] right-[-100px]" />
+      <div className="glow-ambient-indigo -top-30 left-1/2 -translate-x-1/2" />
+      <div className="glow-ambient-cyan top-40 -right-25" />
 
       {/* Subtle Spatial Grid Pattern */}
       <div className="absolute inset-0 bg-grid-subtle pointer-events-none opacity-60" />
@@ -795,7 +795,7 @@ function HeroSection() {
               const demo = document.getElementById("demo");
               if (demo) demo.scrollIntoView({ behavior: "smooth" });
             }}
-            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500/15 via-purple-500/15 to-cyan-500/15 border border-indigo-500/30 text-indigo-200 text-xs font-medium mb-6 backdrop-blur-xl shadow-lg shadow-indigo-500/10 group cursor-pointer hover:border-indigo-400/60 transition-all"
+            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-linear-to-r from-indigo-500/15 via-purple-500/15 to-cyan-500/15 border border-indigo-500/30 text-indigo-200 text-xs font-medium mb-6 backdrop-blur-xl shadow-lg shadow-indigo-500/10 group cursor-pointer hover:border-indigo-400/60 transition-all"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -867,7 +867,7 @@ function HeroSection() {
               {["JD", "SK", "AL", "MR", "TC"].map((initials, i) => (
                 <div
                   key={i}
-                  className="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 border-2 border-[#090e1c] flex items-center justify-center text-[10px] font-bold text-white shadow"
+                  className="w-7 h-7 rounded-full bg-linear-to-tr from-indigo-600 to-purple-600 border-2 border-[#090e1c] flex items-center justify-center text-[10px] font-bold text-white shadow"
                 >
                   {initials}
                 </div>
@@ -902,7 +902,7 @@ function HeroSection() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="lg:col-span-5 relative flex items-center justify-center min-h-[500px] sm:min-h-[540px]"
+          className="lg:col-span-5 relative flex items-center justify-center min-h-125 sm:min-h-135"
         >
           {/* 3D Three.js Starfield & Hologram in Background */}
           <div className="absolute inset-0 z-0 pointer-events-none">
@@ -987,7 +987,7 @@ function InteractiveDemoSection() {
             onClick={() => setActivePerspective("admin")}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
               activePerspective === "admin"
-                ? "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30"
+                ? "bg-linear-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30"
                 : "text-zinc-400 hover:text-white"
             }`}
           >
@@ -998,7 +998,7 @@ function InteractiveDemoSection() {
             onClick={() => setActivePerspective("employee")}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
               activePerspective === "employee"
-                ? "bg-gradient-to-r from-cyan-600 to-cyan-700 text-white shadow-md shadow-cyan-600/30"
+                ? "bg-linear-to-r from-cyan-600 to-cyan-700 text-white shadow-md shadow-cyan-600/30"
                 : "text-zinc-400 hover:text-white"
             }`}
           >
@@ -1115,7 +1115,7 @@ function InteractiveDemoSection() {
             /* Employee Interactive Demo View */
             <div className="space-y-6">
               {/* Employee Welcome Banner */}
-              <div className="p-4 rounded-xl bg-gradient-to-r from-indigo-900/30 to-cyan-900/30 border border-indigo-500/20 flex items-center justify-between">
+              <div className="p-4 rounded-xl bg-linear-to-r from-indigo-900/30 to-cyan-900/30 border border-indigo-500/20 flex items-center justify-between">
                 <div>
                   <div className="text-xs font-medium text-cyan-300">Welcome Back, Alex Rivera 👋</div>
                   <h4 className="font-display font-semibold text-white text-lg mt-0.5">
@@ -1299,7 +1299,7 @@ function FeaturesSection() {
             >
               {/* Subtle Gradient Glow */}
               <div
-                className={`absolute inset-0 bg-gradient-to-br ${f.accent} pointer-events-none opacity-40`}
+                className={`absolute inset-0 bg-linear-to-br ${f.accent} pointer-events-none opacity-40`}
               />
 
               <div className="relative z-10">
@@ -1601,7 +1601,7 @@ function FinalCTA() {
 
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="relative rounded-3xl overflow-hidden p-8 sm:p-14 text-center border border-indigo-500/30 bg-gradient-to-br from-indigo-950/70 via-[#0b1226] to-[#070c18] shadow-2xl shadow-indigo-950/60">
+      <div className="relative rounded-3xl overflow-hidden p-8 sm:p-14 text-center border border-indigo-500/30 bg-linear-to-br from-indigo-950/70 via-[#0b1226] to-[#070c18] shadow-2xl shadow-indigo-950/60">
         {/* Glow ambient inside banner */}
         <div className="absolute inset-0 bg-radial-at-c from-indigo-600/15 via-transparent to-transparent pointer-events-none" />
 

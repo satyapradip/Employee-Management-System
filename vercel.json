@@ -8,9 +8,6 @@
   "installCommand": "npm install",
   "devCommand": "npm run dev",
   "regions": ["iad1"],
-  "github": {
-    "silent": true
-  },
   "git": {
     "deploymentEnabled": true
   },

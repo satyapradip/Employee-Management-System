@@ -51,7 +51,7 @@ const TasksTab = ({
   return (
     <>
       {/* Search and Filters Header */}
-      <div className="p-6 border-b border-white/10 bg-gradient-to-r from-indigo-950/20 to-transparent">
+      <div className="p-6 border-b border-white/10 bg-linear-to-r from-indigo-950/20 to-transparent">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
@@ -80,7 +80,7 @@ const TasksTab = ({
       </div>
 
       {/* Task Cards Grid */}
-      <div className="p-6 max-h-[640px] overflow-y-auto">
+      <div className="p-6 max-h-160 overflow-y-auto">
         {filteredTasks.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredTasks.map((task, index) => (

@@ -41,10 +41,10 @@ const StatusBadge = ({ status }) => {
  */
 const AssigneeInfo = ({ name }) => (
   <div className="flex items-center gap-2">
-    <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
+    <div className="w-6 h-6 rounded-full bg-linear-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
       {getInitials(name)}
     </div>
-    <span className="text-zinc-300 text-xs font-medium truncate max-w-[120px]">
+    <span className="text-zinc-300 text-xs font-medium truncate max-w-30">
       {name || "Unassigned"}
     </span>
   </div>

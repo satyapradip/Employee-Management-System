@@ -97,8 +97,8 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen w-full p-4 sm:p-6 md:p-8 lg:p-10 bg-[#070b14] text-slate-100 relative overflow-x-hidden">
       {/* Ambient background glows */}
-      <div className="glow-ambient-indigo top-[-100px] left-1/3 pointer-events-none" />
-      <div className="glow-ambient-cyan bottom-[-50px] right-0 pointer-events-none" />
+      <div className="glow-ambient-indigo -top-25 left-1/3 pointer-events-none" />
+      <div className="glow-ambient-cyan -bottom-12.5 right-0 pointer-events-none" />
       <div className="absolute inset-0 bg-grid-subtle pointer-events-none opacity-40" />
 
       <div className="relative z-10 max-w-7xl mx-auto">

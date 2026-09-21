@@ -141,7 +141,7 @@ const TaskListNumber = ({ data }) => {
           </div>
           <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-400 rounded-full transition-all duration-500"
+              className="h-full bg-linear-to-r from-indigo-500 via-purple-500 to-emerald-400 rounded-full transition-all duration-500"
               style={{ width: `${completionRate}%` }}
             />
           </div>

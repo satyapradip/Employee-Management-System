@@ -306,7 +306,7 @@ function EmployeeCard({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Profile Info */}
         <div className="flex items-center gap-3.5 min-w-0">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center font-display font-bold text-white text-sm shadow-md shrink-0">
+          <div className="w-11 h-11 rounded-xl bg-linear-to-tr from-indigo-600 to-purple-600 flex items-center justify-center font-display font-bold text-white text-sm shadow-md shrink-0">
             {initials}
           </div>
 
@@ -390,7 +390,7 @@ function EmployeeCard({
       {totalTasks > 0 && (
         <div className="mt-2 h-1 bg-zinc-800 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-400 rounded-full transition-all duration-500"
+            className="h-full bg-linear-to-r from-indigo-500 via-purple-500 to-emerald-400 rounded-full transition-all duration-500"
             style={{ width: `${completionRate}%` }}
           />
         </div>
@@ -468,7 +468,7 @@ const EmployeesTab = ({
   return (
     <>
       {/* Header with Search and Filter */}
-      <div className="p-6 border-b border-white/10 bg-gradient-to-r from-indigo-950/20 to-transparent">
+      <div className="p-6 border-b border-white/10 bg-linear-to-r from-indigo-950/20 to-transparent">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">

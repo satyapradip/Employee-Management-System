@@ -40,7 +40,7 @@ const WelcomeBanner = ({ name }) => {
     <div className="mb-6 animate-fadeIn">
       <div className="relative overflow-hidden glass-panel rounded-2xl border border-white/10 p-6 shadow-2xl">
         {/* Subtle accent bar */}
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400" />
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-indigo-500 via-purple-500 to-cyan-400" />
 
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -326,8 +326,8 @@ const EmployeeDashboard = () => {
   return (
     <div className="min-h-screen bg-[#070b14] text-slate-100 p-4 sm:p-6 md:p-8 lg:p-10 relative overflow-x-hidden">
       {/* Ambient background glows */}
-      <div className="glow-ambient-indigo top-[-100px] left-1/4 pointer-events-none" />
-      <div className="glow-ambient-cyan bottom-[-50px] right-0 pointer-events-none" />
+      <div className="glow-ambient-indigo -top-25 left-1/4 pointer-events-none" />
+      <div className="glow-ambient-cyan -bottom-12.5 right-0 pointer-events-none" />
       <div className="absolute inset-0 bg-grid-subtle pointer-events-none opacity-40" />
 
       <div className="relative z-10 max-w-7xl mx-auto space-y-6">
