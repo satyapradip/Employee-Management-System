@@ -7,30 +7,32 @@ import {
   getInitials,
   formatStatus,
 } from "../utils/taskHelpers";
-import { Calendar, Trash2, ChevronDown, ChevronUp, User } from "lucide-react";
+import { Calendar, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 
 /**
  * Modern Status Badge Component
+ * Soft pastel background with strong semantic color
+ * Following Reference 1 specifications
  */
 const StatusBadge = ({ status }) => {
   const iconName = getStatusIconName(status);
   const IconComponent = iconName ? Icons[iconName] : null;
 
   const badgeStyles = {
-    new: "bg-violet-500/15 text-violet-300 border-violet-500/30",
-    "in-progress": "bg-amber-500/15 text-amber-300 border-amber-500/30",
-    active: "bg-amber-500/15 text-amber-300 border-amber-500/30",
-    completed: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
-    failed: "bg-rose-500/15 text-rose-300 border-rose-500/30",
+    new: "bg-[#FEF3C7] text-[#B45309] border-[#FDE68A]",
+    "in-progress": "bg-[#EEF2FF] text-[#3730A3] border-[#E0E7FF]",
+    active: "bg-[#EEF2FF] text-[#3730A3] border-[#E0E7FF]",
+    completed: "bg-[#DCFCE7] text-[#15803D] border-[#BBF7D0]",
+    failed: "bg-[#FEE2E2] text-[#B91C1C] border-[#FECACA]",
   };
 
-  const style = badgeStyles[status] || "bg-zinc-700/20 text-zinc-300 border-zinc-600/30";
+  const style = badgeStyles[status] || "bg-[#F5F6F7] text-[#5E6875] border-[#E1E5E9]";
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${style}`}
+      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${style}`}
     >
-      {IconComponent && <IconComponent className="h-3.5 w-3.5" />}
+      {IconComponent && <IconComponent className="h-3 w-3" />}
       {formatStatus(status)}
     </span>
   );
@@ -41,10 +43,10 @@ const StatusBadge = ({ status }) => {
  */
 const AssigneeInfo = ({ name }) => (
   <div className="flex items-center gap-2">
-    <div className="w-6 h-6 rounded-full bg-linear-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
+    <div className="w-6 h-6 rounded-full bg-[#101827] flex items-center justify-center text-[10px] font-bold text-white shadow-2xs">
       {getInitials(name)}
     </div>
-    <span className="text-zinc-300 text-xs font-medium truncate max-w-30">
+    <span className="text-[#15191E] text-xs font-medium truncate max-w-30">
       {name || "Unassigned"}
     </span>
   </div>
@@ -54,22 +56,23 @@ const AssigneeInfo = ({ name }) => (
  * Due Date Component
  */
 const DueDate = ({ date }) => (
-  <div className="flex items-center gap-1.5 text-zinc-400 text-xs font-medium">
-    <Calendar className="w-3.5 h-3.5 text-zinc-500" />
+  <div className="flex items-center gap-1.5 text-[#5E6875] text-xs font-medium">
+    <Calendar className="w-3.5 h-3.5 text-[#87909B]" />
     <span>{formatDate(date)}</span>
   </div>
 );
 
 /**
  * Task Card Component
+ * Crisp white surface with subtle 1px border and refined information hierarchy
  */
 const TaskCard = ({ task, index, onDelete }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div
-      className="group glass-card rounded-2xl p-5 border border-white/10 hover:border-indigo-500/40 transition-all duration-300 flex flex-col justify-between"
-      style={{ animationDelay: `${index * 40}ms` }}
+      className="group saas-card p-5 flex flex-col justify-between"
+      style={{ animationDelay: `${index * 30}ms` }}
     >
       <div>
         {/* Card Header: Category & Priority + Status Badge */}
@@ -78,13 +81,13 @@ const TaskCard = ({ task, index, onDelete }) => {
             <span
               className={`w-2 h-2 rounded-full ${getPriorityColor(
                 task.priority
-              )} shadow-sm`}
+              )} shadow-2xs`}
             />
-            <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
+            <span className="text-[11px] font-semibold text-[#5E6875] uppercase tracking-wider">
               {task.category || "General"}
             </span>
-            <span className="text-[10px] text-zinc-500">·</span>
-            <span className="text-[11px] font-medium text-zinc-400 capitalize">
+            <span className="text-[10px] text-[#CBD2D9]">·</span>
+            <span className="text-[11px] font-medium text-[#5E6875] capitalize">
               {task.priority} Priority
             </span>
           </div>
@@ -92,29 +95,29 @@ const TaskCard = ({ task, index, onDelete }) => {
         </div>
 
         {/* Task Title */}
-        <h3 className="text-white font-display font-semibold text-base mb-1.5 group-hover:text-indigo-300 transition-colors leading-snug">
+        <h3 className="text-[#15191E] font-display font-semibold text-base mb-1.5 group-hover:text-[#4F46E5] transition-colors leading-snug">
           {task.title}
         </h3>
 
         {/* Task Description */}
-        <p className="text-zinc-400 text-xs leading-relaxed mb-4 line-clamp-2">
+        <p className="text-[#5E6875] text-xs leading-relaxed mb-4 line-clamp-2">
           {task.description}
         </p>
       </div>
 
       {/* Card Footer: Assignee & Date */}
       <div>
-        <div className="flex items-center justify-between pt-3 border-t border-white/5">
+        <div className="flex items-center justify-between pt-3 border-t border-[#E1E5E9]">
           <AssigneeInfo name={task.assignedTo} />
           <DueDate date={task.date} />
         </div>
 
-        {/* Hover / Expand Actions */}
-        <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-white/5">
+        {/* Expand Details & Actions */}
+        <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-[#E1E5E9]/60">
           <button
             type="button"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-1 text-xs font-semibold text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="flex items-center gap-1 text-xs font-semibold text-[#5E6875] hover:text-[#15191E] transition-colors cursor-pointer"
             aria-expanded={isExpanded}
           >
             {isExpanded ? (
@@ -133,7 +136,7 @@ const TaskCard = ({ task, index, onDelete }) => {
           <button
             type="button"
             onClick={onDelete}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-rose-400 hover:bg-rose-500/15 hover:text-rose-300 transition-colors text-xs font-semibold cursor-pointer"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[#B91C1C] hover:bg-[#FEE2E2] transition-colors text-xs font-semibold cursor-pointer"
             aria-label="Delete this task"
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -143,24 +146,24 @@ const TaskCard = ({ task, index, onDelete }) => {
 
         {/* Expanded Details Section */}
         {isExpanded && (
-          <div className="mt-3 p-3.5 rounded-xl bg-zinc-900/80 border border-white/5 space-y-2 text-xs animate-fadeIn">
-            <div className="grid grid-cols-2 gap-2 text-zinc-400">
+          <div className="mt-3 p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E1E5E9] space-y-2 text-xs animate-fadeIn">
+            <div className="grid grid-cols-2 gap-2 text-[#5E6875]">
               <div>
-                <span className="text-zinc-500">Created:</span>{" "}
-                <span className="text-zinc-300 font-medium">
+                <span className="text-[#87909B]">Created:</span>{" "}
+                <span className="text-[#15191E] font-medium">
                   {task.createdAt ? formatDate(task.createdAt) : "N/A"}
                 </span>
               </div>
               <div>
-                <span className="text-zinc-500">Target Date:</span>{" "}
-                <span className="text-zinc-300 font-medium">
+                <span className="text-[#87909B]">Target Date:</span>{" "}
+                <span className="text-[#15191E] font-medium">
                   {formatDate(task.date)}
                 </span>
               </div>
             </div>
             <div>
-              <span className="text-zinc-500 block mb-1">Full Scope:</span>
-              <p className="text-zinc-300 leading-relaxed bg-black/20 p-2.5 rounded-lg">
+              <span className="text-[#87909B] block mb-1">Full Scope:</span>
+              <p className="text-[#15191E] leading-relaxed bg-white border border-[#E1E5E9] p-2.5 rounded-lg">
                 {task.description}
               </p>
             </div>

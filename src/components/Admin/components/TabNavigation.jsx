@@ -3,6 +3,7 @@ import { ListTodo, PlusCircle, Users, BarChart3 } from "lucide-react";
 
 /**
  * Modern Segmented Tab Navigation Component
+ * Following Reference 1 clean pill / segmented bar design
  */
 const TabNavigation = ({
   activeTab,
@@ -40,7 +41,7 @@ const TabNavigation = ({
   ];
 
   return (
-    <div className="flex items-center gap-2 p-1.5 glass-panel rounded-2xl border border-white/10 overflow-x-auto scrollbar-none">
+    <div className="flex items-center gap-1.5 p-1.5 bg-white border border-[#E1E5E9] rounded-2xl shadow-2xs overflow-x-auto scrollbar-none">
       {tabs
         .filter((tab) => !tab.hidden)
         .map((tab) => {
@@ -51,10 +52,10 @@ const TabNavigation = ({
               key={tab.key}
               type="button"
               onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-200 whitespace-nowrap cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-150 whitespace-nowrap cursor-pointer ${
                 isActive
-                  ? "btn-primary-gradient shadow-md shadow-indigo-600/30"
-                  : "text-zinc-400 hover:text-white hover:bg-white/5"
+                  ? "bg-[#101827] text-white shadow-xs"
+                  : "text-[#5E6875] hover:text-[#15191E] hover:bg-[#F8FAFC]"
               }`}
               aria-pressed={isActive}
             >
@@ -62,10 +63,10 @@ const TabNavigation = ({
               <span>{tab.label}</span>
               {tab.count != null && (
                 <span
-                  className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                  className={`px-2 py-0.5 rounded-full text-[11px] font-mono font-bold ${
                     isActive
                       ? "bg-white/20 text-white"
-                      : "bg-white/5 text-zinc-400"
+                      : "bg-[#F5F6F7] text-[#5E6875]"
                   }`}
                 >
                   {tab.count}

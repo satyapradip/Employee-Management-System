@@ -3,17 +3,18 @@ import { ListTodo } from "lucide-react";
 
 /**
  * Modernized Empty State Component
+ * Clean light SaaS styling matching Reference 1
  */
 const EmptyState = ({ filter }) => {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 text-zinc-500">
-        <ListTodo className="w-8 h-8" />
+      <div className="w-14 h-14 rounded-2xl bg-[#F5F6F7] border border-[#E1E5E9] flex items-center justify-center mb-3.5 text-[#87909B]">
+        <ListTodo className="w-7 h-7" />
       </div>
-      <h3 className="font-display text-lg font-semibold text-white mb-1.5">
+      <h3 className="font-display text-base font-bold text-[#15191E] mb-1">
         No deliverables found
       </h3>
-      <p className="text-zinc-400 text-xs sm:text-sm max-w-sm">
+      <p className="text-[#5E6875] text-xs sm:text-sm max-w-sm">
         {filter === "all"
           ? "No tasks have been created in this workspace yet. Click 'Create Task' to delegate deliverables."
           : `No deliverables currently found with "${filter}" status.`}

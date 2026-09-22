@@ -1,7 +1,8 @@
 import React from "react";
 
 /**
- * Modernized Form Input Component
+ * Modernized Clean Form Input Component
+ * Following Reference 1 specifications
  */
 const FormInput = ({
   label,
@@ -17,12 +18,12 @@ const FormInput = ({
   rows = 3,
 }) => {
   const baseInputClass =
-    "w-full px-4 py-2.5 glass-input rounded-xl text-sm placeholder:text-zinc-500 transition-all";
+    "w-full px-4 py-2.5 bg-white border border-[#E1E5E9] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 rounded-xl text-xs sm:text-sm text-[#15191E] placeholder:text-[#87909B] transition-all";
 
   return (
     <div>
-      <label className="flex items-center gap-2 text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-2">
-        {Icon && <Icon className="w-3.5 h-3.5 text-indigo-400" />}
+      <label className="flex items-center gap-2 text-xs font-semibold text-[#5E6875] uppercase tracking-wider mb-2">
+        {Icon && <Icon className="w-3.5 h-3.5 text-[#4F46E5]" />}
         {label}
       </label>
 
@@ -44,11 +45,11 @@ const FormInput = ({
           required={required}
           className={`${baseInputClass} cursor-pointer`}
         >
-          <option value="" className="bg-[#090e1c] text-zinc-400">
+          <option value="" className="text-[#87909B]">
             {placeholder}
           </option>
           {options.map((option) => (
-            <option key={option} value={option} className="bg-[#090e1c] text-white">
+            <option key={option} value={option} className="text-[#15191E]">
               {option}
             </option>
           ))}
@@ -61,7 +62,7 @@ const FormInput = ({
           onChange={onChange}
           placeholder={placeholder}
           required={required}
-          className={`${baseInputClass} ${type === "date" ? "scheme-dark" : ""}`}
+          className={baseInputClass}
         />
       )}
     </div>

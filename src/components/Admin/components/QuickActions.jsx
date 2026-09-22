@@ -2,28 +2,29 @@ import React from "react";
 import { Plus, Users, Zap } from "lucide-react";
 
 /**
- * Modern Quick Actions Component
+ * Modern Clean Quick Actions Component
+ * Following Reference 1 specifications
  */
 const QuickActions = ({ onCreateTask, onManageTeam }) => {
   const actions = [
     {
       label: "Dispatch New Task",
       icon: Plus,
-      color: "hover:border-emerald-500/40 hover:text-emerald-300 hover:bg-emerald-500/10",
+      color: "hover:border-[#10B981] hover:text-[#15803D] hover:bg-[#DCFCE7]/40",
       onClick: onCreateTask,
     },
     {
       label: "Manage Team Staff",
       icon: Users,
-      color: "hover:border-indigo-500/40 hover:text-indigo-300 hover:bg-indigo-500/10",
+      color: "hover:border-[#6366F1] hover:text-[#3730A3] hover:bg-[#EEF2FF]",
       onClick: onManageTeam,
     },
   ];
 
   return (
-    <div className="glass-card rounded-2xl border border-white/10 p-4">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3 flex items-center gap-1.5">
-        <Zap className="w-3.5 h-3.5 text-indigo-400" />
+    <div className="bg-white rounded-xl border border-[#E1E5E9] p-4 shadow-2xs">
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-[#5E6875] mb-3 flex items-center gap-1.5">
+        <Zap className="w-3.5 h-3.5 text-[#4F46E5]" />
         Quick Shortcuts
       </h3>
       <div className="space-y-2">
@@ -34,11 +35,11 @@ const QuickActions = ({ onCreateTask, onManageTeam }) => {
               key={action.label}
               type="button"
               onClick={action.onClick}
-              className={`w-full flex items-center gap-3 p-2.5 rounded-xl border border-white/5 bg-white/5 text-zinc-300 transition-all duration-200 cursor-pointer ${action.color}`}
+              className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl border border-[#E1E5E9] bg-[#F8FAFC] text-[#15191E] transition-all duration-150 cursor-pointer text-xs font-semibold ${action.color}`}
               aria-label={action.label}
             >
-              <Icon className="w-4 h-4 shrink-0" />
-              <span className="text-xs font-semibold">{action.label}</span>
+              <Icon className="w-4 h-4 shrink-0 text-[#5E6875]" />
+              <span>{action.label}</span>
             </button>
           );
         })}

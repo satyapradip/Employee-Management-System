@@ -4,13 +4,14 @@ import CategorySelector from "./CategorySelector";
 import { PlusCircle, Calendar, User, AlignLeft, Sparkles, Zap } from "lucide-react";
 
 const PRIORITIES = [
-  { key: "high", label: "High", color: "border-rose-500/40 text-rose-400 bg-rose-500/10" },
-  { key: "medium", label: "Medium", color: "border-amber-500/40 text-amber-400 bg-amber-500/10" },
-  { key: "low", label: "Low", color: "border-emerald-500/40 text-emerald-400 bg-emerald-500/10" },
+  { key: "high", label: "High Priority", activeClass: "bg-[#FEE2E2] text-[#B91C1C] border-[#FECACA]" },
+  { key: "medium", label: "Medium Priority", activeClass: "bg-[#FEF3C7] text-[#B45309] border-[#FDE68A]" },
+  { key: "low", label: "Low Priority", activeClass: "bg-[#DCFCE7] text-[#15803D] border-[#BBF7D0]" },
 ];
 
 /**
  * Create Task Tab Component
+ * Follows Reference 1: clean white content surfaces, proper grouping, clear feedback
  */
 const CreateTaskTab = ({
   onCreateTask,
@@ -90,18 +91,18 @@ const CreateTaskTab = ({
   };
 
   return (
-    <>
+    <div className="bg-white">
       {/* Header */}
-      <div className="p-6 border-b border-white/10 bg-linear-to-r from-emerald-950/20 to-transparent">
+      <div className="p-5 sm:p-6 border-b border-[#E1E5E9] bg-[#F8FAFC]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <div className="w-10 h-10 rounded-xl bg-[#DCFCE7] border border-[#BBF7D0] flex items-center justify-center text-[#15803D]">
             <PlusCircle className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="font-display font-bold text-lg text-white">
+            <h2 className="font-display font-bold text-base sm:text-lg text-[#15191E]">
               Create &amp; Delegate Task
             </h2>
-            <p className="text-zinc-400 text-xs">
+            <p className="text-[#5E6875] text-xs">
               Assign deliverables to team members with explicit priority and deadline
             </p>
           </div>
@@ -109,7 +110,7 @@ const CreateTaskTab = ({
       </div>
 
       {/* Task Creation Form */}
-      <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
+      <form onSubmit={handleSubmit} className="p-5 sm:p-8 space-y-6">
         {/* Title */}
         <div>
           <FormInput
@@ -121,14 +122,14 @@ const CreateTaskTab = ({
             required
           />
           {errors.title && (
-            <p className="text-red-400 text-xs mt-1 pl-1">{errors.title}</p>
+            <p className="text-[#B91C1C] text-xs mt-1 pl-1">{errors.title}</p>
           )}
         </div>
 
         {/* Description */}
         <div>
-          <label className="flex items-center gap-2 text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-2">
-            <AlignLeft className="w-3.5 h-3.5 text-indigo-400" />
+          <label className="flex items-center gap-2 text-xs font-semibold text-[#5E6875] uppercase tracking-wider mb-2">
+            <AlignLeft className="w-3.5 h-3.5 text-[#4F46E5]" />
             Description &amp; Acceptance Criteria
           </label>
           <textarea
@@ -137,10 +138,10 @@ const CreateTaskTab = ({
             onChange={handleChange}
             placeholder="Outline expected deliverables, context, API specs, or acceptance benchmarks..."
             rows={3}
-            className="w-full glass-input rounded-xl px-4 py-3 text-sm resize-none"
+            className="w-full bg-white border border-[#E1E5E9] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 rounded-xl px-4 py-3 text-xs sm:text-sm text-[#15191E] placeholder:text-[#87909B] resize-none transition-all"
           />
           {errors.description && (
-            <p className="text-red-400 text-xs mt-1 pl-1">{errors.description}</p>
+            <p className="text-[#B91C1C] text-xs mt-1 pl-1">{errors.description}</p>
           )}
         </div>
 
@@ -156,13 +157,13 @@ const CreateTaskTab = ({
               required
             />
             {errors.date && (
-              <p className="text-red-400 text-xs mt-1 pl-1">{errors.date}</p>
+              <p className="text-[#B91C1C] text-xs mt-1 pl-1">{errors.date}</p>
             )}
           </div>
 
           <div>
-            <label className="flex items-center gap-2 text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-2">
-              <User className="w-3.5 h-3.5 text-indigo-400" />
+            <label className="flex items-center gap-2 text-xs font-semibold text-[#5E6875] uppercase tracking-wider mb-2">
+              <User className="w-3.5 h-3.5 text-[#4F46E5]" />
               Assign To Employee
             </label>
             <select
@@ -170,31 +171,31 @@ const CreateTaskTab = ({
               value={formData.assignedTo}
               onChange={handleChange}
               disabled={isLoading}
-              className="w-full glass-input rounded-xl px-4 py-3 text-sm disabled:opacity-50 cursor-pointer"
+              className="w-full bg-white border border-[#E1E5E9] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#15191E] disabled:opacity-50 cursor-pointer transition-all"
             >
-              <option value="" className="bg-[#090e1c] text-zinc-400">
+              <option value="" className="text-[#87909B]">
                 {isLoading ? "Loading team..." : "Select team member"}
               </option>
               {employees.map((emp) => (
                 <option
                   key={emp.value}
                   value={emp.value}
-                  className="bg-[#090e1c] text-white"
+                  className="text-[#15191E]"
                 >
                   {emp.label}
                 </option>
               ))}
             </select>
             {errors.assignedTo && (
-              <p className="text-red-400 text-xs mt-1 pl-1">{errors.assignedTo}</p>
+              <p className="text-[#B91C1C] text-xs mt-1 pl-1">{errors.assignedTo}</p>
             )}
           </div>
         </div>
 
         {/* Priority Radio Pills */}
         <div>
-          <label className="flex items-center gap-2 text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-2.5">
-            <Zap className="w-3.5 h-3.5 text-indigo-400" />
+          <label className="flex items-center gap-2 text-xs font-semibold text-[#5E6875] uppercase tracking-wider mb-2.5">
+            <Zap className="w-3.5 h-3.5 text-[#4F46E5]" />
             Execution Priority
           </label>
           <div className="grid grid-cols-3 gap-3">
@@ -205,10 +206,10 @@ const CreateTaskTab = ({
                   key={p.key}
                   type="button"
                   onClick={() => setFormData((prev) => ({ ...prev, priority: p.key }))}
-                  className={`py-2.5 px-4 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
+                  className={`py-2.5 px-3 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                     isSelected
-                      ? `${p.color} border-current shadow-md`
-                      : "bg-white/5 border-white/10 text-zinc-400 hover:text-white"
+                      ? `${p.activeClass} shadow-2xs font-bold`
+                      : "bg-white border-[#E1E5E9] text-[#5E6875] hover:bg-[#F8FAFC]"
                   }`}
                 >
                   {p.label}
@@ -229,15 +230,15 @@ const CreateTaskTab = ({
           }}
         />
         {errors.category && (
-          <p className="text-red-400 text-xs pl-1">{errors.category}</p>
+          <p className="text-[#B91C1C] text-xs pl-1">{errors.category}</p>
         )}
 
-        {/* Submit */}
-        <div className="pt-4 border-t border-white/10 flex justify-end">
+        {/* Submit Button */}
+        <div className="pt-4 border-t border-[#E1E5E9] flex justify-end">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="btn-primary-gradient px-8 py-3.5 rounded-xl font-semibold text-sm flex items-center gap-2 cursor-pointer shadow-lg shadow-indigo-600/30"
+            className="btn-primary px-7 py-3 rounded-xl font-semibold text-xs sm:text-sm flex items-center gap-2 cursor-pointer shadow-xs disabled:opacity-50"
           >
             {isSubmitting ? (
               <span className="flex items-center gap-2">
@@ -253,7 +254,7 @@ const CreateTaskTab = ({
           </button>
         </div>
       </form>
-    </>
+    </div>
   );
 };
 

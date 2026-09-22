@@ -2,7 +2,8 @@ import React from "react";
 import { CheckCircle2, PlusCircle, PlayCircle, Clock } from "lucide-react";
 
 /**
- * Modernized Recent Activity Component
+ * Modernized Clean Recent Activity Component
+ * Following Reference 1 specifications
  */
 const RecentActivity = () => {
   const activities = [
@@ -35,40 +36,40 @@ const RecentActivity = () => {
   const getActivityIcon = (type) => {
     switch (type) {
       case "completed":
-        return <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />;
+        return <CheckCircle2 className="w-3.5 h-3.5 text-[#15803D]" />;
       case "new":
-        return <PlusCircle className="w-3.5 h-3.5 text-indigo-400" />;
+        return <PlusCircle className="w-3.5 h-3.5 text-[#3730A3]" />;
       case "progress":
-        return <PlayCircle className="w-3.5 h-3.5 text-amber-400" />;
+        return <PlayCircle className="w-3.5 h-3.5 text-[#B45309]" />;
       default:
-        return <Clock className="w-3.5 h-3.5 text-zinc-400" />;
+        return <Clock className="w-3.5 h-3.5 text-[#5E6875]" />;
     }
   };
 
   const getActivityBadge = (type) => {
     switch (type) {
       case "completed":
-        return "bg-emerald-500/10 border-emerald-500/20";
+        return "bg-[#DCFCE7] border-[#BBF7D0]";
       case "new":
-        return "bg-indigo-500/10 border-indigo-500/20";
+        return "bg-[#EEF2FF] border-[#E0E7FF]";
       case "progress":
-        return "bg-amber-500/10 border-amber-500/20";
+        return "bg-[#FEF3C7] border-[#FDE68A]";
       default:
-        return "bg-zinc-800 border-zinc-700";
+        return "bg-[#F5F6F7] border-[#E1E5E9]";
     }
   };
 
   return (
-    <div className="glass-card rounded-2xl border border-white/10 p-4">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3 flex items-center gap-1.5">
-        <Clock className="w-3.5 h-3.5 text-indigo-400" />
+    <div className="bg-white rounded-xl border border-[#E1E5E9] p-4 shadow-2xs">
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-[#5E6875] mb-3 flex items-center gap-1.5">
+        <Clock className="w-3.5 h-3.5 text-[#4F46E5]" />
         Activity Feed
       </h3>
-      <div className="space-y-2.5">
+      <div className="space-y-2">
         {activities.map((activity) => (
           <div
             key={activity.id}
-            className="flex items-start gap-2.5 p-2 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors"
+            className="flex items-start gap-2.5 p-2 rounded-xl bg-[#F8FAFC] border border-[#E1E5E9]/60 hover:border-[#CBD2D9] transition-colors"
           >
             <div
               className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${getActivityBadge(
@@ -78,10 +79,10 @@ const RecentActivity = () => {
               {getActivityIcon(activity.type)}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-white truncate">
+              <p className="text-xs font-semibold text-[#15191E] truncate">
                 {activity.task}
               </p>
-              <p className="text-[11px] text-zinc-400">
+              <p className="text-[11px] text-[#5E6875]">
                 {activity.user} · {activity.time}
               </p>
             </div>

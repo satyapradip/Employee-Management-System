@@ -2,12 +2,10 @@ import React from "react";
 
 /**
  * Skeleton Loader Component
- * Displays placeholder content while data is loading
+ * Light clean placeholders following Reference 1 specifications
  */
-
-// Base skeleton pulse animation
 const Skeleton = ({ className = "" }) => (
-  <div className={`animate-pulse bg-zinc-700/50 rounded ${className}`} />
+  <div className={`animate-pulse bg-[#ECEFF1] rounded-lg ${className}`} />
 );
 
 /**
@@ -15,8 +13,8 @@ const Skeleton = ({ className = "" }) => (
  */
 export const TaskCardSkeleton = ({ index = 0 }) => (
   <div
-    className="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-5 animate-fadeIn"
-    style={{ animationDelay: `${index * 50}ms` }}
+    className="bg-white border border-[#E1E5E9] rounded-xl p-5 animate-fadeIn"
+    style={{ animationDelay: `${index * 40}ms` }}
   >
     {/* Header */}
     <div className="flex items-start justify-between mb-3">
@@ -24,20 +22,20 @@ export const TaskCardSkeleton = ({ index = 0 }) => (
         <Skeleton className="w-2 h-2 rounded-full" />
         <Skeleton className="w-16 h-4" />
       </div>
-      <Skeleton className="w-24 h-6 rounded-full" />
+      <Skeleton className="w-20 h-5 rounded-full" />
     </div>
 
     {/* Title */}
-    <Skeleton className="w-3/4 h-6 mb-2" />
+    <Skeleton className="w-3/4 h-5 mb-2" />
 
     {/* Description */}
-    <Skeleton className="w-full h-4 mb-2" />
-    <Skeleton className="w-2/3 h-4 mb-4" />
+    <Skeleton className="w-full h-3 mb-2" />
+    <Skeleton className="w-2/3 h-3 mb-4" />
 
     {/* Footer */}
-    <div className="flex items-center justify-between pt-3 border-t border-zinc-700/50">
+    <div className="flex items-center justify-between pt-3 border-t border-[#E1E5E9]">
       <div className="flex items-center gap-2">
-        <Skeleton className="w-7 h-7 rounded-full" />
+        <Skeleton className="w-6 h-6 rounded-full" />
         <Skeleton className="w-20 h-4" />
       </div>
       <Skeleton className="w-16 h-4" />
@@ -60,13 +58,12 @@ export const TaskListSkeleton = ({ count = 6 }) => (
  * Stats Card Skeleton
  */
 export const StatsCardSkeleton = () => (
-  <div className="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-4 animate-pulse">
-    <div className="flex items-center gap-3 mb-3">
-      <Skeleton className="w-10 h-10 rounded-xl" />
-      <Skeleton className="w-20 h-4" />
+  <div className="bg-white border border-[#E1E5E9] rounded-xl p-4 animate-pulse">
+    <div className="flex items-center justify-between mb-3">
+      <Skeleton className="w-16 h-3" />
+      <Skeleton className="w-7 h-7 rounded-lg" />
     </div>
-    <Skeleton className="w-12 h-8 mb-1" />
-    <Skeleton className="w-16 h-3" />
+    <Skeleton className="w-12 h-7" />
   </div>
 );
 
@@ -74,7 +71,7 @@ export const StatsCardSkeleton = () => (
  * Sidebar Skeleton
  */
 export const SidebarSkeleton = () => (
-  <div className="space-y-4">
+  <div className="space-y-3">
     {Array.from({ length: 4 }).map((_, index) => (
       <StatsCardSkeleton key={index} />
     ))}
@@ -84,15 +81,10 @@ export const SidebarSkeleton = () => (
 /**
  * Full Page Loading
  */
-export const FullPageLoader = ({ message = "Loading..." }) => (
-  <div className="min-h-100 flex flex-col items-center justify-center">
-    <div className="relative">
-      {/* Outer ring */}
-      <div className="w-16 h-16 rounded-full border-4 border-zinc-700" />
-      {/* Spinning ring */}
-      <div className="absolute inset-0 w-16 h-16 rounded-full border-4 border-transparent border-t-emerald-500 animate-spin" />
-    </div>
-    <p className="mt-4 text-zinc-400 font-medium">{message}</p>
+export const FullPageLoader = ({ message = "Loading workspace telemetry..." }) => (
+  <div className="min-h-80 flex flex-col items-center justify-center p-8">
+    <div className="w-10 h-10 border-3 border-[#4F46E5] border-t-transparent rounded-full animate-spin mb-4" />
+    <p className="text-xs sm:text-sm text-[#5E6875] font-medium">{message}</p>
   </div>
 );
 
@@ -100,10 +92,10 @@ export const FullPageLoader = ({ message = "Loading..." }) => (
  * Error State Component
  */
 export const ErrorState = ({ message, onRetry }) => (
-  <div className="min-h-100 flex flex-col items-center justify-center text-center px-6">
-    <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-4">
+  <div className="min-h-80 flex flex-col items-center justify-center text-center p-8 bg-white rounded-2xl border border-[#FEE2E2]">
+    <div className="w-12 h-12 rounded-xl bg-[#FEE2E2] flex items-center justify-center mb-3.5">
       <svg
-        className="w-8 h-8 text-red-400"
+        className="w-6 h-6 text-[#B91C1C]"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -116,16 +108,16 @@ export const ErrorState = ({ message, onRetry }) => (
         />
       </svg>
     </div>
-    <h3 className="text-lg font-semibold text-white mb-2">
-      Something went wrong
+    <h3 className="text-base font-bold text-[#15191E] mb-1 font-display">
+      Connection Issue Encountered
     </h3>
-    <p className="text-zinc-400 mb-6 max-w-sm">{message}</p>
+    <p className="text-xs text-[#5E6875] mb-5 max-w-sm">{message}</p>
     {onRetry && (
       <button
         onClick={onRetry}
-        className="px-6 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-medium transition-colors"
+        className="btn-primary px-5 py-2.5 rounded-xl text-xs font-semibold"
       >
-        Try Again
+        Retry Synchronization
       </button>
     )}
   </div>

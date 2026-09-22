@@ -2,7 +2,8 @@ import React from "react";
 import { STATUSES } from "../../../constants/taskConstants";
 
 /**
- * Filter Pills Component with modern pill active states
+ * Filter Pills Component with clean SaaS pill active states
+ * Following Reference 1 specifications
  */
 const FilterPills = ({ activeFilter, setActiveFilter, stats }) => {
   const getFilterCount = (filter) => {
@@ -12,7 +13,7 @@ const FilterPills = ({ activeFilter, setActiveFilter, stats }) => {
   };
 
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex items-center gap-1.5 flex-wrap">
       {STATUSES.map((filter) => {
         const isSelected = activeFilter === filter;
         const count = getFilterCount(filter);
@@ -21,16 +22,16 @@ const FilterPills = ({ activeFilter, setActiveFilter, stats }) => {
             key={filter}
             type="button"
             onClick={() => setActiveFilter(filter)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer ${
               isSelected
-                ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30 border border-indigo-500"
-                : "bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10 border border-white/5"
+                ? "bg-[#101827] text-white shadow-2xs"
+                : "bg-white text-[#5E6875] hover:text-[#15191E] hover:bg-[#F8FAFC] border border-[#E1E5E9]"
             }`}
             aria-label={`Filter by ${filter} (${count} tasks)`}
             aria-pressed={isSelected}
           >
             {filter.charAt(0).toUpperCase() + filter.slice(1).replace("-", " ")}
-            <span className="ml-1.5 opacity-80 font-mono text-[11px]">
+            <span className={`ml-1.5 text-[11px] font-mono ${isSelected ? "text-zinc-300" : "text-[#87909B]"}`}>
               ({count})
             </span>
           </button>

@@ -1,9 +1,10 @@
 import React from "react";
-import { Icons } from "./Icons";
+import { Trash2 } from "lucide-react";
 
 /**
  * Delete Confirmation Modal
- * Professional modal for confirming destructive actions
+ * Clean light modal for confirming destructive actions
+ * Following Reference 1 specifications
  */
 const DeleteConfirmModal = ({
   isOpen,
@@ -16,10 +17,10 @@ const DeleteConfirmModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
+        className="absolute inset-0 bg-black/40 backdrop-blur-xs cursor-pointer"
         onClick={onClose}
         aria-label="Close modal"
         role="button"
@@ -31,33 +32,33 @@ const DeleteConfirmModal = ({
         }}
       />
 
-      {/* Modal */}
-      <div className="relative bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl w-full max-w-md mx-4 animate-scaleIn">
+      {/* Modal Dialog */}
+      <div className="relative bg-white border border-[#E1E5E9] rounded-2xl shadow-xl w-full max-w-md mx-4 animate-fadeIn overflow-hidden">
         {/* Header */}
-        <div className="p-6 border-b border-zinc-800">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center">
-              <Icons.Trash className="h-6 w-6 text-red-400" />
+        <div className="p-5 sm:p-6 border-b border-[#E1E5E9] bg-[#F8FAFC]">
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-[#FEE2E2] border border-[#FECACA] flex items-center justify-center shrink-0">
+              <Trash2 className="h-5 w-5 text-[#B91C1C]" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-white">{title}</h3>
-              <p className="text-sm text-zinc-400">This action is permanent</p>
+              <h3 className="text-base font-bold text-[#15191E] font-display">{title}</h3>
+              <p className="text-xs text-[#5E6875]">This action is permanent and cannot be undone</p>
             </div>
           </div>
         </div>
 
         {/* Body */}
-        <div className="p-6">
-          <p className="text-zinc-300">{message}</p>
+        <div className="p-5 sm:p-6">
+          <p className="text-xs sm:text-sm text-[#5E6875] leading-relaxed">{message}</p>
         </div>
 
         {/* Actions */}
-        <div className="p-6 pt-0 flex gap-3">
+        <div className="p-5 sm:p-6 pt-0 flex gap-3">
           <button
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="flex-1 px-5 py-3 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="flex-1 py-2.5 btn-secondary rounded-xl font-semibold text-xs transition-colors disabled:opacity-50 cursor-pointer"
             aria-label="Cancel deletion"
           >
             Cancel
@@ -66,19 +67,19 @@ const DeleteConfirmModal = ({
             type="button"
             onClick={onConfirm}
             disabled={isLoading}
-            className="flex-1 px-5 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 bg-[#B91C1C] hover:bg-[#991B1B] text-white rounded-xl font-semibold text-xs transition-colors disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5 shadow-xs"
             aria-label={isLoading ? "Deleting..." : "Confirm deletion"}
             aria-busy={isLoading}
           >
             {isLoading ? (
               <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Deleting...
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span>Deleting...</span>
               </>
             ) : (
               <>
-                <Icons.Trash className="h-4 w-4" />
-                Delete
+                <Trash2 className="h-3.5 w-3.5" />
+                <span>Confirm Delete</span>
               </>
             )}
           </button>
