@@ -1,135 +1,87 @@
 import React, { useState } from "react";
+import { CheckCircle2, AlertCircle, AlertTriangle, Info, X } from "lucide-react";
 import logger from "../utils/logger.js";
 
-function Toast({ id, type, message, onClose, action }) {
+function Toast({ id, type = "info", message, onClose, action }) {
   const [isExiting, setIsExiting] = useState(false);
 
   const handleClose = () => {
     setIsExiting(true);
-    setTimeout(onClose, 300); // Match animation duration
+    setTimeout(onClose, 300);
   };
 
-  // Modern gradient-based styles with glassmorphism
+  // Modern clean SaaS notification cards
   const styles = {
     success: {
-      bg: "bg-gradient-to-r from-emerald-500/90 to-green-500/90 backdrop-blur-xl",
-      border: "border-emerald-400/50",
-      shadow: "shadow-lg shadow-emerald-500/20",
-      icon: "bg-white/20",
+      border: "border-emerald-200",
+      accent: "bg-emerald-500",
+      iconBg: "bg-emerald-50 text-emerald-600 border border-emerald-100",
+      title: "Success",
+      Icon: CheckCircle2,
     },
     error: {
-      bg: "bg-gradient-to-r from-red-500/90 to-rose-500/90 backdrop-blur-xl",
-      border: "border-red-400/50",
-      shadow: "shadow-lg shadow-red-500/20",
-      icon: "bg-white/20",
+      border: "border-rose-200",
+      accent: "bg-rose-500",
+      iconBg: "bg-rose-50 text-rose-600 border border-rose-100",
+      title: "Attention Required",
+      Icon: AlertCircle,
     },
     warning: {
-      bg: "bg-gradient-to-r from-amber-500/90 to-orange-500/90 backdrop-blur-xl",
-      border: "border-amber-400/50",
-      shadow: "shadow-lg shadow-amber-500/20",
-      icon: "bg-white/20",
+      border: "border-amber-200",
+      accent: "bg-amber-500",
+      iconBg: "bg-amber-50 text-amber-600 border border-amber-100",
+      title: "Notice",
+      Icon: AlertTriangle,
     },
     info: {
-      bg: "bg-gradient-to-r from-blue-500/90 to-cyan-500/90 backdrop-blur-xl",
-      border: "border-blue-400/50",
-      shadow: "shadow-lg shadow-blue-500/20",
-      icon: "bg-white/20",
+      border: "border-indigo-200",
+      accent: "bg-indigo-600",
+      iconBg: "bg-indigo-50 text-indigo-600 border border-indigo-100",
+      title: "Information",
+      Icon: Info,
     },
-  };
-
-  // Modern SVG icons
-  const icons = {
-    success: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2.5}
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-      </svg>
-    ),
-    error: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2.5}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M6 18L18 6M6 6l12 12"
-        />
-      </svg>
-    ),
-    warning: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2.5}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-        />
-      </svg>
-    ),
-    info: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2.5}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    ),
   };
 
   const currentStyle = styles[type] || styles.info;
+  const IconComponent = currentStyle.Icon;
 
   return (
     <div
       className={`
-        ${currentStyle.bg}
-        ${currentStyle.border}
-        ${currentStyle.shadow}
-        border
-        text-white
-        p-4 
-        rounded-xl 
-        flex 
+        bg-white
+        border ${currentStyle.border}
+        shadow-lg shadow-black/8
+        rounded-xl
+        p-4
+        flex
         items-start
-        gap-3 
-        min-w-[320px] 
+        gap-3.5
+        min-w-[320px]
         max-w-md
+        relative
+        overflow-hidden
         transition-all
         duration-300
-        ${isExiting ? "animate-toast-exit" : "animate-toast-enter"}
+        ${isExiting ? "opacity-0 translate-x-4" : "opacity-100 translate-x-0"}
       `}
       role="alert"
     >
-      {/* Icon */}
-      <div className={`${currentStyle.icon} rounded-lg p-2 flex-shrink-0`}>
-        {icons[type] || icons.info}
+      {/* Left Accent Stripe */}
+      <div className={`absolute top-0 bottom-0 left-0 w-1 ${currentStyle.accent}`} />
+
+      {/* Icon Badge */}
+      <div className={`w-8 h-8 rounded-lg ${currentStyle.iconBg} flex items-center justify-center shrink-0 mt-0.5`}>
+        <IconComponent className="w-4 h-4" />
       </div>
 
-      {/* Content */}
-      <div className="flex-1 pt-0.5">
-        <p className="text-sm font-medium leading-relaxed">{message}</p>
+      {/* Content Area */}
+      <div className="flex-1 min-w-0 pt-0.5">
+        <p className="text-xs font-semibold text-[#15191E] uppercase tracking-wider mb-0.5">
+          {currentStyle.title}
+        </p>
+        <p className="text-xs text-[#5E6875] leading-relaxed wrap-break-word">{message}</p>
 
-        {/* Action button if provided */}
+        {/* Action Button */}
         {action && (
           <button
             onClick={() => {
@@ -140,32 +92,20 @@ function Toast({ id, type, message, onClose, action }) {
               }
               handleClose();
             }}
-            className="mt-2 px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105 active:scale-95"
+            className="mt-2.5 px-3 py-1 bg-[#101827] hover:bg-[#1E293B] text-white rounded-md text-[11px] font-semibold transition-colors cursor-pointer"
           >
             {action.label || "Action"}
           </button>
         )}
       </div>
 
-      {/* Close button */}
+      {/* Close Button */}
       <button
         onClick={handleClose}
-        className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/20 transition-all duration-200 group"
+        className="w-6 h-6 flex items-center justify-center rounded-md text-[#87909B] hover:text-[#15191E] hover:bg-[#F5F6F7] transition-colors cursor-pointer"
         aria-label="Close notification"
       >
-        <svg
-          className="w-5 h-5 group-hover:scale-110 transition-transform"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
+        <X className="w-3.5 h-3.5" />
       </button>
     </div>
   );

@@ -9,23 +9,20 @@ import logger from "../../utils/logger.js";
 import {
   Sparkles,
   Calendar,
-  ArrowRight,
   Clock,
   CheckCircle2,
-  AlertCircle,
-  PlayCircle,
-  TrendingUp,
 } from "lucide-react";
 
 /**
  * Modernized Welcome Banner Component
+ * Following Reference 1 clean surface design
  */
 const WelcomeBanner = ({ name }) => {
   const greeting = useMemo(() => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good Morning";
-    if (hour < 17) return "Good Afternoon";
-    return "Good Evening";
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
   }, []);
 
   const formattedDate = useMemo(() => {
@@ -38,32 +35,28 @@ const WelcomeBanner = ({ name }) => {
 
   return (
     <div className="mb-6 animate-fadeIn">
-      <div className="relative overflow-hidden glass-panel rounded-2xl border border-white/10 p-6 shadow-2xl">
-        {/* Subtle accent bar */}
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-indigo-500 via-purple-500 to-cyan-400" />
-
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white rounded-2xl border border-[#E1E5E9] p-5 sm:p-6 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#475569] uppercase tracking-wider mb-1">
+              <span className="w-2 h-2 rounded-full bg-[#10B981]" />
               {greeting}
             </div>
-            <h1 className="font-display font-bold text-2xl sm:text-3xl text-white tracking-tight">
-              Welcome back,{" "}
-              <span className="text-gradient-accent">{name || "Employee"}</span>
+            <h1 className="font-display font-bold text-xl sm:text-2xl text-[#0F172A] tracking-[-0.025em]">
+              Welcome back, <span>{name || "Team Member"}</span>
             </h1>
-            <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-              Here is your personal deliverable queue and sprint velocity.
+            <p className="text-xs sm:text-sm text-[#475569] mt-1">
+              Here is your personal deliverable queue and current sprint items.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2.5 rounded-xl self-start sm:self-auto">
-            <Calendar className="w-4 h-4 text-indigo-400" />
+          <div className="flex items-center gap-3 bg-[#F8FAFC] border border-[#E1E5E9] px-3.5 py-2 rounded-xl self-start sm:self-auto">
+            <Calendar className="w-4 h-4 text-[#4F46E5]" />
             <div className="text-right">
-              <span className="block text-[10px] uppercase font-bold text-zinc-500 tracking-wider">
+              <span className="block text-[10px] uppercase font-bold text-[#64748B] tracking-wider">
                 Today
               </span>
-              <span className="block text-xs font-semibold text-white">
+              <span className="block text-xs font-semibold text-[#0F172A]">
                 {formattedDate}
               </span>
             </div>
@@ -76,6 +69,7 @@ const WelcomeBanner = ({ name }) => {
 
 /**
  * Next Best Action Component - Focuses Employee on Most Immediate Deliverable
+ * Uses soft pastel highlights following Reference 1
  */
 const NextBestAction = ({ data, onAcceptTask }) => {
   const getNextAction = useMemo(() => {
@@ -92,7 +86,7 @@ const NextBestAction = ({ data, onAcceptTask }) => {
         actionLabel: "Accept First Task",
         taskId: newTasks[0]?._id,
         icon: Sparkles,
-        color: "violet",
+        color: "indigo",
         taskTitle: newTasks[0]?.title,
       };
     }
@@ -123,48 +117,48 @@ const NextBestAction = ({ data, onAcceptTask }) => {
   }, [data?.tasks]);
 
   const colorStyles = {
-    violet: {
-      bg: "bg-indigo-950/40",
-      border: "border-indigo-500/30",
-      text: "text-indigo-400",
-      btn: "btn-primary-gradient",
+    indigo: {
+      bg: "bg-[#EEF2FF]/60",
+      border: "border-[#E0E7FF]",
+      text: "text-[#3730A3]",
+      btn: "btn-primary",
     },
     amber: {
-      bg: "bg-amber-950/30",
-      border: "border-amber-500/30",
-      text: "text-amber-400",
-      btn: "bg-amber-600 hover:bg-amber-500 text-white",
+      bg: "bg-[#FEF3C7]/50",
+      border: "border-[#FDE68A]",
+      text: "text-[#B45309]",
+      btn: "bg-[#B45309] hover:bg-[#92400E] text-white",
     },
     emerald: {
-      bg: "bg-emerald-950/30",
-      border: "border-emerald-500/30",
-      text: "text-emerald-400",
-      btn: "bg-emerald-600 hover:bg-emerald-500 text-white",
+      bg: "bg-[#DCFCE7]/50",
+      border: "border-[#BBF7D0]",
+      text: "text-[#15803D]",
+      btn: "bg-[#15803D] hover:bg-[#166534] text-white",
     },
   };
 
-  const style = colorStyles[getNextAction.color] || colorStyles.violet;
+  const style = colorStyles[getNextAction.color] || colorStyles.indigo;
   const Icon = getNextAction.icon;
 
   return (
     <div className="mb-6 animate-fadeIn">
       <div
-        className={`glass-panel rounded-2xl border ${style.border} ${style.bg} p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4`}
+        className={`rounded-2xl border ${style.border} ${style.bg} p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4`}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3.5">
           <div
-            className={`w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 ${style.text}`}
+            className={`w-11 h-11 rounded-xl bg-white border border-[#E1E5E9] flex items-center justify-center shrink-0 ${style.text}`}
           >
             <Icon className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] font-bold tracking-wider uppercase text-zinc-500">
+            <span className="text-[10px] font-bold tracking-wider uppercase text-[#64748B]">
               Recommended Next Action
             </span>
-            <h3 className="font-display font-bold text-white text-base">
+            <h3 className="font-display font-bold text-[#0F172A] text-base tracking-[-0.015em]">
               {getNextAction.title}
             </h3>
-            <p className="text-xs text-zinc-300 mt-0.5">
+            <p className="text-xs text-[#475569] mt-0.5">
               {getNextAction.taskTitle ? (
                 <>
                   Focus:{" "}
@@ -182,10 +176,10 @@ const NextBestAction = ({ data, onAcceptTask }) => {
         {getNextAction.actionLabel && getNextAction.taskId && (
           <button
             onClick={() => onAcceptTask(getNextAction.taskId)}
-            className={`${style.btn} px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer shrink-0 shadow-lg`}
+            className={`${style.btn} px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs`}
           >
             <CheckCircle2 className="w-4 h-4" />
-            {getNextAction.actionLabel}
+            <span>{getNextAction.actionLabel}</span>
           </button>
         )}
       </div>
@@ -314,23 +308,18 @@ const EmployeeDashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#070b14] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#F5F6F7] flex items-center justify-center p-4">
         <div className="flex flex-col items-center gap-3 text-center">
-          <div className="w-10 h-10 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-          <div className="text-white text-sm font-medium">Loading workspace deliverables...</div>
+          <div className="w-9 h-9 border-2 border-[#4F46E5] border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-[#15191E] text-xs font-semibold">Loading workspace deliverables...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#070b14] text-slate-100 p-4 sm:p-6 md:p-8 lg:p-10 relative overflow-x-hidden">
-      {/* Ambient background glows */}
-      <div className="glow-ambient-indigo -top-25 left-1/4 pointer-events-none" />
-      <div className="glow-ambient-cyan -bottom-12.5 right-0 pointer-events-none" />
-      <div className="absolute inset-0 bg-grid-subtle pointer-events-none opacity-40" />
-
-      <div className="relative z-10 max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-[#F5F6F7] p-4 sm:p-6 md:p-8 lg:p-10">
+      <div className="max-w-7xl mx-auto space-y-6">
         <Header userName={user?.name || user?.email} onLogout={logout} />
 
         <WelcomeBanner name={user?.name} />
