@@ -63,6 +63,13 @@ const seedData = async () => {
         companyName: "Acme Corp",
       },
       {
+        name: "John Doe",
+        email: "john@company.com",
+        password: "123456",
+        role: "employee",
+        companyName: "Acme Corp",
+      },
+      {
         name: "Jane Smith",
         email: "jane@company.com",
         password: "123456",

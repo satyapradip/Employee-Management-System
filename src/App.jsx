@@ -29,10 +29,10 @@ const ProtectedRoute = ({ children, requiredRole }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+      <div className="min-h-screen bg-[#F5F6F7] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
-          <div className="text-white text-lg">Loading...</div>
+          <div className="w-8 h-8 border-2 border-[#4F46E5] border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-[#15191E] font-medium text-sm">Loading workspace...</div>
         </div>
       </div>
     );
