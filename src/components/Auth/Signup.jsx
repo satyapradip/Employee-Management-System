@@ -10,9 +10,7 @@ import {
   EyeOff,
   ArrowRight,
   ArrowLeft,
-  Sparkles,
   AlertCircle,
-  CheckCircle2,
   Building2,
 } from "lucide-react";
 
@@ -123,204 +121,153 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#070b14] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
-      <div className="glow-ambient-indigo -top-25 left-1/2 -translate-x-1/2" />
-      <div className="glow-ambient-cyan -bottom-25 -right-12.5" />
-      <div className="absolute inset-0 bg-grid-subtle pointer-events-none opacity-40" />
+    <div className="min-h-screen w-full bg-[#F5F6F7] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
+      <div className="absolute inset-0 bg-subtle-grid opacity-50 pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-md">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-xs font-medium text-zinc-400 hover:text-white transition-colors mb-6 group"
+          className="inline-flex items-center gap-2 text-xs font-medium text-[#5E6875] hover:text-[#15191E] transition-colors mb-5 group"
         >
           <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          Back to Home
+          <span>Back to Home</span>
         </Link>
 
-        <div className="glass-panel p-8 sm:p-10 rounded-3xl border border-white/10 shadow-2xl shadow-black/60">
-          <div className="text-center mb-7">
-            <div className="inline-flex p-3 rounded-2xl bg-linear-to-tr from-indigo-600 via-indigo-500 to-cyan-400 mb-4 shadow-lg shadow-indigo-500/25">
-              <img
-                src="/TeamFlow_logo.png"
-                alt="TeamFlow"
-                className="w-8 h-8 object-contain"
-              />
+        <div className="bg-white p-7 sm:p-9 rounded-3xl border border-[#E1E5E9] shadow-lg shadow-black/4 relative">
+          <div className="text-center mb-6">
+            <div className="inline-flex p-3 rounded-2xl bg-[#101827] text-white mb-3.5 shadow-xs">
+              <span className="font-display font-black text-sm tracking-tight">TF</span>
             </div>
-            <h1 className="font-display font-bold text-2xl sm:text-3xl text-white tracking-tight">
-              Create an account
+            <h1 className="font-display font-bold text-2xl text-[#15191E] tracking-tight">
+              Create Account
             </h1>
-            <p className="text-zinc-400 text-xs sm:text-sm mt-1.5">
+            <p className="text-[#5E6875] text-xs sm:text-sm mt-1">
               Join your organization on TeamFlow
             </p>
           </div>
 
           {errors.general && (
-            <div className="mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs sm:text-sm flex items-start gap-2.5">
+            <div className="mb-5 p-3.5 rounded-xl bg-[#FEE2E2] border border-[#FECACA] text-[#B91C1C] text-xs sm:text-sm flex items-start gap-2.5">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <div className="flex-1 leading-snug">{errors.general}</div>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Full Name */}
+          <form onSubmit={handleSubmit} className="space-y-3.5">
+            {/* Name */}
             <div>
-              <label
-                htmlFor="signup-name"
-                className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5"
-              >
+              <label className="block text-xs font-semibold text-[#5E6875] uppercase tracking-wider mb-1.5">
                 Full Name
               </label>
               <div className="relative">
-                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#87909B]" />
                 <input
-                  id="signup-name"
-                  type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Sarah Jenkins"
-                  autoComplete="name"
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl glass-input text-sm ${
-                    errors.name ? "border-red-500/60 focus:ring-red-500/30" : ""
-                  }`}
+                  placeholder="e.g. Alex Rivera"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#E1E5E9] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 text-sm text-[#15191E] placeholder:text-[#87909B] transition-all"
                 />
               </div>
-              {errors.name && (
-                <p className="text-red-400 text-xs mt-1 pl-1">{errors.name}</p>
-              )}
+              {errors.name && <p className="text-[#B91C1C] text-xs mt-1 pl-1">{errors.name}</p>}
             </div>
 
             {/* Email */}
             <div>
-              <label
-                htmlFor="signup-email"
-                className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5"
-              >
+              <label className="block text-xs font-semibold text-[#5E6875] uppercase tracking-wider mb-1.5">
                 Work Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#87909B]" />
                 <input
-                  id="signup-email"
-                  type="email"
                   name="email"
+                  type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="sarah@company.com"
-                  autoComplete="email"
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl glass-input text-sm ${
-                    errors.email ? "border-red-500/60 focus:ring-red-500/30" : ""
-                  }`}
+                  placeholder="alex@company.com"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#E1E5E9] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 text-sm text-[#15191E] placeholder:text-[#87909B] transition-all"
                 />
               </div>
-              {errors.email && (
-                <p className="text-red-400 text-xs mt-1 pl-1">{errors.email}</p>
-              )}
+              {errors.email && <p className="text-[#B91C1C] text-xs mt-1 pl-1">{errors.email}</p>}
             </div>
 
-            {/* Company / Team Name (Optional) */}
+            {/* Company Name */}
             <div>
-              <label
-                htmlFor="signup-company"
-                className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5"
-              >
-                Company / Team Name{" "}
-                <span className="text-zinc-500 font-normal lowercase">
-                  (optional)
-                </span>
+              <label className="block text-xs font-semibold text-[#5E6875] uppercase tracking-wider mb-1.5">
+                Company Name
               </label>
               <div className="relative">
-                <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#87909B]" />
                 <input
-                  id="signup-company"
-                  type="text"
                   name="companyName"
                   value={formData.companyName}
                   onChange={handleChange}
-                  placeholder="e.g. Acme Innovations"
-                  autoComplete="organization"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-sm"
+                  placeholder="Acme Corp"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#E1E5E9] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 text-sm text-[#15191E] placeholder:text-[#87909B] transition-all"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label
-                htmlFor="signup-password"
-                className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5"
-              >
+              <label className="block text-xs font-semibold text-[#5E6875] uppercase tracking-wider mb-1.5">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#87909B]" />
                 <input
-                  id="signup-password"
-                  type={showPassword ? "text" : "password"}
                   name="password"
+                  type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="•••••••• (Min 6 characters)"
-                  autoComplete="new-password"
-                  className={`w-full pl-10 pr-11 py-3 rounded-xl glass-input text-sm ${
-                    errors.password ? "border-red-500/60 focus:ring-red-500/30" : ""
-                  }`}
+                  placeholder="••••••••"
+                  className="w-full pl-10 pr-11 py-2.5 rounded-xl bg-white border border-[#E1E5E9] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 text-sm text-[#15191E] placeholder:text-[#87909B] transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-zinc-200 cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#87909B] hover:text-[#15191E] cursor-pointer"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-red-400 text-xs mt-1 pl-1">{errors.password}</p>
-              )}
+              {errors.password && <p className="text-[#B91C1C] text-xs mt-1 pl-1">{errors.password}</p>}
             </div>
 
             {/* Confirm Password */}
             <div>
-              <label
-                htmlFor="signup-confirm-password"
-                className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5"
-              >
+              <label className="block text-xs font-semibold text-[#5E6875] uppercase tracking-wider mb-1.5">
                 Confirm Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#87909B]" />
                 <input
-                  id="signup-confirm-password"
-                  type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  autoComplete="new-password"
-                  className={`w-full pl-10 pr-11 py-3 rounded-xl glass-input text-sm ${
-                    errors.confirmPassword ? "border-red-500/60 focus:ring-red-500/30" : ""
-                  }`}
+                  className="w-full pl-10 pr-11 py-2.5 rounded-xl bg-white border border-[#E1E5E9] focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/10 text-sm text-[#15191E] placeholder:text-[#87909B] transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-zinc-200 cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#87909B] hover:text-[#15191E] cursor-pointer"
                   aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                 >
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p className="text-red-400 text-xs mt-1 pl-1">{errors.confirmPassword}</p>
+                <p className="text-[#B91C1C] text-xs mt-1 pl-1">{errors.confirmPassword}</p>
               )}
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full btn-primary-gradient py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-indigo-600/30 mt-6"
+              className="w-full btn-primary py-3 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xs mt-5 disabled:opacity-50"
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">
@@ -329,19 +276,19 @@ const Signup = () => {
                 </span>
               ) : (
                 <span className="flex items-center gap-2">
-                  Complete Registration
+                  Create Account
                   <ArrowRight className="w-4 h-4" />
                 </span>
               )}
             </button>
           </form>
 
-          <div className="pt-6 mt-6 border-t border-white/10 text-center">
-            <p className="text-xs text-zinc-400">
-              Already registered?{" "}
+          <div className="pt-5 mt-5 border-t border-[#E1E5E9] text-center">
+            <p className="text-xs text-[#5E6875]">
+              Already have an account?{" "}
               <Link
                 to="/login"
-                className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+                className="font-semibold text-[#4F46E5] hover:text-[#3730A3] transition-colors"
               >
                 Sign In
               </Link>

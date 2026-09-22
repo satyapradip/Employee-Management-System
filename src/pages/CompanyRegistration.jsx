@@ -9,10 +9,11 @@ import {
   Eye,
   EyeOff,
   Sparkles,
-  Shield,
   CheckCircle2,
   ArrowRight,
-  AlertCircle,
+  ShieldCheck,
+  Zap,
+  BarChart3,
 } from "lucide-react";
 import api from "../services/api";
 import useToast from "../hooks/useToast";
@@ -35,13 +36,13 @@ function FormInput({
     <div className="space-y-1.5">
       <label
         htmlFor={name}
-        className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider"
+        className="block text-xs font-semibold text-[#475569] uppercase tracking-wider"
       >
         {label}
       </label>
       <div className="relative">
         {Icon && (
-          <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+          <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
         )}
         <input
           id={name}
@@ -50,11 +51,11 @@ function FormInput({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className={`w-full ${Icon ? "pl-10" : "pl-4"} ${
-            rightElement ? "pr-11" : "pr-4"
-          } py-3 rounded-xl glass-input text-sm ${
-            error ? "border-red-500/60 focus:ring-red-500/30" : ""
-          }`}
+          className={`w-full ${Icon ? "pl-10" : "pl-3.5"} ${
+            rightElement ? "pr-11" : "pr-3.5"
+          } py-2.5 rounded-xl bg-white border ${
+            error ? "border-[#EF4444] focus:ring-[#EF4444]" : "border-[#E1E5E9] focus:border-[#4F46E5] focus:ring-[#4F46E5]"
+          } text-[#101827] placeholder-[#94A3B8] text-sm focus:outline-none focus:ring-1 transition-all`}
           {...props}
         />
         {rightElement && (
@@ -64,8 +65,8 @@ function FormInput({
         )}
       </div>
       {error && (
-        <p className="text-red-400 text-xs pl-1 flex items-center gap-1 mt-1">
-          <span className="inline-block w-1 h-1 rounded-full bg-red-400" />
+        <p className="text-[#DC2626] text-xs pl-1 flex items-center gap-1 mt-1">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#DC2626]" />
           {error}
         </p>
       )}
@@ -186,57 +187,51 @@ export default function CompanyRegistration() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#070b14] flex items-center justify-center p-4 sm:p-6 lg:p-10 relative overflow-hidden">
-      <div className="glow-ambient-indigo -top-30 left-1/2 -translate-x-1/2" />
-      <div className="glow-ambient-cyan -bottom-25 -right-12.5" />
-      <div className="absolute inset-0 bg-grid-subtle pointer-events-none opacity-40" />
-
+    <div className="min-h-screen w-full bg-[#F5F6F7] flex items-center justify-center p-4 sm:p-6 lg:p-10 relative">
       <div className="relative z-10 w-full max-w-4xl">
         {/* Back Link */}
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-xs font-medium text-zinc-400 hover:text-white transition-colors mb-6 group"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-[#64748B] hover:text-[#101827] transition-colors mb-6 group"
         >
           <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
           Back to Home
         </Link>
 
-        {/* Split Onboarding Glass Card */}
-        <div className="glass-panel rounded-3xl border border-white/10 shadow-2xl shadow-black/70 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
-          {/* Left Column: Organization Benefits Sidebar */}
-          <div className="lg:col-span-5 p-8 sm:p-10 bg-linear-to-br from-indigo-950/60 via-[#0d1428] to-[#0a0f1d] border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-between">
+        {/* Split Onboarding Card */}
+        <div className="bg-white rounded-2xl border border-[#E1E5E9] shadow-sm overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+          {/* Left Column: Dark Navy Sidebar */}
+          <div className="lg:col-span-5 p-8 sm:p-10 bg-[#101827] text-white border-b lg:border-b-0 lg:border-r border-[#1E293B] flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-linear-to-tr from-indigo-600 to-cyan-400 p-px">
-                  <div className="w-full h-full bg-[#090e1c] rounded-[11px] flex items-center justify-center">
-                    <img
-                      src="/TeamFlow_logo.png"
-                      alt="TeamFlow"
-                      className="w-6 h-6 object-contain"
-                    />
-                  </div>
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center p-2">
+                  <img
+                    src="/TeamFlow_logo.png"
+                    alt="TeamFlow"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <div>
-                  <div className="font-display font-bold text-white text-base">
+                  <div className="font-bold text-white text-base leading-snug">
                     TeamFlow
                   </div>
-                  <div className="text-[10px] uppercase tracking-wider text-indigo-400 font-semibold">
-                    Admin Workspace Setup
+                  <div className="text-[11px] uppercase tracking-wider text-[#A5B4FC] font-medium">
+                    Workspace Provisioning
                   </div>
                 </div>
               </div>
 
-              <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white tracking-tight leading-tight mb-4">
+              <h2 className="font-bold text-2xl sm:text-3xl text-white tracking-tight leading-tight mb-4">
                 Launch your company command center.
               </h2>
-              <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed mb-8">
+              <p className="text-[#94A3B8] text-xs sm:text-sm leading-relaxed mb-8">
                 Initialize an isolated corporate environment with role-gated delegation, employee directories, and sprint analytics.
               </p>
 
-              <div className="space-y-4 text-xs sm:text-sm text-zinc-300">
+              <div className="space-y-4 text-xs sm:text-sm text-[#CBD5E1]">
                 <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  <div className="w-5 h-5 rounded-full bg-[#059669]/20 text-[#34D399] flex items-center justify-center shrink-0 mt-0.5">
+                    <ShieldCheck className="w-3.5 h-3.5" />
                   </div>
                   <div>
                     <span className="font-semibold text-white">Full Admin Authority:</span> Provision staff credentials and oversee task flows.
@@ -244,8 +239,8 @@ export default function CompanyRegistration() {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0 mt-0.5">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  <div className="w-5 h-5 rounded-full bg-[#4F46E5]/20 text-[#818CF8] flex items-center justify-center shrink-0 mt-0.5">
+                    <Zap className="w-3.5 h-3.5" />
                   </div>
                   <div>
                     <span className="font-semibold text-white">Immediate Access:</span> Zero configuration needed—start creating tasks right away.
@@ -253,8 +248,8 @@ export default function CompanyRegistration() {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  <div className="w-5 h-5 rounded-full bg-[#E76F51]/20 text-[#FCA5A5] flex items-center justify-center shrink-0 mt-0.5">
+                    <BarChart3 className="w-3.5 h-3.5" />
                   </div>
                   <div>
                     <span className="font-semibold text-white">Real-Time Auditing:</span> Complete history of task assignments and completions.
@@ -263,25 +258,25 @@ export default function CompanyRegistration() {
               </div>
             </div>
 
-            <div className="pt-8 mt-8 border-t border-white/10 text-xs text-zinc-400">
+            <div className="pt-8 mt-8 border-t border-[#1E293B] text-xs text-[#94A3B8]">
               Already have an admin account?{" "}
-              <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-semibold">
+              <Link to="/login" className="text-[#818CF8] hover:text-white font-semibold">
                 Sign in here
               </Link>
             </div>
           </div>
 
           {/* Right Column: Registration Form */}
-          <div className="lg:col-span-7 p-8 sm:p-10 bg-[#090e1c]">
+          <div className="lg:col-span-7 p-8 sm:p-10 bg-white">
             <div className="mb-6">
-              <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 mb-2">
-                <Sparkles className="w-3 h-3" />
-                Free Workspace
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-[#EEF2FF] text-[#4F46E5] border border-[#C7D2FE] mb-2.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                Free Workspace Setup
               </span>
-              <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
+              <h3 className="font-bold text-xl sm:text-2xl text-[#101827] tracking-tight">
                 Register as Admin
               </h3>
-              <p className="text-zinc-400 text-xs sm:text-sm mt-1">
+              <p className="text-[#64748B] text-xs sm:text-sm mt-1">
                 Enter your organization details to configure your root administrator profile.
               </p>
             </div>
@@ -334,7 +329,8 @@ export default function CompanyRegistration() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="p-1 text-zinc-400 hover:text-zinc-200 cursor-pointer"
+                      className="p-1 text-[#94A3B8] hover:text-[#475569] cursor-pointer"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -354,7 +350,8 @@ export default function CompanyRegistration() {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="p-1 text-zinc-400 hover:text-zinc-200 cursor-pointer"
+                      className="p-1 text-[#94A3B8] hover:text-[#475569] cursor-pointer"
+                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                     >
                       {showConfirmPassword ? (
                         <EyeOff className="w-4 h-4" />
@@ -369,7 +366,7 @@ export default function CompanyRegistration() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full btn-primary-gradient py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xl shadow-indigo-600/30 mt-6"
+                className="w-full bg-[#101827] hover:bg-[#1E293B] text-white py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm mt-6 disabled:opacity-50"
               >
                 {isLoading ? (
                   <span className="flex items-center gap-2">
@@ -384,7 +381,7 @@ export default function CompanyRegistration() {
                 )}
               </button>
 
-              <p className="text-[11px] text-zinc-400 text-center pt-2">
+              <p className="text-[11px] text-[#94A3B8] text-center pt-2">
                 By registering, you agree to the Terms of Service and Privacy Policy.
               </p>
             </form>
