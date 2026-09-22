@@ -5,7 +5,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-  globalIgnores(["dist"]),
+  globalIgnores(["dist", ".kilo/**", "server/Lead_Management_System/**"]),
   // Client-side configuration
   {
     files: ["src/**/*.{js,jsx}", "vite.config.js"],
