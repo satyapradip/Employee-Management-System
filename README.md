@@ -1,22 +1,23 @@
 <div align="center">
-  <img src="./public/TeamFlow_logo.png" alt="TeamFlow Logo" width="120" height="120">
+  <img src="./public/TeamFlow_logo.png" alt="TeamFlow Logo" width="110" height="110">
   
-  # 🏢 TeamFlow - Employee Management System
-  
-  ### Modern Multi-Tenant Task & Employee Management Platform
+  # 🏢 TeamFlow - Workforce Operating System
+
+  ### Modern Multi-Tenant Employee & Task Management Platform with FlowAI Copilot
   
   [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-  [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+  [![React](https://img.shields.io/badge/React-19.1-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+  [![Vite](https://img.shields.io/badge/Vite-7.1-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
   [![MongoDB](https://img.shields.io/badge/MongoDB-8.0-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-  [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+  [![Google Gemini](https://img.shields.io/badge/Gemini_AI-3.6_Flash-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white)](https://ai.google.dev/)
   [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](./LICENSE)
-  [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://your-deployed-url.vercel.app)
   
   ---
   
-  **Production Ready** • **Enterprise Grade** • **Multi-Tenant Architecture**
+  **Multi-Tenant Architecture** • **FlowAI Copilot** • **Interactive Sprint Simulator** • **Enterprise Grade Security**
   
-  [Live Demo](https://your-deployed-url.vercel.app) • [Documentation](#-documentation) • [Report Bug](https://github.com/satyapradip/Employee-Management-System/issues) • [Request Feature](https://github.com/satyapradip/Employee-Management-System/issues)
+  [Live Demo](https://your-deployed-url.vercel.app) • [Documentation](#-documentation) • [API Reference](#-api-documentation) • [Quick Start](#-getting-started) • [Report Bug](https://github.com/satyapradip/Employee-Management-System/issues)
   
 </div>
 
@@ -24,585 +25,527 @@
 
 ## 📋 Table of Contents
 
-- [About The Project](#-about-the-project)
-- [Features](#-features)
-- [Tech Stack](#️-tech-stack)
-- [Architecture](#-architecture)
-- [Getting Started](#-getting-started)
+- [🌟 About The Project](#-about-the-project)
+- [✨ Core Features](#-core-features)
+  - [🤖 FlowAI Workspace Copilot](#-flowai-workspace-copilot-new)
+  - [🚀 Modern Landing Page & Interactive Sprint Simulator](#-modern-landing-page--interactive-sprint-simulator)
+  - [👑 Admin Command Center](#-admin-command-center)
+  - [👤 Employee Workspace & "Next Best Action"](#-employee-workspace--next-best-action)
+  - [🏢 Multi-Tenant SaaS Onboarding](#-multi-tenant-saas-onboarding)
+- [🎬 Live Demo Credentials & Seed Data](#-live-demo-credentials--seed-data)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [🏛️ System Architecture](#️-system-architecture)
+- [📁 Project Structure](#-project-structure)
+- [🚀 Getting Started](#-getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Environment Variables](#environment-variables)
-- [Usage](#-usage)
-- [API Documentation](#-api-documentation)
-- [Deployment](#-deployment)
-- [Testing](#-testing)
-- [Performance](#-performance)
-- [Security](#-security)
-- [Documentation](#-documentation)
-- [Roadmap](#️-roadmap)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Contact](#-contact)
-- [Acknowledgments](#-acknowledgments)
+  - [Database Seeding](#database-seeding)
+  - [Running the Application](#running-the-application)
+- [📖 Application Walkthrough & User Flows](#-application-walkthrough--user-flows)
+- [📚 API Documentation](#-api-documentation)
+- [🔒 Security & Multi-Tenant Isolation](#-security--multi-tenant-isolation)
+- [🧪 Testing & Quality Assurance](#-testing--quality-assurance)
+- [⚡ Performance Benchmarks](#-performance-benchmarks)
+- [🔧 Troubleshooting & FAQ](#-troubleshooting--faq)
+- [🗺️ Project Roadmap](#️-project-roadmap)
+- [🤝 Contributing](#-contributing)
+- [📄 License & Authors](#-license--authors)
 
 ---
 
 ## 🌟 About The Project
 
-**TeamFlow** is a production-ready, full-stack employee and task management system designed for modern teams. Built with scalability and user experience in mind, it features a stunning dark-themed UI with smooth animations, comprehensive role-based access control, and complete multi-tenant architecture for SaaS deployment.
+**TeamFlow** is an enterprise-ready, full-stack multi-tenant workforce management platform designed for modern engineering and operations teams. Built from the ground up with strict tenant isolation, TeamFlow powers deliverable delegation, sprint velocity tracking, and employee execution.
+
+The platform combines a **modern light SaaS design foundation** (Geist typography, structured navy navigation, crisp borders, and subtle coral/indigo accents) with an embedded **FlowAI Workspace Copilot** powered by Google Gemini to streamline task drafting, architectural planning, and blocker resolution.
 
 ### Why TeamFlow?
 
-- ✅ **100% Multi-Tenant** - Complete data isolation for each company
-- ✅ **Production Ready** - Deployed CI/CD pipeline with automated testing
-- ✅ **Modern Stack** - Latest React 19, Node.js 18+, MongoDB 8.0
-- ✅ **Beautiful UI** - Glassmorphism, 3D animations, responsive design
-- ✅ **Enterprise Security** - JWT auth, rate limiting, XSS/CSRF protection
-- ✅ **Developer Friendly** - Comprehensive docs, clean code, easy setup
-
-### 🎬 Live Demo Credentials
-
-After visiting the [Live Demo](https://your-deployed-url.vercel.app):
-
-| Role         | Email             | Password | Capabilities                     |
-| ------------ | ----------------- | -------- | -------------------------------- |
-| **Admin**    | admin@company.com | admin123 | Full dashboard, task management  |
-| **Employee** | john@company.com  | 123456   | View and complete assigned tasks |
+- 🏢 **100% Multi-Tenant Data Isolation** — Automatic tenant filtering across every database query via strict `companyName` tenant contexts.
+- 🤖 **Embedded FlowAI Copilot** — Context-aware Gemini 3.6 Flash copilot that writes structured deliverable specifications, drafts acceptance criteria, and suggests sprint optimizations.
+- ⚡ **Interactive Sprint Simulator** — Landing page hero includes an interactive simulator allowing prospective teams to interact with real tasks, toggle completion states, and see burn-down metrics live.
+- 🎯 **Employee "Next Best Action" Engine** — Focuses team members on their single highest-impact priority task with 1-click acceptance and blocker resolution logging.
+- 📊 **Executive Analytics Suite** — Recharts-powered sprint velocity, status distribution breakdowns, and individual member throughput graphs.
+- 🛡️ **Enterprise Security Foundation** — Environment-aware Helmet headers, dual-layer rate limiting (auth + global), XSS cleaning, MongoDB query sanitization, and HTTP-only JWT session handling.
 
 ---
 
-## 📚 Documentation
+## ✨ Core Features
 
-**📖 Complete Documentation Available:**
+### 🤖 FlowAI Workspace Copilot `NEW`
 
-- 🚀 [**Quick Start Guide**](./QUICK_START_DEPLOY.md) - Deploy in 30 minutes
-- 📘 [**User Guide**](./USER_GUIDE.md) - Complete feature walkthrough
-- 📊 [**Visual Workflow Guide**](./VISUAL_WORKFLOW_GUIDE.md) - Architecture diagrams
-- 🔧 [**DevOps Guide**](./DEVOPS_GUIDE.md) - Monitoring, scaling, security
-- 🐛 [**Troubleshooting**](./TROUBLESHOOTING_DEPLOYMENT.md) - Common issues & fixes
-- 📝 [**Project Analysis**](./PROJECT_ANALYSIS.md) - Technical deep dive
-- 📅 [**Roadmap**](./ROADMAP.md) - Future features & improvements
+Built directly into the workspace layout via a global floating copilot modal (`AIAssistant.jsx`), **FlowAI** acts as an in-app Senior Engineering Lead and Solutions Architect powered by Google Gemini:
+
+- **Role & Route Awareness:** Detects whether the user is an `admin` or `employee`, the active company workspace, and the current URL pathname to customize its suggestions.
+- **Automated Deliverable Specifications:** Translates natural language requirements into structured JSON deliverable drafts (`task_draft`) containing:
+  - Deliverable title & category (Frontend, Backend, Database, Security, DevOps, Design, QA)
+  - Priority assessment (High, Medium, Low)
+  - Due date estimation
+  - Scope & architectural objective
+  - Rigorous acceptance criteria
+- **1-Click Integration:** Automatically populates Admin task creation forms or copies clean Markdown specifications to clipboard.
+- **Contextual Prompts:** Built-in one-tap triggers for Sprint Planning, Blocker Triage, Architecture Reviews, and Code Quality metrics.
+- **Docking Flexibility:** Minimize, expand full-screen, or quick-clear conversation state with graceful offline fallbacks.
+
+### 🚀 Modern Landing Page & Interactive Sprint Simulator
+
+- **Geist Typography & Light SaaS Aesthetics:** Crisp light surfaces (`#F5F6F7`), deep charcoal text (`#0F172A`), and geometric orbital arcs.
+- **Interactive Sprint Simulator:** Fully interactive hero demonstration (`#simulator`) where visitors can click tasks, see status transitions (`active` -> `completed`), inspect burn-down progress, and experience the UI firsthand without registering.
+- **4-Step Interactive Stepper:** Guided visual timeline showcasing Workspace Registration, Member Provisioning, Deliverable Delegation, and Velocity Measurement.
+- **Target Persona Tabs:** Tailored feature matrices for Engineering Teams, Operations & HR, and Fast-Growing Startups.
+- **FAQ Accordion & News Pill:** Direct answers to multi-tenancy, security, and migration questions with live release notification pill (`v2.4 Task AI Deployed`).
+
+### 👑 Admin Command Center
+
+- **Structured Navy Sidebar Navigation:** High-contrast navy (`#101827`) sidebar with active tab indicators, workspace identity badge, and full mobile drawer support.
+- **Live Sprint KPI Counters:** Real-time summary tiles showing Total Tasks, Active Sprints, Completed Deliverables, and Blocked/Failed tasks.
+- **4 Dedicated Management Panels:**
+  1. **Tasks Tab:** Instant debounced search, status filter pills (`All`, `New`, `Active`, `Completed`, `Failed`), priority chips, assignee badges, due dates, and inline delete/edit modals.
+  2. **Create Deliverable Tab:** Rich task composer supporting title, description, category selector, priority weighting, employee assignment dropdown, due date picker, and FlowAI autofill.
+  3. **Employees Tab:** Team directory with individual member workload statistics, Add Employee modal, password reset utility, and member removal safeguards.
+  4. **Analytics Tab:** Dynamic Recharts visualizations including Sprint Status Distribution, Category Breakdown, and Team Member Deliverable Velocity.
+- **Quick Action Drawer:** Fast-access triggers for rapid task generation, member invitation, and export options.
+
+### 👤 Employee Workspace & "Next Best Action"
+
+- **Dynamic Welcome Banner:** Greets employees based on local time (*"Good morning"*, *"Good afternoon"*, *"Good evening"*) alongside the live formatted date.
+- **Personal Deliverable KPIs:** Real-time counters showing personal counts for New Tasks, In Progress, Delivered, and Blocked items.
+- **"Next Best Action" Card:** Intelligent decision helper that evaluates queue state:
+  - If new unaccepted tasks exist: Highlights the top deliverable with a prominent **1-Click "Accept First Task"** button.
+  - If tasks are in flight: Focuses the employee on execution with active timer counters.
+  - If queue is clear: Displays an achievement banner celebrating full sprint completion.
+- **Deliverable Queue (`TaskList`):**
+  - Instant 1-Click Accept (`new` -> `active`).
+  - Mark Complete with timestamp recording (`active` -> `completed`).
+  - Mark Failed / Document Blocker modal (`active` -> `failed`) requiring reason submission to alert the engineering lead.
+
+### 🏢 Multi-Tenant SaaS Onboarding
+
+- **3-Step Company Registration (`/register-company`):**
+  1. *Organization Profile:* Company name, reserved workspace subdomain (`[subdomain].teamflow.space`), industry vertical, and team size.
+  2. *Primary Administrator:* Full name, executive email, and password.
+  3. *Tiered Plan Confirmation:* Interactive selection between Starter, Growth, and Enterprise tiers.
+- **SaaS Card Suite Auth:** Modern card layouts for Login, Sign Up, Forgot Password, and Reset Password with secure token validation.
 
 ---
 
-## ✨ Features
+## 🎬 Live Demo Credentials & Seed Data
 
-### 🏗️ **Multi-Tenant SaaS Architecture**
+The database includes an automated seeder (`server/src/seeders/seedData.js`) configured with **Acme Corp** workspace data:
 
-<div align="center">
-  <img src="https://img.shields.io/badge/Multi--Tenant-Ready-success?style=flat-square" alt="Multi-Tenant">
-  <img src="https://img.shields.io/badge/Data-Isolated-blue?style=flat-square" alt="Data Isolated">
-  <img src="https://img.shields.io/badge/Scalable-Yes-brightgreen?style=flat-square" alt="Scalable">
-</div>
+| Role | Name | Email | Password | Company Workspace | Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 👑 **Admin** | Admin User | `admin@company.com` | `admin123` | Acme Corp | Full Command Center access |
+| 👤 **Employee** | John Doe | `john@company.com` | `123456` | Acme Corp | Frontend & API tasks |
+| 👤 **Employee** | Jane Smith | `jane@company.com` | `123456` | Acme Corp | Database & Schema tasks |
+| 👤 **Employee** | Mike Johnson | `mike@company.com` | `123456` | Acme Corp | Security & DevOps tasks |
+| 👤 **Employee** | Sarah Wilson | `sarah@company.com` | `123456` | Acme Corp | QA & Testing deliverables |
+| 👤 **Employee** | Tom Brown | `tom@company.com` | `123456` | Acme Corp | Infrastructure tasks |
+| 👤 **Employee** | Pradipta Kumar | `supritimaity59@gmail.com` | `123456` | Acme Corp | Lead developer workspace |
 
-- ✅ **Complete Data Isolation** - Each company's data completely separated
-- ✅ **Self-Service Registration** - Companies sign up independently
-- ✅ **Company-Scoped Queries** - All database queries filtered by company
-- ✅ **Secure Multi-Tenancy** - Company validation on every authenticated request
-- 🔜 **Subscription Tiers** - Free, Pro, Enterprise plans (coming soon)
-
-### 🎨 **Modern Landing Page**
-
-- ✨ **3D Interactive Elements** - Three.js animated sphere with particle effects
-- 💎 **Glassmorphism Design** - Modern UI with backdrop blur effects
-- 📱 **Fully Responsive** - Perfect on desktop, tablet, and mobile
-- 🎯 **Clear CTAs** - Optimized conversion funnel
-- ⚡ **Lightning Fast** - Optimized performance with Vite
-
-### 👑 **Admin Dashboard**
-
-| Feature                 | Description                                     | Status |
-| ----------------------- | ----------------------------------------------- | ------ |
-| **Task Management**     | Create, update, delete tasks with rich metadata | ✅     |
-| **Employee Management** | Add, edit, remove employees with role control   | ✅     |
-| **Advanced Filtering**  | Filter by status, category, priority, employee  | ✅     |
-| **Real-Time Stats**     | Live task metrics and completion rates          | ✅     |
-| **Analytics Dashboard** | Charts, graphs, performance insights            | ✅     |
-| **Bulk Actions**        | Multi-select and batch operations               | ✅     |
-| **Quick Actions**       | Sidebar for common operations                   | ✅     |
-| **Search**              | Full-text search across tasks                   | ✅     |
-
-### 👤 **Employee Dashboard**
-
-- ✅ **Task Categories** - Organized view: New, Active, Completed, Failed
-- ✅ **One-Click Accept** - Instantly accept new task assignments
-- ✅ **Status Updates** - Mark tasks complete or failed with reasons
-- ✅ **Personal Stats** - Track your task completion metrics
-- ✅ **Smart Guidance** - "Next Best Action" recommendations
-- ✅ **Time-Based Greeting** - Personalized welcome messages
-- ✅ **Task Details** - Full task information at a glance
-
-### 🔐 **Security & Authentication**
-
-<div align="center">
-  <img src="https://img.shields.io/badge/Security-Enterprise--Grade-red?style=flat-square" alt="Security">
-  <img src="https://img.shields.io/badge/Auth-JWT-orange?style=flat-square" alt="JWT">
-  <img src="https://img.shields.io/badge/Encryption-bcrypt-blue?style=flat-square" alt="Encryption">
-</div>
-
-| Security Layer        | Implementation    | Details                                |
-| --------------------- | ----------------- | -------------------------------------- |
-| **Authentication**    | JWT Tokens        | HTTP-only cookies, 7-day expiry        |
-| **Password Security** | bcrypt            | 10 salt rounds, secure hashing         |
-| **Access Control**    | RBAC              | Admin/Employee role separation         |
-| **API Protection**    | Rate Limiting     | 100 req/15min global, 5 req/15min auth |
-| **Input Validation**  | express-validator | XSS, NoSQL injection prevention        |
-| **Headers**           | Helmet            | Security headers, CSP, HSTS            |
-| **CORS**              | Whitelist         | Origin restriction to known domains    |
-| **Session Security**  | LocalStorage      | Encrypted token storage                |
-| **Password Reset**    | Email Tokens      | Time-limited reset links               |
+> **💡 Quick Tip:** Running `npm run seed` inside the `server/` folder populates this complete organization structure with 20 realistic deliverables spread across `new`, `active`, `completed`, and `failed` states.
 
 ---
 
 ## 🛠️ Tech Stack
 
-### **Frontend**
+### **Frontend Architecture**
 
-| Technology                                                   | Version | Purpose                     |
-| ------------------------------------------------------------ | ------- | --------------------------- |
-| [React](https://react.dev/)                                  | 19      | UI framework with hooks     |
-| [Vite](https://vite.dev/)                                    | 7.x     | Build tool & dev server     |
-| [Tailwind CSS](https://tailwindcss.com/)                     | 4.0     | Utility-first styling       |
-| [React Router](https://reactrouter.com/)                     | 7.x     | Client-side routing         |
-| [Framer Motion](https://www.framer.com/motion/)              | 11.x    | Animations                  |
-| [Three.js](https://threejs.org/)                             | Latest  | 3D graphics                 |
-| [React Three Fiber](https://docs.pmnd.rs/react-three-fiber/) | Latest  | React renderer for Three.js |
-| [Lucide React](https://lucide.dev/)                          | Latest  | Icon library                |
+| Technology | Version | Purpose |
+| :--- | :--- | :--- |
+| **[React](https://react.dev/)** | `19.1.1` | Concurrent UI framework with hooks and functional components |
+| **[Vite](https://vite.dev/)** | `7.1.2` | Build tool, HMR server, and local reverse proxy (`/api`) |
+| **[Tailwind CSS](https://tailwindcss.com/)** | `4.1.18` | Next-gen utility-first styling powered by `@tailwindcss/vite` |
+| **[React Router](https://reactrouter.com/)** | `7.13.0` | Client-side declarative routing and role guards |
+| **[Framer Motion](https://www.framer.com/motion/)** | `12.33.0` | Physics-based animations and layout transitions |
+| **[Recharts](https://recharts.org/)** | `3.7.0` | Declarative SVG charting for the Admin Analytics suite |
+| **[Lucide React](https://lucide.dev/)** | `0.563.0` | Modern SVG iconography |
+| **[Three.js](https://threejs.org/)** / **[R3F](https://docs.pmnd.rs/react-three-fiber/)** | `0.182.0` / `9.5.0` | 3D graphics and canvas rendering |
+| **[Google Gemini API](https://ai.google.dev/)** | `3.6 Flash` | FlowAI Workspace Copilot integration |
 
-### **Backend**
+### **Backend Architecture**
 
-| Technology                                                | Version | Purpose               |
-| --------------------------------------------------------- | ------- | --------------------- |
-| [Node.js](https://nodejs.org/)                            | 18+     | JavaScript runtime    |
-| [Express.js](https://expressjs.com/)                      | 4.x     | Web framework         |
-| [MongoDB](https://www.mongodb.com/)                       | 8.0     | NoSQL database        |
-| [Mongoose](https://mongoosejs.com/)                       | 8.x     | MongoDB ODM           |
-| [JWT](https://jwt.io/)                                    | Latest  | Authentication tokens |
-| [bcrypt](https://github.com/kelektiv/node.bcrypt.js)      | 5.x     | Password hashing      |
-| [Nodemailer](https://nodemailer.com/)                     | Latest  | Email service         |
-| [express-validator](https://express-validator.github.io/) | Latest  | Input validation      |
-
-### **DevOps & Tools**
-
-| Tool                                                  | Purpose           |
-| ----------------------------------------------------- | ----------------- |
-| [GitHub Actions](https://github.com/features/actions) | CI/CD pipeline    |
-| [Vercel](https://vercel.com/)                         | Frontend hosting  |
-| [Render](https://render.com/)                         | Backend hosting   |
-| [MongoDB Atlas](https://www.mongodb.com/atlas)        | Database hosting  |
-| [Jest](https://jestjs.io/)                            | Testing framework |
-| [ESLint](https://eslint.org/)                         | Code linting      |
+| Technology | Version | Purpose |
+| :--- | :--- | :--- |
+| **[Node.js](https://nodejs.org/)** | `18+` (ESM) | Modern JavaScript runtime |
+| **[Express.js](https://expressjs.com/)** | `4.21.0` | REST API framework |
+| **[MongoDB](https://www.mongodb.com/)** | `8.0` / Atlas | NoSQL database with multi-tenant collections |
+| **[Mongoose](https://mongoosejs.com/)** | `8.5.1` | Object data modeling and tenant schema enforcement |
+| **[jsonwebtoken](https://jwt.io/)** | `9.0.2` | Stateless cryptographic session tokens (7-day validity) |
+| **[bcryptjs](https://github.com/dcodeIO/bcrypt.js)** | `2.4.3` | One-way password hashing (10 salt rounds) |
+| **[express-rate-limit](https://github.com/express-rate-limit/express-rate-limit)** | `8.2.1` | Multi-tier rate limiting for auth and global endpoints |
+| **[express-validator](https://express-validator.github.io/)** | `7.1.0` | Declarative schema validation and payload sanitization |
+| **[Helmet](https://helmetjs.github.io/)** | `8.1.0` | Environment-aware security header suite (HSTS, CSP) |
+| **[Nodemailer](https://nodemailer.com/)** | `7.0.12` | SMTP delivery for password reset tokens and invites |
+| **[Jest](https://jestjs.io/)** & **[Supertest](https://github.com/ladjs/supertest)** | `30.2.0` / `7.2.2` | Automated integration and route testing |
 
 ---
 
-## 🏛️ Architecture
-
-### System Architecture
+## 🏛️ System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                         Client Layer                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │   Landing    │  │    Admin     │  │   Employee   │      │
-│  │     Page     │  │  Dashboard   │  │  Dashboard   │      │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘      │
-│         │                 │                  │               │
-│         └─────────────────┴──────────────────┘               │
-│                           │                                  │
-│                    React Router                              │
-└───────────────────────────┼──────────────────────────────────┘
-                            │
-                      Axios/Fetch
-                            │
-┌───────────────────────────┼──────────────────────────────────┐
-│                    API Gateway Layer                         │
-│  ┌─────────────────────────────────────────────────────┐    │
-│  │           Express.js REST API Server                │    │
-│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐   │    │
-│  │  │  Auth      │  │  Tasks     │  │ Employees  │   │    │
-│  │  │  Routes    │  │  Routes    │  │  Routes    │   │    │
-│  │  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘   │    │
-│  │        │               │               │           │    │
-│  │  ┌─────┴───────────────┴───────────────┴──────┐   │    │
-│  │  │         Middleware Layer                    │   │    │
-│  │  │  • JWT Auth  • Validation  • Error         │   │    │
-│  │  │  • Rate Limit  • CORS  • Helmet            │   │    │
-│  │  └────────────────────┬───────────────────────┘   │    │
-│  └───────────────────────┼───────────────────────────┘    │
-└────────────────────────┼────────────────────────────────┘
-                           │
-                      Mongoose ODM
-                           │
-┌────────────────────────┼──────────────────────────────────┐
-│                   Data Layer                               │
-│  ┌──────────────────────────────────────────────────┐     │
-│  │              MongoDB Database                     │     │
-│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐       │     │
-│  │  │  Users   │  │  Tasks   │  │  Tokens  │       │     │
-│  │  │Collection│  │Collection│  │Collection│       │     │
-│  │  └──────────┘  └──────────┘  └──────────┘       │     │
-│  │         Multi-Tenant: Filtered by companyName    │     │
-│  └──────────────────────────────────────────────────┘     │
-└────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────┐
+│                              CLIENT LAYER                              │
+│                                                                        │
+│   Landing Page       Admin Command Center        Employee Workspace    │
+│  (Sprint Simulator)   (Navy Sidebar, Analytics)   (Next Best Action)   │
+│         │                     │                         │              │
+│         └─────────────────────┴─────────────────────────┘              │
+│                               │                                        │
+│                 React Router 7 & Protected Guards                      │
+│                               │                                        │
+│                 Vite Reverse Proxy (/api)                              │
+│              (Eliminates CORS & PNA on Localhost)                      │
+└───────────────────────────────┬────────────────────────────────────────┘
+                                │
+                                ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                           API GATEWAY LAYER                            │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │                        Express 4 REST API                        │  │
+│  │                                                                  │  │
+│  │   /api/auth/*          /api/tasks/*          /api/employees/*    │  │
+│  │   • Login / Register   • CRUD Operations     • Directory Stats   │  │
+│  │   • Password Reset     • Accept / Complete   • Password Reset    │  │
+│  │   • Session / Me       • Fail with Reason    • Member Management │  │
+│  │                                                                  │  │
+│  │  ┌────────────────────────────────────────────────────────────┐  │  │
+│  │  │                     Middleware Pipeline                    │  │  │
+│  │  │  1. CORS Origin Whitelist                                  │  │  │
+│  │  │  2. Environment-Aware Helmet Security Headers              │  │  │
+│  │  │  3. Compression & HTTP Parameter Pollution (HPP)          │  │  │
+│  │  │  4. Data Sanitization (mongoSanitize + xss-clean)          │  │  │
+│  │  │  5. Tiered Rate Limiting (Global 100/15m, Auth 20/15m)     │  │  │
+│  │  │  6. JWT Token Verification & RBAC Authorization            │  │  │
+│  │  └────────────────────────────────────────────────────────────┘  │  │
+│  └────────────────────────────┬─────────────────────────────────────┘  │
+└───────────────────────────────┼────────────────────────────────────────┘
+                                │
+                                ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                              DATA LAYER                                │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │                       MongoDB Database                           │  │
+│  │                                                                  │  │
+│  │   Users Collection               Tasks Collection                │  │
+│  │   • id, name, email              • id, title, description        │  │
+│  │   • password (bcrypt)            • category, priority, dueDate   │  │
+│  │   • role (admin | employee)      • status (new/active/done/fail) │  │
+│  │   • companyName (TENANT)         • assignedTo, assignedBy        │  │
+│  │                                  • companyName (TENANT)          │  │
+│  │                                                                  │  │
+│  │       🔒 Mandatory Multi-Tenant Filter: { companyName }          │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Data Flow
+---
 
-```
-User Action → React Component → API Service → Express Route →
-Middleware (Auth/Validation) → Controller → Mongoose Model →
-MongoDB → Response ← ← ← ← ← ← ← ← ← ←
-```
-
-### 📁 Project Structure
+## 📁 Project Structure
 
 ```
 Employee_Management_System/
 │
-├── 📂 src/                          # Frontend (React + Vite)
+├── 📂 src/                          # Frontend Application (React 19 + Vite 7)
 │   ├── 📂 components/
-│   │   ├── 📂 Admin/                # Admin Dashboard
-│   │   │   ├── AdminDashboard.jsx
-│   │   │   ├── 📂 components/       # Reusable UI components
-│   │   │   │   ├── CreateTaskTab.jsx
-│   │   │   │   ├── EmployeesTab.jsx
-│   │   │   │   ├── AnalyticsTab.jsx
-│   │   │   │   ├── QuickActions.jsx
-│   │   │   │   └── ...
-│   │   │   ├── 📂 hooks/            # Custom React hooks
-│   │   │   │   ├── useTaskManager.js
-│   │   │   │   ├── useEmployeeData.js
-│   │   │   │   └── useAnalytics.js
-│   │   │   └── 📂 styles/           # Component-specific styles
+│   │   ├── 📂 AI/                   # FlowAI Workspace Copilot
+│   │   │   └── AIAssistant.jsx      # Gemini 3.6 Flash copilot interface
 │   │   │
-│   │   ├── 📂 Auth/                 # Authentication Components
-│   │   │   ├── Login.jsx
-│   │   │   ├── Signup.jsx
-│   │   │   ├── ForgotPassword.jsx
-│   │   │   └── ResetPassword.jsx
+│   │   ├── 📂 Admin/                # Admin Command Center
+│   │   │   ├── AdminDashboard.jsx   # Master container with navy sidebar
+│   │   │   ├── 📂 components/       # Modular Admin UI components
+│   │   │   │   ├── AnalyticsTab.jsx # Recharts charts & velocity graphs
+│   │   │   │   ├── CategorySelector.jsx # Deliverable category picker
+│   │   │   │   ├── CreateTaskTab.jsx    # Task composer with FlowAI injection
+│   │   │   │   ├── DeleteConfirmModal.jsx # Confirmation dialog
+│   │   │   │   ├── EmployeesTab.jsx # Team directory & credential reset
+│   │   │   │   ├── FilterPills.jsx  # Status filter toggles
+│   │   │   │   ├── QuickActions.jsx # Fast shortcut buttons
+│   │   │   │   ├── SearchBar.jsx    # Debounced task search
+│   │   │   │   ├── Sidebar.jsx      # Dark navy sidebar navigation
+│   │   │   │   ├── StatsCard.jsx    # Real-time sprint KPI cards
+│   │   │   │   ├── TaskCard.jsx     # Individual task card
+│   │   │   │   ├── TasksTab.jsx     # Filtered deliverable board
+│   │   │   │   └── index.js
+│   │   │   └── 📂 hooks/            # Custom hooks for state & API
+│   │   │       ├── useTaskManager.js
+│   │   │       ├── useEmployees.js
+│   │   │       └── useAnalytics.js
 │   │   │
-│   │   ├── 📂 Dashboard/            # Employee Dashboard
-│   │   │   └── EmployeeDashboard.jsx
+│   │   ├── 📂 Auth/                 # Authentication Card Suite
+│   │   │   ├── Login.jsx            # Sign in with quick role presets
+│   │   │   ├── Signup.jsx           # Account creation
+│   │   │   ├── ForgotPassword.jsx   # Reset token dispatch
+│   │   │   └── ResetPassword.jsx    # Password change form
 │   │   │
-│   │   ├── 📂 ErrorBoundary/        # Error handling
+│   │   ├── 📂 Dashboard/            # Employee Workspace
+│   │   │   └── EmployeeDashboard.jsx # Welcome banner, KPI cards & Next Best Action
+│   │   │
+│   │   ├── 📂 TaskList/             # Deliverable Resolution Board
+│   │   │   └── TaskList.jsx         # 1-click Accept, Complete, Fail modals
+│   │   │
+│   │   ├── 📂 ErrorBoundary/        # Fault isolation & crash guards
 │   │   │   └── RouteErrorBoundary.jsx
 │   │   │
-│   │   └── 📂 others/               # Shared components
-│   │       ├── Header.jsx
-│   │       └── TaskListNumber.jsx
+│   │   └── 📂 others/               # Shared interface components
+│   │       ├── Header.jsx           # Topbar with profile & logout
+│   │       └── TaskListNumber.jsx   # Numerical KPI counters
 │   │
-│   ├── 📂 pages/                    # Page-level components
-│   │   ├── LandingPage.jsx          # Marketing landing page
-│   │   └── CompanyRegistration.jsx  # Multi-step registration
+│   ├── 📂 pages/                    # Public Marketing & Onboarding Pages
+│   │   ├── LandingPage.jsx          # Hero arc, Sprint Simulator & feature matrix
+│   │   └── CompanyRegistration.jsx  # 3-step organization onboarding
 │   │
-│   ├── 📂 context/                  # React Context APIs
-│   │   ├── AuthProvider.jsx         # Auth state management
-│   │   ├── ToastProvider.jsx        # Toast notifications
-│   │   └── contexts.js              # Context exports
+│   ├── 📂 context/                  # React Contexts
+│   │   ├── AuthProvider.jsx         # Token persistence & user state
+│   │   └── ToastProvider.jsx        # Notification dispatch
 │   │
-│   ├── 📂 hooks/                    # Global custom hooks
-│   │   ├── useAuth.js               # Authentication hook
-│   │   └── useToast.js              # Toast notifications hook
+│   ├── 📂 services/                 # Centralized HTTP layer
+│   │   └── api.js                   # Fetch client configured for Vite proxy
 │   │
-│   ├── 📂 services/                 # API service layer
-│   │   ├── api.js                   # Axios instance & API calls
-│   │   └── index.js
+│   ├── 📂 utils/                    # Shared utilities
+│   │   ├── logger.js                # Environment-aware logging
+│   │   └── validation.js            # Input check helpers
 │   │
-│   ├── 📂 utils/                    # Utility functions
-│   │   ├── validation.js            # Input validation helpers
-│   │   ├── logger.js                # Console logging utility
-│   │   └── localStorage.jsx         # LocalStorage wrapper
-│   │
-│   ├── 📂 constants/                # Application constants
-│   │   └── taskConstants.js
-│   │
-│   ├── App.jsx                      # Root component
-│   ├── main.jsx                     # Application entry point
-│   ├── App.css                      # Global styles
-│   └── index.css                    # Tailwind imports
+│   ├── App.jsx                      # App router & FlowAI copilot root
+│   ├── main.jsx                     # Application bootstrap
+│   └── index.css                    # Tailwind CSS v4 imports & design tokens
 │
-├── 📂 server/                       # Backend (Node.js + Express)
+├── 📂 server/                       # Backend Application (Node.js + Express)
 │   ├── 📂 src/
-│   │   ├── 📂 config/               # Configuration files
-│   │   │   ├── db.js                # MongoDB connection
-│   │   │   ├── env.js               # Environment variables
+│   │   ├── 📂 config/               # Database & environment configurations
+│   │   │   ├── db.js                # MongoDB connection handler
+│   │   │   ├── env.js               # Validated env configurations
 │   │   │   └── index.js
 │   │   │
-│   │   ├── 📂 controllers/          # Route controllers
-│   │   │   ├── authController.js    # Auth logic
-│   │   │   ├── taskController.js    # Task CRUD
-│   │   │   ├── employeeController.js # Employee management
-│   │   │   └── index.js
+│   │   ├── 📂 controllers/          # Business logic handlers
+│   │   │   ├── authController.js    # Registration, login, password reset
+│   │   │   ├── taskController.js    # Task CRUD, status updates, stats
+│   │   │   └── employeeController.js# Team management, metrics
 │   │   │
-│   │   ├── 📂 middleware/           # Express middleware
-│   │   │   ├── auth.js              # JWT verification
-│   │   │   ├── validate.js          # Request validation
-│   │   │   ├── errorHandler.js      # Error handling
-│   │   │   └── index.js
+│   │   ├── 📂 middleware/           # Express middleware pipeline
+│   │   │   ├── auth.js              # JWT verification & tenant extraction
+│   │   │   ├── validate.js          # Express-validator error handler
+│   │   │   └── errorHandler.js      # Global error and 404 handlers
 │   │   │
-│   │   ├── 📂 models/               # Mongoose schemas
-│   │   │   ├── User.js              # User model (Admin/Employee)
-│   │   │   ├── Task.js              # Task model
-│   │   │   └── index.js
+│   │   ├── 📂 models/               # Mongoose Schemas with multi-tenancy
+│   │   │   ├── User.js              # User schema with bcrypt hooks
+│   │   │   └── Task.js              # Deliverable schema with status transitions
 │   │   │
-│   │   ├── 📂 routes/               # API routes
+│   │   ├── 📂 routes/               # API endpoint definitions
 │   │   │   ├── authRoutes.js        # /api/auth/*
 │   │   │   ├── taskRoutes.js        # /api/tasks/*
 │   │   │   ├── employeeRoutes.js    # /api/employees/*
-│   │   │   └── index.js
+│   │   │   └── index.js             # Route aggregator & /api/health
 │   │   │
-│   │   ├── 📂 validators/           # Input validation schemas
-│   │   │   ├── authValidator.js
-│   │   │   ├── taskValidator.js
-│   │   │   ├── employeeValidator.js
-│   │   │   └── index.js
+│   │   ├── 📂 seeders/              # Database population scripts
+│   │   │   └── seedData.js          # Acme Corp seed generator
 │   │   │
-│   │   ├── 📂 services/             # Business logic services
-│   │   │   └── taskNotificationService.js
-│   │   │
-│   │   ├── 📂 utils/                # Utility functions
-│   │   │   ├── ApiError.js          # Custom error class
-│   │   │   ├── ApiResponse.js       # Response formatter
-│   │   │   ├── asyncHandler.js      # Async wrapper
-│   │   │   ├── sendEmail.js         # Email sender
-│   │   │   ├── emailTemplates.js    # Email HTML templates
-│   │   │   └── index.js
-│   │   │
-│   │   ├── 📂 seeders/              # Database seeders
-│   │   │   └── seedData.js          # Sample data generator
-│   │   │
-│   │   └── app.js                   # Express app configuration
+│   │   └── app.js                   # Express application setup
 │   │
-│   ├── 📂 tests/                    # Test suites
-│   │   ├── auth.test.js
-│   │   ├── setup.js
-│   │   └── README.md
-│   │
-│   ├── server.js                    # Server entry point
-│   ├── package.json                 # Backend dependencies
-│   └── jest.config.js               # Jest configuration
+│   ├── server.js                    # Server entrypoint
+│   ├── package.json                 # Backend dependencies & test scripts
+│   └── jest.config.js               # Unit and integration test config
 │
-├── 📂 public/                       # Static assets
-│   ├── TeamFlow_logo.png
+├── 📂 public/                       # Static public assets
+│   ├── TeamFlow_logo.png            # Official brand logo
 │   └── vite.svg
 │
-├── 📂 .github/                      # GitHub configuration
-│   ├── 📂 workflows/
-│   │   └── ci-cd.yml                # CI/CD pipeline
-│   └── CICD_SETUP.md
-│
-├── 📂 scripts/                      # Utility scripts
-│   ├── deploy.sh                    # Deployment automation (Unix)
-│   ├── deploy.ps1                   # Deployment automation (Windows)
-│   ├── pre-deploy-check.sh          # Pre-deployment checks
-│   └── pre-deploy-check.ps1
-│
-├── 📄 package.json                  # Frontend dependencies
-├── 📄 vite.config.js                # Vite configuration
-├── 📄 tailwind.config.js            # Tailwind CSS config
-├── 📄 eslint.config.js              # ESLint configuration
-├── 📄 vercel.json                   # Vercel deployment config
-├── 📄 render.yaml                   # Render deployment config
-├── 📄 railway.json                  # Railway deployment config
-│
-├── 📄 README.md                     # This file
-├── 📄 DEPLOYMENT.md                 # Full deployment guide
-├── 📄 QUICK_START_DEPLOY.md         # Quick deployment guide
-├── 📄 DEVOPS_GUIDE.md               # DevOps best practices
-├── 📄 TROUBLESHOOTING_DEPLOYMENT.md # Deployment troubleshooting
-├── 📄 USER_GUIDE.md                 # End-user documentation
-├── 📄 ROADMAP.md                    # Feature roadmap
-├── 📄 TODO.md                       # Development tasks
-└── 📄 LICENSE                       # MIT License
+├── .env.example                     # Root environment variable template
+├── package.json                     # Frontend dependencies & build scripts
+├── vite.config.js                   # Vite configuration with API reverse proxy
+├── eslint.config.js                 # Modern ESLint configuration
+└── README.md                        # Project documentation (this file)
 ```
 
-**Key Directories Explained:**
+---
 
-| Directory                | Purpose                    | Tech Stack                |
-| ------------------------ | -------------------------- | ------------------------- |
-| `src/`                   | Frontend application       | React 19, Tailwind, Vite  |
-| `server/src/`            | Backend API server         | Node.js, Express, MongoDB |
-| `src/components/`        | Reusable React components  | JSX, Tailwind CSS         |
-| `server/src/models/`     | Database schemas           | Mongoose ODM              |
-| `server/src/routes/`     | API endpoint definitions   | Express Router            |
-| `server/src/middleware/` | Request processing logic   | Express middleware        |
-| `.github/workflows/`     | CI/CD automation           | GitHub Actions            |
-| `scripts/`               | Deployment & build scripts | Bash, PowerShell          |
+## 🚀 Getting Started
 
-npm >= 9.0.0 or yarn >= 1.22.0
-MongoDB >= 6.0 (or MongoDB Atlas account)
-Git >= 2.30.0
+### Prerequisites
 
-````
-
-**Check your versions:**
-
-```bash
-node --version  # Should be v18+
-npm --version   # Should be 9+
-mongod --version  # Should be 6.0+
-````
+Ensure the following tools are installed on your machine:
+- **Node.js:** v18.0.0 or later (`node -v`)
+- **npm:** v9.0.0 or later (`npm -v`)
+- **MongoDB:** v6.0+ local instance or a free [MongoDB Atlas](https://www.mongodb.com/atlas) cloud cluster
 
 ### Installation
 
-**1️⃣ Clone the Repository**
+**1. Clone the Repository:**
 
 ```bash
 git clone https://github.com/satyapradip/Employee-Management-System.git
 cd Employee-Management-System
 ```
 
-**2️⃣ Install Dependencies**
+**2. Install Root (Frontend) Dependencies:**
 
 ```bash
-# Install frontend dependencies
 npm install
+```
 
-# Install backend dependencies
+**3. Install Server (Backend) Dependencies:**
+
+```bash
 cd server
 npm install
 cd ..
 ```
 
-**3️⃣ Environment Variables**
+---
 
-Create environment files with the required configuration:
+### Environment Variables
 
-**Frontend** - Create `.env` in **root folder**:
+Configure your local environment files for both frontend and backend.
+
+#### 1. Frontend Configuration (`.env`)
+
+Create `.env` in the **root project directory**:
 
 ```env
-VITE_API_URL=http://localhost:5000/api
+# Use relative /api in development to leverage the Vite proxy (avoids CORS & PNA issues)
+VITE_API_URL=/api
+
+# Google Gemini API Key for the FlowAI Workspace Copilot
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-**Backend** - Create `server/.env`:
+> **🔑 Gemini API Key:** You can generate a free Gemini API key from [Google AI Studio](https://aistudio.google.com/).
+
+#### 2. Backend Configuration (`server/.env`)
+
+Create `.env` in the `server/` directory:
 
 ```env
 # Server Configuration
 PORT=5000
 NODE_ENV=development
 
-# Database
+# MongoDB Connection (Local or Atlas)
 MONGODB_URI=mongodb://localhost:27017/employee_management
+# For MongoDB Atlas:
+# MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/employee_management?retryWrites=true&w=majority
 
-# Authentication
-JWT_SECRET=your-super-secret-key-minimum-32-characters-long
+# JWT Token Configuration
+JWT_SECRET=super_secret_jwt_passphrase_minimum_32_characters_long
 JWT_EXPIRE=7d
 
-# Frontend URL (for CORS)
-CLIENT_URL=http://localhost:5173
+# Frontend Origin for CORS (comma-separated list supported)
+CLIENT_URL=http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173
 
-# Email Configuration (Optional - for password reset)
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASSWORD=your-app-password
-EMAIL_FROM=noreply@teamflow.com
+# Optional: Email Service for Password Resets
+GMAIL_USER=your-email@gmail.com
+GMAIL_APP_PASSWORD=your-gmail-app-password
+EMAIL_FROM="TeamFlow Support" <noreply@teamflow.com>
+
+# FlowAI Engine Key (Optional on backend)
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-> **🔐 Security Note:** Change `JWT_SECRET` to a strong random string in production. Generate one:
->
-> ```bash
-> node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
-> ```
+---
 
-**4️⃣ Seed Database (Optional)**
+### Database Seeding
 
-Populate the database with sample data for testing:
+Populate your database with the complete Acme Corp demo workspace:
 
 ```bash
 cd server
 npm run seed
+cd ..
 ```
 
-This creates:
-
-- 1 Admin user
-- 4 Employee users
-- 20 Sample tasks with various statuses
-
-### Running the Application
-
-**Development Mode:**
-
-```bash
-# Terminal 1 - Start Backend (from server folder)
-cd server
-npm run dev
-# → Server running on http://localhost:5000
-
-# Terminal 2 - Start Frontend (from root folder)
-npm run dev
-# → Frontend running on http://localhost:5173
-```
-
-**Quick Start (PowerShell/Bash):**
-
-```bash
-# Backend
-cd server ; npm run dev
-
-# Frontend (new terminal)
-npm run dev
-```
-
-### Access the Application
-
-| Service             | URL                              | Description          |
-| ------------------- | -------------------------------- | -------------------- |
-| 🌐 **Frontend**     | http://localhost:5173            | React application    |
-| 🔧 **Backend API**  | http://localhost:5000            | Express server       |
-| 💚 **Health Check** | http://localhost:5000/api/health | API status           |
-| 📊 **API Docs**     | http://localhost:5000/api/docs   | Swagger UI (planned) |
-
-### Default Login Credentials
-
-After running `npm run seed`:
-
-| Role         | Email             | Password | Company  |
-| ------------ | ----------------- | -------- | -------- |
-| 👑 **Admin** | admin@company.com | admin123 | TechCorp |
-| 👤 Employee  | john@company.com  | 123456   | TechCorp |
-| 👤 Employee  | jane@company.com  | 123456   | TechCorp |
-| 👤 Employee  | mike@company.com  | 123456   | TechCorp |
-| 👤 Employee  | sarah@company.com | 123456   | TechCorp |
+This generates:
+- 🏢 Company Workspace: **Acme Corp**
+- 👑 1 Administrator account (`admin@company.com`)
+- 👥 6 Employee accounts (`john@company.com`, `jane@company.com`, etc.)
+- 📋 20 Realistic tasks across `new`, `active`, `completed`, and `failed` statuses with categories, priorities, due dates, and documented failure reasons.
 
 ---
 
-## 📖 Usage
+### Running the Application
 
-### Creating Your First Admin Account
+You can launch both services using separate terminals:
 
-1. Navigate to http://localhost:5173
-2. Click "Register as Admin" button
-3. Fill in company and admin details
-4. Login with your new credentials
+#### Terminal 1 — Backend API Server:
 
-### Creating Employee Accounts
+```bash
+cd server
+npm run dev
+```
+*API server will start on [http://localhost:5000](http://localhost:5000).*
 
-1. Login as Admin
-2. Navigate to "Employees" tab
-3. Click "Add New Employee"
-4. Fill employee details (auto-generated password sent via email)
+#### Terminal 2 — Frontend Application:
 
-### Managing Tasks
+```bash
+npm run dev
+```
+*Vite dev server will start on [http://localhost:5173](http://localhost:5173).*
 
-**As Admin:**
+> **💡 Zero CORS Configuration:** Because Vite is configured with a built-in reverse proxy in `vite.config.js`:
+> ```javascript
+> proxy: {
+>   "/api": {
+>     target: "http://127.0.0.1:5000",
+>     changeOrigin: true,
+>     secure: false,
+>   }
+> }
+> ```
+> Frontend requests to `/api/*` are automatically proxied to the backend on port 5000 without cross-origin friction or Private Network Access (PNA) browser warnings.
 
-1. Go to "Tasks" tab
-2. Click "Create New Task"
-3. Fill task details:
-   - Title & Description
-   - Category (Frontend, Backend, etc.)
-   - Priority (Low, Medium, High, Urgent)
-   - Assign to employee
-4. Save task
+---
 
-**As Employee:**
+## 📖 Application Walkthrough & User Flows
 
-1. Login with employee credentials
-2. View tasks in respective categories
-3. Accept new tasks
-4. Mark tasks as complete/failed
+```
+                        ┌────────────────────────────────┐
+                        │      Landing Page (/)          │
+                        │ • Interactive Sprint Simulator │
+                        └───────────────┬────────────────┘
+                                        │
+                 ┌──────────────────────┴──────────────────────┐
+                 ▼                                             ▼
+  ┌──────────────────────────────┐              ┌──────────────────────────────┐
+  │  Company Registration        │              │  Authentication Card Suite   │
+  │  (/register-company)         │              │  (/login, /signup)           │
+  │  1. Organization Profile     │              │  • Pre-filled quick sign-in  │
+  │  2. Admin Account            │              │  • Email password recovery   │
+  │  3. Plan Selection           │              └──────────────┬───────────────┘
+  └──────────────┬───────────────┘                             │
+                 │                                             │
+                 └──────────────────────┬──────────────────────┘
+                                        │ Authenticated Session
+                                        ▼
+                 ┌─────────────────────────────────────────────┐
+                 │          Role-Based Access Routing          │
+                 └──────────────┬───────────────┬──────────────┘
+                                │               │
+          role === "admin"      │               │  role === "employee"
+                                ▼               ▼
+   ┌────────────────────────────────┐       ┌────────────────────────────────┐
+   │    Admin Command Center        │       │       Employee Workspace       │
+   │    (/admin)                    │       │       (/employee)              │
+   │ • Navy Sidebar Navigation      │       │ • Welcome Banner & Live Time   │
+   │ • Real-time Sprint KPI Cards   │       │ • Personal Task Counters       │
+   │ • Tasks Board with Filters     │       │ • "Next Best Action" Guidance  │
+   │ • Deliverable Creator Tab      │       │ • Deliverable Queue Board      │
+   │ • Employee Directory & Actions │       │ • 1-Click Accept Deliverable   │
+   │ • Recharts Sprint Analytics    │       │ • Mark Complete                │
+   │                                │       │ • Mark Failed (Log Blocker)    │
+   └────────────────┬───────────────┘       └────────────────┬───────────────┘
+                    │                                        │
+                    └───────────────────┬────────────────────┘
+                                        │
+                                        ▼
+                     ┌──────────────────────────────────────┐
+                     │   Global FlowAI Workspace Copilot    │
+                     │   (<AIAssistant />)                  │
+                     │ • Gemini 3.6 Flash Contextual AI     │
+                     │ • Generates Task Drafts (JSON)       │
+                     │ • Direct Insert into Task Composer   │
+                     │ • Architecture & Sprint Optimization │
+                     └──────────────────────────────────────┘
+```
 
 ---
 
@@ -610,1079 +553,252 @@ After running `npm run seed`:
 
 ### Base URL
 
-```
-Development: http://localhost:5000/api
-Production: https://your-backend.onrender.com/api
+```http
+Development: http://localhost:5173/api  (via Vite Proxy)
+Direct Backend: http://localhost:5000/api
 ```
 
-###Authentication Headers
+### Authorization Header
 
-All protected endpoints require JWT token:
+All protected routes require a Bearer token:
 
 ```http
 Authorization: Bearer <your_jwt_token>
 ```
 
-### Response Format
+---
 
-**Success Response:**
+### Authentication Endpoints (`/api/auth`)
 
-```json
-{
-  "success": true,
-  "message": "Operation successful",
-  "data": {
-    /* response data */
-  }
-}
-```
-
-**Error Response:**
-
-```json
-{
-  "success": false,
-  "message": "Error message",
-  "errors": [
-    /* validation errors */
-  ]
-}
-```
-
-### Authentication Endpoints
-
-<details>
-<summary><b>POST /auth/register-admin</b> - Register new company admin</summary>
-
-**Request Body:**
-
-```json
-{
-  "name": "John Doe",
-  "email": "admin@company.com",
-  "password": "securepass123",
-  "companyName": "TechCorp"
-}
-```
-
-**Response: 201 Created**
-
-```json
-{
-  "success": true,
-  "message": "Admin registered successfully",
-  "data": {
-    "user": {
-      "id": "...",
-      "name": "John Doe",
-      "email": "admin@company.com",
-      "role": "admin",
-      "companyName": "TechCorp"
-    },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-  }
-}
-```
-
-</details>
-
-<details>
-<summary><b>POST /auth/login</b> - User login</summary>
-
-**Request Body:**
-
-```json
-{
-  "email": "admin@company.com",
-  "password": "securepass123",
-  "role": "admin"
-}
-```
-
-**Response: 200 OK**
-
-```json
-{
-  "success": true,
-  "message": "Login successful",
-  "data": {
-    "user": {
-      /* user object */
-    },
-    "token": "jwt_token_here"
-  }
-}
-```
-
-</details>
-
-<details>
-<summary><b>POST /auth/forgot-password</b> - Request password reset</summary>
-
-**Request Body:**
-
-```json
-{
-  "email": "user@company.com"
-}
-```
-
-**Response: 200 OK**
-
-```json
-{
-  "success": true,
-  "message": "Password reset email sent"
-}
-```
-
-</details>
-
-### Task Endpoints
-
-<details>
-<summary><b>GET /tasks</b> - Get all tasks (with filters)</summary>
-
-**Query Parameters:**
-
-```
-?status=active&category=Frontend&priority=high&search=login&assignedTo=userId
-```
-
-| Parameter  | Type   | Description                                           |
-| ---------- | ------ | ----------------------------------------------------- |
-| status     | string | Filter by status: new, active, completed, failed, all |
-| category   | string | Filter by category                                    |
-| priority   | string | Filter by priority: low, medium, high, urgent         |
-| search     | string | Search in title/description                           |
-| assignedTo | string | Filter by employee ID (admin only)                    |
-
-**Response: 200 OK**
-
-```json
-{
-  "success": true,
-  "data": {
-    "tasks": [
-      {
-        "_id": "...",
-        "title": "Fix login bug",
-        "description": "User cannot login with valid credentials",
-        "category": "Backend",
-        "priority": "urgent",
-        "status": "active",
-        "assignedTo": {
-          /* employee object */
-        },
-        "createdAt": "2026-02-13T10:30:00.000Z"
-      }
-    ],
-    "total": 15,
-    "filtered": 5
-  }
-}
-```
-
-</details>
-
-<details>
-<summary><b>POST /tasks</b> - Create new task (Admin only)</summary>
-
-**Request Body:**
-
-```json
-{
-  "title": "Implement user authentication",
-  "description": "Add JWT-based auth system",
-  "category": "Backend",
-  "priority": "high",
-  "assignedTo": "employee_user_id",
-  "dueDate": "2026-02-20"
-}
-```
-
-**Response: 201 Created**
-
-```json
-{
-  "success": true,
-  "message": "Task created successfully",
-  "data": {
-    /* task object */
-  }
-}
-```
-
-</details>
-
-<details>
-<summary><b>PUT /tasks/:id/accept</b> - Accept task (Employee)</summary>
-
-**Response: 200 OK**
-
-```json
-{
-  "success": true,
-  "message": "Task accepted",
-  "data": {
-    /* updated task */
-  }
-}
-```
-
-</details>
-
-<details>
-<summary><b>PUT /tasks/:id/complete</b> - Mark task complete (Employee)</summary>
-
-**Response: 200 OK**
-
-```json
-{
-  "success": true,
-  "message": "Task marked as completed",
-  "data": {
-    /* updated task */
-  }
-}
-```
-
-</details>
-
-### Employee Endpoints
-
-<details>
-<summary><b>GET /employees</b> - Get all employees (Admin only)</summary>
-
-**Response: 200 OK**
-
-```json
-{
-  "success": true,
-  "data": {
-    "employees": [
-      {
-        "_id": "...",
-        "name": "John Doe",
-        "email": "john@company.com",
-        "role": "employee",
-        "companyName": "TechCorp",
-        "taskStats": {
-          "new": 2,
-          "active": 3,
-          "completed": 10,
-          "failed": 1
-        }
-      }
-    ]
-  }
-}
-```
-
-</details>
-
-<details>
-<summary><b>POST /employees</b> - Create employee (Admin only)</summary>
-
-**Request Body:**
-
-```json
-{
-  "name": "Jane Smith",
-  "email": "jane@company.com",
-  "password": "temp123456"
-}
-```
-
-**Response: 201 Created**
-
-```json
-{
-  "success": true,
-  "message": "Employee created successfully",
-  "data": {
-    /* employee object */
-  }
-}
-```
-
-</details>
-
-### Rate Limiting
-
-| Endpoint           | Limit        | Window     |
-| ------------------ | ------------ | ---------- |
-| **Auth endpoints** | 5 requests   | 15 minutes |
-| **All other APIs** | 100 requests | 15 minutes |
-
-**Rate Limit Headers:**
-
-```
-X-RateLimit-Limit: 100
-X-RateLimit-Remaining: 95
-X-RateLimit-Reset: 1676280000
-```
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/auth/register-admin` | Public | Register new organization & administrator account |
+| `POST` | `/api/auth/register` | Public | Create new user account |
+| `POST` | `/api/auth/login` | Public | Authenticate user & return JWT token |
+| `POST` | `/api/auth/logout` | Public | Clear user session |
+| `POST` | `/api/auth/forgot-password` | Public | Request password reset token via email |
+| `GET` | `/api/auth/reset-password/:token` | Public | Verify validity of a password reset token |
+| `POST` | `/api/auth/reset-password/:token` | Public | Set new password with valid token |
+| `GET` | `/api/auth/me` | Protected | Fetch currently logged-in user profile |
+| `PUT` | `/api/auth/me` | Protected | Update profile details |
+| `PUT` | `/api/auth/change-password` | Protected | Change password with current password verification |
 
 ---
 
-## � Troubleshooting
+### Task Management Endpoints (`/api/tasks`)
 
-### Common Issues & Solutions
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/tasks` | Protected | List tasks (filtered by user role and tenant) |
+| `GET` | `/api/tasks/stats` | Admin | Get aggregated task statistics for company |
+| `GET` | `/api/tasks/:id` | Protected | Retrieve single task by ID |
+| `POST` | `/api/tasks` | Admin | Create a new task deliverable |
+| `PUT` | `/api/tasks/:id` | Admin | Update existing task details |
+| `DELETE` | `/api/tasks/:id` | Admin | Delete a task |
+| `PUT` | `/api/tasks/:id/accept` | Employee | Accept new task (`new` -> `active`) |
+| `PUT` | `/api/tasks/:id/complete` | Employee | Mark task completed (`active` -> `completed`) |
+| `PUT` | `/api/tasks/:id/fail` | Employee | Mark task failed (`active` -> `failed`) with `failureReason` |
 
-<details>
-<summary><b>❌ Port 5173 is already in use</b></summary>
-
-**Solution:**
-
-```bash
-# Windows
-netstat -ano | findstr :5173
-taskkill /PID <process_id> /F
-
-# Linux/Mac
-lsof -ti:5173 | xargs kill -9
-
-# Or let Vite use another port automatically
-# It will try 5174, 5175, etc.
-```
-
-</details>
-
-<details>
-<summary><b>❌ MongoDB connection error</b></summary>
-
-**Error:** `MongooseServerSelectionError: connect ECONNREFUSED`
-
-**Solutions:**
-
-1. **Check if MongoDB is running:**
-
-   ```bash
-   # Windows
-   net start MongoDB
-
-   # Linux/Mac
-   sudo systemctl start mongod
-   ```
-
-2. **Verify connection string:**
-
-   ```env
-   MONGODB_URI=mongodb://localhost:27017/employee_management
-   # Or for Atlas:
-   MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/dbname
-   ```
-
-3. **Check firewall/network:**
-   - Ensure MongoDB port (27017) is not blocked
-   - For Atlas, whitelist your IP address
-
-</details>
-
-<details>
-<summary><b>❌ JWT token errors / Authentication fails</b></summary>
-
-**Solutions:**
-
-1. **Check JWT_SECRET is set:**
-
-   ```bash
-   # In server/.env
-   JWT_SECRET=your-minimum-32-character-secret-key
-   ```
-
-2. **Clear localStorage:**
-
-   ```javascript
-   // In browser console
-   localStorage.clear();
-   location.reload();
-   ```
-
-3. **Check token expiry:**
-   - Default is 7 days
-   - Token format: `Bearer <token>`
-
-</details>
-
-<details>
-<summary><b>❌ CORS errors in production</b></summary>
-
-**Error:** `Access to fetch at '...' from origin '...' has been blocked by CORS policy`
-
-**Solution:**
-
-1. **Update CLIENT_URL in backend .env:**
-
-   ```env
-   CLIENT_URL=https://your-frontend.vercel.app
-   ```
-
-2. **Check CORS middleware in server/src/app.js:**
-
-   ```javascript
-   const allowedOrigins = process.env.CLIENT_URL.split(",");
-   ```
-
-3. **Ensure backend is deployed and accessible**
-
-</details>
-
-<details>
-<summary><b>❌ Build fails with "Module not found"</b></summary>
-
-**Solution:**
-
-```bash
-# Delete node_modules and reinstall
-rm -rf node_modules package-lock.json
-npm install
-
-# For backend
-cd server
-rm -rf node_modules package-lock.json
-npm install
-```
-
-</details>
-
-<details>
-<summary><b>❌ "Cannot GET /" error in production</b></summary>
-
-**This means React Router needs proper configuration**
-
-**Solution:** Already fixed! Check `vercel.json`:
-
-```json
-{
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
-}
-```
-
-</details>
-
-<details>
-<summary><b>❌ Email not sending (password reset)</b></summary>
-
-**Solutions:**
-
-1. **Check email configuration:**
-
-   ```env
-   EMAIL_HOST=smtp.gmail.com
-   EMAIL_PORT=587
-   EMAIL_USER=your-email@gmail.com
-   EMAIL_PASSWORD=your-app-password  # Not regular password!
-   ```
-
-2. **For Gmail, enable "App Passwords":**
-   - Go to Google Account Settings
-   - Security → 2-Step Verification
-   - App Passwords → Generate
-   - Use that password in EMAIL_PASSWORD
-
-3. **Check spam folder** - Password reset emails might be marked as spam
-
-</details>
-
-<details>
-<summary><b>❌ Styles not loading correctly</b></summary>
-
-**Solutions:**
-
-1. **Rebuild Tailwind:**
-
-   ```bash
-   npm run build
-   ```
-
-2. **Check Tailwind config:**
-
-   ```javascript
-   // tailwind.config.js
-   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"];
-   ```
-
-3. **Clear browser cache:**
-   - Hard refresh: `Ctrl + Shift + R` (Windows)
-   - Or: `Cmd + Shift + R` (Mac)
-
-</details>
-
-### Getting Help
-
-If you're still experiencing issues:
-
-1. 📖 Check [TROUBLESHOOTING_DEPLOYMENT.md](./TROUBLESHOOTING_DEPLOYMENT.md)
-2. 🔍 Search [existing issues](https://github.com/satyapradip/Employee-Management-System/issues)
-3. 💬 Start a [discussion](https://github.com/satyapradip/Employee-Management-System/discussions)
-4. 🐛 [Create a new issue](https://github.com/satyapradip/Employee-Management-System/issues/new) with:
-   - Error message
-   - Steps to reproduce
-   - Environment details (OS, Node version, etc.)
-   - Screenshots if applicable
+#### Filtering Parameters (`GET /api/tasks`):
+- `status` — `new`, `active`, `completed`, `failed`, `all`
+- `category` — Filter by category (`Frontend`, `Backend`, `Database`, `Security`, etc.)
+- `priority` — Filter by priority (`low`, `medium`, `high`, `urgent`)
+- `search` — Full-text search across titles and descriptions
+- `assignedTo` — Filter by employee ID (Admin only)
 
 ---
 
-### Quick Deploy (30 Minutes)
+### Employee Management Endpoints (`/api/employees`)
 
-Follow the comprehensive [Deployment Guide](./DEPLOYMENT.md) or [Quick Start Deploy](./QUICK_START_DEPLOY.md).
-
-### Frontend Deployment (Vercel)
-
-**1️⃣ Via Vercel Dashboard**
-
-```bash
-# Push your code to GitHub
-git push origin main
-
-# Go to https://vercel.com/new
-# Import your repository
-# Configure environment variables:
-#   VITE_API_URL = https://your-backend.onrender.com/api
-# Deploy
-```
-
-**2️⃣ Via Vercel CLI**
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Login
-vercel login
-
-# Deploy
-vercel --prod
-```
-
-**Environment Variables for Vercel:**
-
-```env
-VITE_API_URL=https://your-backend-name.onrender.com/api
-```
-
-### Backend Deployment (Render)
-
-**1️⃣ Create New Web Service**
-
-- Go to [render.com/dashboard](https://dashboard.render.com/)
-- Click "New +" → "Web Service"
-- Connect your GitHub repository
-- Configure:
-  - **Name:** employee-mgmt-api
-  - **Root Directory:** `server`
-  - **Build Command:** `npm install`
-  - **Start Command:** `npm start`
-
-**2️⃣ Environment Variables**
-
-Add these in Render dashboard:
-
-```env
-NODE_ENV=production
-PORT=5000
-MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/dbname
-JWT_SECRET=your-64-character-random-string
-JWT_EXPIRE=7d
-CLIENT_URL=https://your-frontend.vercel.app
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASSWORD=your-app-password
-```
-
-### Database Deployment (MongoDB Atlas)
-
-**1️⃣ Create Cluster**
-
-- Sign up at [mongodb.com/atlas](https://www.mongodb.com/atlas)
-- Create free M0 cluster
-- Choose region close to your backend
-
-**2️⃣ Configure Access**
-
-```bash
-# Database Access:
-# - Create user with password
-# - Note username and password
-
-# Network Access:
-# - Add IP: 0.0.0.0/0 (allow from anywhere)
-# - Or specific IPs of your backend
-```
-
-**3️⃣ Get Connection String**
-
-```
-mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/<dbname>?retryWrites=true&w=majority
-```
-
-Replace in your backend `.env` as `MONGODB_URI`
-
-### Deployment Checklist
-
-- [ ] Frontend builds without errors (`npm run build`)
-- [ ] Backend starts without errors (`npm start`)
-- [ ] MongoDB connection successful
-- [ ] Environment variables configured (frontend & backend)
-- [ ] CORS configured with production URLs
-- [ ] JWT_SECRET changed to strong random string
-- [ ] Rate limiting tested
-- [ ] SSL/HTTPS enabled (automatic on Vercel/Render)
-- [ ] Domain configured (optional)
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/employees` | Admin | Retrieve all employees belonging to company |
+| `GET` | `/api/employees/dashboard` | Admin | Get comprehensive company dashboard statistics |
+| `GET` | `/api/employees/:id` | Admin | Retrieve specific employee by ID |
+| `POST` | `/api/employees` | Admin | Create and provision a new employee |
+| `PUT` | `/api/employees/:id` | Admin | Update employee profile |
+| `DELETE` | `/api/employees/:id` | Admin | Remove an employee |
+| `PUT` | `/api/employees/:id/reset-password`| Admin | Reset employee's password |
 
 ---
 
-## 🧪 Testing
+### System Health
 
-### Running Tests
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/health` | Public | Returns service status and ISO timestamp |
+
+---
+
+## 🔒 Security & Multi-Tenant Isolation
+
+TeamFlow enforces multi-layered defense to guarantee tenant privacy and system availability:
+
+1. **Tenant Isolation by Construction:**
+   - Every user belongs to a specific `companyName`.
+   - All Mongoose queries for tasks, metrics, and employees automatically inject `{ companyName: req.user.companyName }`.
+   - Cross-company data leakage is structurally impossible at the controller and database layer.
+
+2. **Environment-Aware HTTP Security:**
+   - In production, Helmet enforces strict Content Security Policy (CSP), Cross-Origin Resource Policy (CORP), and HTTP Strict Transport Security (HSTS) with a 1-year max age.
+   - In local development, HSTS and restrictive localhost blocking policies are intelligently disabled to prevent browser fetch locks.
+
+3. **Multi-Tier Rate Limiting:**
+   - **Authentication Limiter:** 20 requests per 15 minutes in production (generous in development) with `skipSuccessfulRequests: true`.
+   - **Password Recovery Limiter:** 3 requests per hour in production.
+   - **Global Limiter:** 100 requests per 15 minutes per IP address.
+
+4. **Input Sanitization & Parameter Protection:**
+   - `express-mongo-sanitize` strips `$` and `.` operators to prevent NoSQL injection attacks.
+   - `xss-clean` neutralizes malicious HTML/script payloads in request bodies.
+   - `hpp` prevents HTTP Parameter Pollution attacks.
+   - Passwords hashed using `bcryptjs` with 10 salt rounds before storage.
+
+---
+
+## 🧪 Testing & Quality Assurance
+
+The backend includes test suites built with **Jest** and **Supertest**:
 
 ```bash
-# Backend tests
+# Run backend test suite
 cd server
 npm test
 
 # Run tests in watch mode
 npm run test:watch
 
-# Generate coverage report
+# Generate code coverage report
 npm run test:coverage
 ```
 
-### Test Structure
-
-```
-server/tests/
-├── auth.test.js       # Authentication tests
-├── tasks.test.js      # Task management tests
-├── employees.test.js  # Employee management tests
-└── setup.js          # Test configuration
-```
-
-### Writing Tests
-
-Example test case:
-
-```javascript
-describe("Auth API", () => {
-  it("should register a new admin", async () => {
-    const res = await request(app).post("/api/auth/register-admin").send({
-      name: "Test Admin",
-      email: "test@test.com",
-      password: "password123",
-      companyName: "TestCo",
-    });
-
-    expect(res.statusCode).toBe(201);
-    expect(res.body.success).toBe(true);
-    expect(res.body.data.user.role).toBe("admin");
-  });
-});
-```
-
-### Test Coverage
-
-Current coverage: **85%+**
-
-| Module      | Statements | Branches | Functions | Lines |
-| ----------- | ---------- | -------- | --------- | ----- |
-| Controllers | 90%        | 85%      | 95%       | 90%   |
-| Middleware  | 95%        | 90%      | 100%      | 95%   |
-| Models      | 100%       | 100%     | 100%      | 100%  |
-| Routes      | 85%        | 80%      | 90%       | 85%   |
-
----
-
-## ⚡ Performance
-
-### Frontend Performance
-
-| Metric                       | Score   | Status        |
-| ---------------------------- | ------- | ------------- |
-| **First Contentful Paint**   | < 1.2s  | ✅ Good       |
-| **Largest Contentful Paint** | < 2.5s  | ✅ Good       |
-| **Time to Interactive**      | < 3.8s  | ✅ Good       |
-| **Total Bundle Size**        | ~950 KB | ⚠️ Acceptable |
-| **Lighthouse Score**         | 90+     | ✅ Excellent  |
-
-**Optimizations Applied:**
-
-- ✅ Code splitting with dynamic imports
-- ✅ Lazy loading of routes
-- ✅ Tree shaking unused code
-- ✅ Asset compression (Gzip/Brotli)
-- ✅ CDN caching (Vercel Edge)
-- ✅ Image optimization
-
-### Backend Performance
-
-| Metric                  | Value     | Status       |
-| ----------------------- | --------- | ------------ |
-| **API Response Time**   | < 100ms   | ✅ Fast      |
-| **Database Query Time** | < 50ms    | ✅ Fast      |
-| **Memory Usage**        | ~150 MB   | ✅ Low       |
-| **CPU Usage**           | < 5% idle | ✅ Efficient |
-
-**Optimizations Applied:**
-
-- ✅ MongoDB indexes on frequent queries
-- ✅ Query result pagination
-- ✅ Connection pooling
-- ✅ Response caching where applicable
-- ✅ Gzip compression enabled
-
----
-
-## 🔒 Security
-
-### Security Measures Implemented
-
-| Category              | Implementation         | Status |
-| --------------------- | ---------------------- | ------ |
-| **Authentication**    | JWT with HS256         | ✅     |
-| **Password Security** | bcrypt (10 rounds)     | ✅     |
-| **Input Validation**  | express-validator      | ✅     |
-| **XSS Protection**    | Helmet CSP             | ✅     |
-| **CSRF Protection**   | SameSite cookies       | ✅     |
-| **SQL Injection**     | Mongoose sanitization  | ✅     |
-| **NoSQL Injection**   | Input sanitization     | ✅     |
-| **Rate Limiting**     | express-rate-limit     | ✅     |
-| **HTTPS**             | Enforced in production | ✅     |
-| **CORS**              | Whitelist origins      | ✅     |
-| **Security Headers**  | Helmet middleware      | ✅     |
-
-### Security Best Practices
-
-**Environment Variables:**
+### Frontend Code Quality
 
 ```bash
-# NEVER commit .env files
-# Use strong, random JWT secrets (min 64 chars)
-# Rotate secrets periodically
-# Use different secrets for dev/staging/prod
+# Run ESLint across frontend components
+npm run lint
+
+# Run production build validation
+npm run deploy:check
 ```
-
-**Password Policy:**
-
-- Minimum 6 characters (8+ recommended)
-- bcrypt hashing with 10 salt rounds
-- Password reset tokens expire in 1 hour
-- No password history (planned)
-
-**API Security:**
-
-- Rate limiting: 100 req/15min (general), 5 req/15min (auth)
-- Request size limit: 10MB
-- Timeout: 30 seconds
-- Input sanitization on all endpoints
-
-### Reporting Security Issues
-
-Please report security vulnerabilities to: **security@yourcompany.com**
-
-Do NOT open public issues for security vulnerabilities.
 
 ---
 
-## 🗺️ Roadmap
+## ⚡ Performance Benchmarks
 
-### ✅ Completed (v1.0.0)
+- **Frontend Bundle Size:** Optimized with Vite 7 tree-shaking, code splitting, and `@tailwindcss/vite` atomic CSS generation.
+- **Dynamic Chart Rendering:** Recharts components are rendered client-side with container boundaries to prevent layout reflows.
+- **Backend Response Latency:** Sub-50ms average response time for tenant-scoped indexed MongoDB queries.
+- **Compression:** Gzip/Brotli payload compression enabled on the Express server via `compression()`.
 
-- [x] Multi-tenant architecture with company isolation
-- [x] Admin & Employee dashboards
-- [x] Task management (CRUD operations)
-- [x] Role-based access control
-- [x] JWT authentication
-- [x] Password reset via email
-- [x] Advanced filtering & search
-- [x] Real-time task statistics
-- [x] 3D animated landing page
-- [x] Analytics dashboard
-- [x] Deployment infrastructure
-- [x] CI/CD pipeline with GitHub Actions
+---
 
-### 🔄 In Progress (v1.1.0)
+## 🔧 Troubleshooting & FAQ
 
-- [ ] Real-time notifications (Socket.io)
-- [ ] Drag & drop Kanban board
-- [ ] File attachments for tasks
-- [ ] Comments & discussions on tasks
-- [ ] Activity timeline/history
-- [ ] Dark/Light theme toggle
+<details>
+<summary><b>1. How do I fix "Missing Gemini API Key" in FlowAI Copilot?</b></summary>
 
-### 🔜 Planned Features (v1.2.0+)
+Ensure your root `.env` file contains a valid `VITE_GEMINI_API_KEY`:
+```env
+VITE_GEMINI_API_KEY=your_key_here
+```
+After updating the file, restart the Vite dev server (`npm run dev`). You can obtain a free API key from [Google AI Studio](https://aistudio.google.com/).
+</details>
 
-**User Features:**
+<details>
+<summary><b>2. Why does Tailwind CSS v4 not have a tailwind.config.js?</b></summary>
 
-- [ ] User profile pages with avatars
-- [ ] Task templates for common workflows
-- [ ] Recurring tasks
-- [ ] Task dependencies
-- [ ] Time tracking
-- [ ] Calendar view of tasks
-- [ ] Mobile app (React Native)
+Tailwind CSS v4 replaces the legacy JavaScript configuration file with a CSS-first architecture. All theme variables, utility layers, and directives are defined in [src/index.css](file:///e:/Employee_Management_System/src/index.css) using `@import "tailwindcss";` and custom `@layer base` CSS custom properties.
+</details>
 
-**Admin Features:**
+<details>
+<summary><b>3. I'm getting "MongooseServerSelectionError" when starting the server</b></summary>
 
-- [ ] Team management
-- [ ] Department grouping
-- [ ] Custom task categories
-- [ ] Bulk operations
-- [ ] Advanced analytics dashboard
-- [ ] Export reports (PDF/CSV)
-- [ ] Audit logs
+1. Verify that your MongoDB service is running locally (`net start MongoDB` on Windows or `sudo systemctl start mongod` on Linux).
+2. If using MongoDB Atlas, make sure your current IP address is whitelisted under **Network Access** in the Atlas console.
+3. Check that your connection string in `server/.env` is formatted correctly.
+</details>
 
-**Multi-Tenancy Enhancements:**
+<details>
+<summary><b>4. How do I clear and re-seed the demo database?</b></summary>
 
-- [ ] Subscription plans (Free, Pro, Enterprise)
-- [ ] Billing & payment integration (Stripe)
-- [ ] Usage limits per plan
-- [ ] White-labeling options
-- [ ] Custom domains
-- [ ] SSO integration (Google, Microsoft)
+Simply navigate into the `server/` directory and run:
+```bash
+npm run seed
+```
+This drops the existing users and tasks collections and re-seeds Acme Corp with the default admin and 6 employees.
+</details>
 
-**AI-Powered Features:**
+<details>
+<summary><b>5. Port 5173 or 5000 is already in use</b></summary>
 
-- [ ] AI task description generator
-- [ ] Smart priority suggestions
-- [ ] Performance insights & predictions
-- [ ] Chatbot assistant
-- [ ] Auto-extract tasks from meeting notes
-- [ ] Smart deadline estimation
-- [ ] Workload balancing recommendations
+On Windows:
+```powershell
+netstat -ano | findstr :5000
+taskkill /PID <PID> /F
+```
+On Linux/macOS:
+```bash
+lsof -ti:5000 | xargs kill -9
+```
+Alternatively, configure a different port in `server/.env` or let Vite select the next available port (5174).
+</details>
 
-**DevOps & Performance:**
+---
 
-- [ ] Redis caching layer
-- [ ] Elasticsearch for advanced search
-- [ ] GraphQL API (alongside REST)
-- [ ] Microservices architecture
-- [ ] Kubernetes deployment
-- [ ] Advanced monitoring (DataDog/New Relic)
+## 🗺️ Project Roadmap
 
-See [ROADMAP.md](./ROADMAP.md) for detailed timeline and priorities.
+### ✅ Completed & Implemented
+
+- [x] Multi-tenant architecture with company-isolated queries
+- [x] Modern SaaS Light Design System with Geist typography
+- [x] Landing page with Orbital Geometric Arc & Interactive Sprint Simulator
+- [x] Embedded **FlowAI Workspace Copilot** powered by Google Gemini 3.6 Flash
+- [x] Admin Command Center with structured Navy Sidebar
+- [x] Interactive Recharts Analytics Suite (velocity, status distribution, member throughput)
+- [x] Employee Workspace with dynamic Welcome Banner & KPI counters
+- [x] Employee **"Next Best Action"** guidance engine with 1-click task acceptance
+- [x] Blocker documentation flow (`failTask` with mandatory explanation modal)
+- [x] 3-Step Company Registration with subdomain reservation
+- [x] Vite reverse proxy (`/api`) eliminating CORS & Private Network Access issues
+- [x] Database seeder with complete Acme Corp organization suite
+
+### 🔄 In Progress & Next Phase
+
+- [ ] Real-time web socket updates for live deliverable status changes (Socket.io)
+- [ ] Drag-and-drop Kanban view toggle alongside list view
+- [ ] File and document attachments on deliverables
+- [ ] Direct comments and thread discussion on individual task cards
+- [ ] Exportable sprint reports (PDF and CSV)
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! Here's how you can help:
+Contributions are welcomed! Follow these steps to contribute:
 
-### Ways to Contribute
-
-- 🐛 **Report Bugs** - Open an issue with bug details
-- 💡 **Suggest Features** - Share your ideas in discussions
-- 📝 **Improve Documentation** - Fix typos, add examples
-- 🔧 **Submit Pull Requests** - Fix bugs or add features
-- ⭐ **Star the Repository** - Show your support!
-
-### Development Process
-
-**1️⃣ Fork & Clone**
-
-```bash
-# Fork the repository on GitHub
-# Then clone your fork
-git clone https://github.com/YOUR_USERNAME/Employee-Management-System.git
-cd Employee-Management-System
-git remote add upstream https://github.com/satyapradip/Employee-Management-System.git
-```
-
-**2️⃣ Create a Branch**
-
-```bash
-# Create a feature branch
-git checkout -b feature/amazing-feature
-
-# Or a bugfix branch
-git checkout -b fix/bug-description
-```
-
-**3️⃣ Make Changes**
-
-- Write clean, readable code
-- Follow existing code style
-- Add comments where necessary
-- Update documentation
-- Add tests for new features
-
-**4️⃣ Test Your Changes**
-
-```bash
-# Run frontend in dev mode
-npm run dev
-
-# Run backend tests
-cd server
-npm test
-
-# Run linting
-npm run lint
-```
-
-**5️⃣ Commit & Push**
-
-```bash
-# Commit with descriptive message (Conventional Commits format)
-git add .
-git commit -m "feat: add amazing new feature"
-
-# Push to your fork
-git push origin feature/amazing-feature
-```
-
-**6️⃣ Open Pull Request**
-
-- Go to GitHub and open a Pull Request
-- Fill in the PR template
-- Link related issues
-- Wait for review
-
-### Commit Message Format
-
-We follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
-feat: add new feature
-fix: resolve bug in login
-docs: update README
-style: format code
-refactor: restructure task controller
-test: add auth tests
-chore: update dependencies
-ci: modify GitHub Actions workflow
-```
-
-### Code Style Guidelines
-
-**JavaScript/React:**
-
-- Use ES6+ features
-- Use functional components with hooks
-- Use descriptive variable names
-- Keep functions small and focused
-- Add JSDoc comments for complex functions
-
-**CSS/Tailwind:**
-
-- Use Tailwind utility classes
-- Follow mobile-first approach
-- Keep custom CSS minimal
-- Use CSS variables for theme values
-
-### Pull Request Guidelines
-
-**Before submitting:**
-
-- [ ] Code follows project style guidelines
-- [ ] Self-review completed
-- [ ] Comments added for complex code
-- [ ] Documentation updated
-- [ ] Tests added/updated
-- [ ] All tests passing
-- [ ] No console errors
-- [ ] Tested on multiple browsers (Chrome, Firefox, Safari)
-
-**PR Title Format:**
-
-```
-feat: Add drag-and-drop task board
-fix: Resolve login redirect issue
-docs: Update API documentation
-```
+1. **Fork the Repository:** Create your own branch from `main`.
+2. **Create a Feature Branch:** `git checkout -b feature/your-feature-name`
+3. **Commit Your Changes:** Follow conventional commit messages:
+   ```bash
+   git commit -m "feat(tasks): add priority filter preset"
+   ```
+4. **Push to Your Fork:** `git push origin feature/your-feature-name`
+5. **Open a Pull Request:** Provide a clear description of the problem solved.
 
 ---
 
-## 📄 License
+## 📄 License & Authors
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** — see the [LICENSE](./LICENSE) file for complete details.
 
-```
-MIT License
-
-Copyright (c) 2026 Satya Pradip
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-```
-
----
-
-## 📧 Contact
-
-**Project Maintainer:** Satya Pradip
-
-- 📧 Email: [your.email@example.com](mailto:your.email@example.com)
-- 🐙 GitHub: [@satyapradip](https://github.com/satyapradip)
-- 💼 LinkedIn: [your-linkedin](https://linkedin.com/in/your-profile)
-- 🐦 Twitter: [@yourhandle](https://twitter.com/yourhandle)
-
-**Project Links:**
-
-- 📦 Repository: [github.com/satyapradip/Employee-Management-System](https://github.com/satyapradip/Employee-Management-System)
-- 🐛 Issues: [Report a Bug](https://github.com/satyapradip/Employee-Management-System/issues)
-- 💡 Discussions: [Join Discussions](https://github.com/satyapradip/Employee-Management-System/discussions)
-- 📖 Documentation: [View Docs](./docs)
-- 🌐 Live Demo: [teamflow.vercel.app](https://your-deployed-url.vercel.app)
-
----
-
-## 🙏 Acknowledgments
-
-Special thanks to:
-
-- [React Team](https://react.dev/) - For the amazing React library
-- [Tailwind CSS](https://tailwindcss.com/) - For utility-first CSS framework
-- [MongoDB](https://www.mongodb.com/) - For the flexible NoSQL database
-- [Vercel](https://vercel.com/) - For seamless frontend hosting
-- [Render](https://render.com/) - For reliable backend hosting
-- [Three.js](https://threejs.org/) - For 3D graphics capabilities
-- [Framer Motion](https://www.framer.com/motion/) - For smooth animations
-
-**Inspiration & Resources:**
-
-- [Jira](https://www.atlassian.com/software/jira) - Task management inspiration
-- [Asana](https://asana.com/) - Project management UX patterns
-- [Linear](https://linear.app/) - Modern UI/UX design
-- [GitHub Projects](https://github.com/features/issues) - Kanban board concepts
-
----
-
-## 📊 Project Stats
-
-![GitHub stars](https://img.shields.io/github/stars/satyapradip/Employee-Management-System?style=social)
-![GitHub forks](https://img.shields.io/github/forks/satyapradip/Employee-Management-System?style=social)
-![GitHub issues](https://img.shields.io/github/issues/satyapradip/Employee-Management-System)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/satyapradip/Employee-Management-System)
-![GitHub last commit](https://img.shields.io/github/last-commit/satyapradip/Employee-Management-System)
-![GitHub code size](https://img.shields.io/github/languages/code-size/satyapradip/Employee-Management-System)
-
----
-
-## 🌟 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=satyapradip/Employee-Management-System&type=Date)](https://star-history.com/#satyapradip/Employee-Management-System&Date)
+**Project Lead & Maintainer:**
+- **Satya Pradip** — [@satyapradip](https://github.com/satyapradip)
 
 ---
 
 <div align="center">
-  
-  ### Built with ❤️ using React, Node.js & MongoDB
-  
-  **If you found this project helpful, please consider giving it a ⭐!**
-  
-  [⬆ Back to Top](#-teamflow---employee-management-system)
-  
+  <b>Built with ❤️ using React 19, Node.js, Tailwind CSS v4 & Google Gemini AI</b>
+  <br>
+  <i>Empowering modern teams to move faster with clarity and intelligence.</i>
 </div>
