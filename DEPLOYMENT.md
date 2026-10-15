@@ -209,6 +209,8 @@ vercel --prod
 5. Add **Environment Variables**:
    - Key: `VITE_API_URL`
    - Value: `https://employee-management-api.onrender.com/api`
+   - Key: `VITE_GEMINI_API_KEY`
+   - Value: `your_gemini_api_key_here` (Required for FlowAI Workspace Copilot)
 6. Click **"Deploy"**
 
 ### Step 3.3: Get Vercel URL
@@ -243,21 +245,21 @@ npm run seed
 ### 4.3 Test Complete Flow
 
 1. **Open Frontend**: `https://employee-management-system.vercel.app`
-2. **Register Admin Account**:
-   - Click "Register as Company"
-   - Fill in company details
-   - Submit
-3. **Login**:
-   - Use registered email/password
-   - Should redirect to dashboard
-4. **Create Employee**:
-   - Go to Employees tab
-   - Add new employee
-   - Verify creation
-5. **Create Task**:
-   - Go to Create Task tab
-   - Assign to employee
-   - Submit
+2. **Interactive Sprint Simulator**: Scroll to `#simulator` hero and click tasks to verify real-time status transitions.
+3. **Register Workspace**:
+   - Click "Get Started" or browse to `/register-company`
+   - Fill in Company Name, Admin Name, Email, Password
+   - Submit ➔ Automatically logged in to `/admin`
+4. **Test FlowAI Workspace Copilot**:
+   - Click floating FlowAI assistant badge
+   - Type *"Draft a deliverable for API caching"*
+   - Click *"⚡ Insert into Task Composer"* to verify autofill in Create Deliverable tab.
+5. **Add Employee & Create Deliverable**:
+   - Go to Employees tab ➔ Click "Add Employee"
+   - Go to Create Deliverable tab ➔ Assign task to new employee
+6. **Test Employee Workspace**:
+   - Log out, log in with employee credentials ➔ Redirects to `/employee`
+   - Test "Next Best Action" 1-Click Accept, Mark Complete, and Blocker triage modal.
 
 ---
 

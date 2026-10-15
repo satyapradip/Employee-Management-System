@@ -40,8 +40,9 @@ vercel --prod
 # Option B: Dashboard
 1. Go to vercel.com → Import GitHub repo
 2. Framework: Vite
-3. Environment Variable:
+3. Environment Variables:
    - VITE_API_URL=https://your-backend.onrender.com/api
+   - VITE_GEMINI_API_KEY=your_gemini_api_key_here
 4. Deploy
 ```
 
