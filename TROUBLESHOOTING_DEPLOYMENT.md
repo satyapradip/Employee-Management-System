@@ -47,6 +47,9 @@ VITE_API_URL=https://your-backend.onrender.com/api
 ❌ https://your-backend.onrender.com/api/ (extra / at end)
 ```
 
+**For FlowAI Copilot:**
+Ensure `VITE_GEMINI_API_KEY` is set to your active Google Gemini API key.
+
 **After fixing, you MUST redeploy:**
 
 - Deployments tab → Click "..." → **Redeploy**

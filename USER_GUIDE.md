@@ -1,411 +1,267 @@
-# Employee Management System - User Guide
+# 🏢 TeamFlow - Workforce Operating System
+## Complete User Guide & Application Manual
 
-## 🚀 Getting Started
+> **Platform Version:** 2.4 (FlowAI Copilot & Multi-Tenant SaaS Suite)  
+> **Target Audience:** Workspace Administrators, Engineering Leads, Team Members & Operators
+
+---
+
+## 📋 Table of Contents
+
+- [1. Platform Overview](#1-platform-overview)
+- [2. Quick Start & Demo Credentials](#2-quick-start--demo-credentials)
+- [3. Public Pages & Interactive Sprint Simulator](#3-public-pages--interactive-sprint-simulator)
+- [4. Multi-Tenant Organization Onboarding](#4-multi-tenant-organization-onboarding)
+- [5. Authentication Suite](#5-authentication-suite)
+- [6. Admin Command Center (`/admin`)](#6-admin-command-center-admin)
+  - [Navy Navigation & Workspace Identity](#navy-navigation--workspace-identity)
+  - [Tasks Board Tab](#tasks-board-tab)
+  - [Create Deliverable Tab & FlowAI Injection](#create-deliverable-tab--flowai-injection)
+  - [Employees Directory Tab](#employees-directory-tab)
+  - [Analytics Suite (Recharts Visualizations)](#analytics-suite-recharts-visualizations)
+- [7. Employee Workspace (`/employee`)](#7-employee-workspace-employee)
+  - [Dynamic Time-Aware Banner & Personal KPIs](#dynamic-time-aware-banner--personal-kpis)
+  - [Intelligent "Next Best Action" Engine](#intelligent-next-best-action-engine)
+  - [Deliverable Execution & Blocker Triage](#deliverable-execution--blocker-triage)
+- [8. FlowAI Workspace Copilot](#8-flowai-workspace-copilot)
+- [9. Multi-Tenant Architecture & Data Isolation](#9-multi-tenant-architecture--data-isolation)
+- [10. URL Routing & Navigation Reference](#10-url-routing--navigation-reference)
+- [11. Troubleshooting & Support](#11-troubleshooting--support)
+
+---
+
+## 1. Platform Overview
+
+**TeamFlow** is an enterprise-grade, multi-tenant workforce operating system engineered for software delivery, sprint velocity tracking, and cross-functional operations. 
+
+### Key Capabilities
+- 🏢 **Multi-Tenant Isolation:** Complete organization segregation powered by strict tenant scoping (`companyName`) across all users, deliverables, and analytics.
+- 🤖 **FlowAI Workspace Copilot:** Built-in Google Gemini 3.6 Flash assistant that translates natural language requirements into structured deliverable specifications with 1-click form injection.
+- ⚡ **Interactive Sprint Simulator:** Zero-registration sandbox on the landing page for prospective teams to test sprint transitions and live burn-down metrics.
+- 🎯 **Employee "Next Best Action" Engine:** Smart priority queue that focuses team members on their single highest-impact deliverable with 1-click acceptance and blocker logging.
+- 📊 **Executive Analytics Suite:** Interactive Recharts data visualizations for sprint status distribution, functional domain breakdown, and member delivery velocity.
+- 🛡️ **Enterprise Security:** Dual-layer rate limiting, Helmet HTTP headers, MongoDB query sanitization, XSS cleaning, and JWT session handling.
+
+---
+
+## 2. Quick Start & Demo Credentials
 
 ### Prerequisites
+- Backend API running on `http://localhost:5000` (or production Render endpoint)
+- Frontend client running on `http://localhost:5173` (or production Vercel endpoint)
+- MongoDB instance connected (local or MongoDB Atlas)
 
-- Backend server running on `http://localhost:5000`
-- Frontend running on `http://localhost:5173`
+### Seed Data Credentials (Acme Corp)
+The platform includes an automated seeder (`npm run seed` inside `server/`) pre-configured with the **Acme Corp** workspace:
 
----
+| Role | Name | Email | Password | Company Workspace | Scope |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 👑 **Admin** | Admin User | `admin@company.com` | `admin123` | Acme Corp | Full Command Center access |
+| 👤 **Employee** | John Doe | `john@company.com` | `123456` | Acme Corp | Frontend & API tasks |
+| 👤 **Employee** | Jane Smith | `jane@company.com` | `123456` | Acme Corp | Database & Schema tasks |
+| 👤 **Employee** | Mike Johnson | `mike@company.com` | `123456` | Acme Corp | Security & DevOps tasks |
+| 👤 **Employee** | Sarah Wilson | `sarah@company.com` | `123456` | Acme Corp | QA & Testing deliverables |
+| 👤 **Employee** | Tom Brown | `tom@company.com` | `123456` | Acme Corp | Infrastructure tasks |
+| 👤 **Employee** | Pradipta Kumar | `supritimaity59@gmail.com` | `123456` | Acme Corp | Lead developer workspace |
 
-## 📝 Company Registration (Signup)
-
-### Step 1: Access the Landing Page
-
-1. Open your browser and navigate to: `http://localhost:5173`
-2. You'll see the **Landing Page** with a 3D animated sphere
-3. Click the **"Get Started"** button or **"Sign Up"** in the navigation menu
-
-### Step 2: Company Registration Form
-
-You'll be redirected to `/register-company` with a **2-step registration process**:
-
-#### **Step 1: Company Information**
-
-Fill in the following details:
-
-- **Company Name**: Your organization name (e.g., "Tech Solutions Inc")
-- **Email**: Company email address (e.g., "admin@techsolutions.com")
-- **Industry**: Select from dropdown:
-  - Technology
-  - Healthcare
-  - Finance
-  - Education
-  - Retail
-  - Manufacturing
-  - Services
-  - Other
-- **Company Size**: Select from dropdown:
-  - 1-10 employees (Free Plan)
-  - 11-50 employees (Professional Plan)
-  - 51-100 employees (Professional Plan)
-  - 100+ employees (Enterprise Plan)
-
-Click **"Next"** to proceed to Step 2.
-
-#### **Step 2: Admin Account Setup**
-
-Create your admin account:
-
-- **Full Name**: Your name (e.g., "John Doe")
-- **Email**: Your admin email (can be same as company email)
-- **Password**: Strong password (minimum 6 characters)
-- **Confirm Password**: Re-enter your password
-
-Click **"Create Account"** to complete registration.
-
-### Step 3: Automatic Login
-
-After successful registration:
-
-- ✅ Your company is created
-- ✅ Your admin account is created
-- ✅ You're automatically logged in
-- ✅ Redirected to **Admin Dashboard** at `/admin-dashboard`
+> **💡 Demo Quick Fill:** On the `/login` screen, you can click the quick-preset buttons to autofill Admin or Employee demo credentials instantly.
 
 ---
 
-## 🔐 Login Process
+## 3. Public Pages & Interactive Sprint Simulator
 
-### Method 1: From Landing Page
-
-1. Navigate to `http://localhost:5173`
-2. Click **"Login"** button in the top-right corner
-3. You'll be redirected to `/login`
-
-### Method 2: Direct Login URL
-
-Navigate directly to: `http://localhost:5173/login`
-
-### Login Form
-
-Enter your credentials:
-
-- **Email**: Your registered email
-- **Password**: Your account password
-
-Click **"Sign In"** to log in.
-
-### Post-Login Redirect
-
-After successful login, you'll be redirected based on your role:
-
-- **Admin**: `/admin-dashboard` (Admin Dashboard)
-- **Employee**: `/employee-dashboard` (Employee Dashboard)
+### Landing Page (`/`)
+1. **Light SaaS Design Foundation:** Crisp light surfaces (`#F5F6F7`), deep charcoal typography (`#0F172A`), geometric orbital arcs, and responsive layout.
+2. **Interactive Sprint Simulator (`#simulator`):**
+   - Live interactive sprint board embedded in the hero.
+   - Click tasks to cycle states (`active` ➔ `completed`).
+   - Watch the live burn-down percentage and status counters update dynamically.
+   - Zero registration required to test-drive the workflow.
+3. **4-Step Interactive Stepper:**
+   - Step 1: *Register Organization* (Initialize multi-tenant workspace)
+   - Step 2: *Provision Team* (Invite staff with role-based permissions)
+   - Step 3: *Delegate Tasks* (Draft specifications with FlowAI)
+   - Step 4: *Measure Velocity* (Real-time analytics and burn-down tracking)
+4. **Target Persona Matrices:** Tailored feature breakdown for Engineering Teams, Operations & HR, and Fast-Growing Startups.
+5. **FAQ Accordion & Release News Pill:** Direct answers to multi-tenancy and security questions with live `v2.4 Task AI Deployed` pill.
 
 ---
 
-## 🏢 Multi-Tenant System Explained
+## 4. Multi-Tenant Organization Onboarding
 
-### What is Multi-Tenancy?
+### Company Registration (`/register-company`)
+To provision a brand new company workspace:
 
-Your Employee Management System supports **multiple companies** on the same platform:
-
-- Each company has its own **isolated data**
-- Companies cannot see each other's employees or tasks
-- Each company has its own **admin** and **employees**
-
-### Subscription Plans
-
-#### **Free Plan** (1-10 employees)
-
-- Up to **10 employees**
-- Up to **100 tasks**
-- Basic features
-
-#### **Professional Plan** (11-100 employees)
-
-- Up to **100 employees**
-- Up to **1000 tasks**
-- Advanced features
-
-#### **Enterprise Plan** (100+ employees)
-
-- **Unlimited employees**
-- **Unlimited tasks**
-- All features + priority support
+1. Click **"Get Started"** or **"Start Free Trial"** on the landing page, or browse directly to `/register-company`.
+2. The split-card layout showcases workspace governance benefits on the left and registration fields on the right:
+   - **Company / Workspace Name:** e.g., *Starlight Technologies* (defines tenant isolation boundary)
+   - **Primary Administrator Name:** e.g., *Alex Rivera*
+   - **Executive Email Address:** e.g., *alex@starlight.io*
+   - **Password:** Minimum 6 characters (hashed with bcrypt 10 rounds)
+   - **Confirm Password:** Password confirmation match
+3. Click **"Create Workspace"**:
+   - Calls `POST /api/auth/register-admin`
+   - Atomically provisions the company scope and root admin account
+   - Automatically logs in and redirects to the **Admin Command Center** (`/admin`)
 
 ---
 
-## 👤 User Roles
+## 5. Authentication Suite
 
-### Admin Role
+### Login (`/login`)
+- Clean card interface with instant password visibility toggling.
+- **Demo Credential Fillers:** 1-click buttons for instant Admin or Employee testing.
+- Successful login automatically evaluates the user's role:
+  - Role `admin` ➔ Redirects to `/admin`
+  - Role `employee` ➔ Redirects to `/employee`
 
-**What can admins do?**
+### Sign Up (`/signup`)
+- Secondary signup form for team members joining an existing tenant.
 
-- ✅ Create, edit, and delete employees
-- ✅ Create, assign, and manage all tasks
-- ✅ View company statistics
-- ✅ Manage company profile
-- ✅ View all employees' tasks
-- ✅ Reset employee passwords
-
-**Admin Dashboard Features:**
-
-- **Dashboard Tab**: Overview statistics
-- **All Tasks Tab**: Manage all company tasks
-- **Create Task Tab**: Create new tasks
-- **Employees Tab**: Manage employees (PENDING IMPLEMENTATION)
-
-### Employee Role
-
-**What can employees do?**
-
-- ✅ View assigned tasks
-- ✅ Accept tasks
-- ✅ Mark tasks as completed
-- ✅ Mark tasks as failed
-- ✅ View their own statistics
-
-**Employee Dashboard Features:**
-
-- View tasks assigned to them
-- Update task status
-- Track their performance
+### Password Recovery (`/forgot-password` & `/reset-password`)
+1. Browse to `/forgot-password`, enter account email.
+2. System dispatches a cryptographically secure token via Nodemailer with 10-minute expiry.
+3. Access reset link `/reset-password?token=<TOKEN>` from email to establish new password.
 
 ---
 
-## 🔄 Complete User Flow Example
+## 6. Admin Command Center (`/admin`)
 
-### Scenario: Setting Up Your Company
+The Command Center is reserved for workspace administrators to organize deliverables, monitor progress, and manage personnel.
 
-#### 1. **Company Registration**
+### Navy Navigation & Workspace Identity
+- **Dark Navy Sidebar (`#101827`):** High-contrast navigation featuring company badge, active indicators, and mobile drawer support.
+- **Sprint KPI Summary:** Real-time counters displaying Total Tasks, Active Sprints, Completed Deliverables, and Blocked/Failed tasks.
 
-```
-Navigate to: http://localhost:5173
-↓
-Click "Get Started" or "Sign Up"
-↓
-Fill Company Info:
-  - Company Name: "Tech Solutions Inc"
-  - Email: "admin@techsolutions.com"
-  - Industry: "Technology"
-  - Company Size: "11-50 employees" (Professional Plan)
-↓
-Click "Next"
-↓
-Fill Admin Account:
-  - Full Name: "John Doe"
-  - Email: "john@techsolutions.com"
-  - Password: "SecurePass123"
-  - Confirm Password: "SecurePass123"
-↓
-Click "Create Account"
-↓
-✅ Automatically logged in → Admin Dashboard
-```
+### Tasks Board Tab
+- **Search & Filters:** Real-time debounced search by deliverable title or description, combined with status pills (`All`, `New`, `Active`, `Completed`, `Failed`).
+- **Deliverable Cards:** Each card displays title, description, priority badge (`Urgent`, `High`, `Medium`, `Low`), category chip, assignee name/email, due date, and overdue indicator.
+- **Action Controls:** Inline task deletion with confirmation modal and direct status inspection.
 
-#### 2. **Add Employees** (Coming Soon)
+### Create Deliverable Tab & FlowAI Injection
+- **Deliverable Composer Form:**
+  - **Task Title:** Concise name of deliverable (up to 100 characters).
+  - **Category Selector:** Frontend, Backend, Database, DevOps, Security, Design, Testing, Bug Fix, Feature, Documentation, or Other.
+  - **Priority:** Low, Medium, High, Urgent.
+  - **Assignee Selection:** Dropdown populated from active company employees (`GET /api/employees`).
+  - **Due Date Picker:** Calendar input with automatic overdue calculation.
+  - **Detailed Scope / Description:** Up to 500 characters of technical specifications.
+- **FlowAI Copilot 1-Click Injection:** When FlowAI drafts a task specification, administrators can click **"Insert into Form"** to automatically populate all composer fields.
 
-```
-Admin Dashboard
-↓
-Click "Employees" tab
-↓
-Click "Add Employee" button
-↓
-Fill employee details:
-  - Name: "Jane Smith"
-  - Email: "jane@techsolutions.com"
-  - Password: "TempPass123"
-  - Role: "Employee"
-↓
-Click "Create"
-↓
-✅ Employee created and email sent
-```
+### Employees Directory Tab
+- **Staff Roster:** View all members registered in your company workspace with their email, role badge, account status, and workload metrics (Active Tasks, Completed Tasks, Failed/Blocked Tasks).
+- **Add Employee Modal:** Create team member credentials directly (`POST /api/employees`) specifying Name, Email, and Initial Password.
+- **Password Reset Tool:** Admins can reset member passwords directly from the directory modal.
+- **Member Removal:** Safe employee deletion with active task reassignment prompts.
 
-#### 3. **Create Tasks**
-
-```
-Admin Dashboard
-↓
-Click "Create Task" tab
-↓
-Fill task details:
-  - Title: "Setup Development Environment"
-  - Description: "Install required tools and dependencies"
-  - Category: "Development"
-  - Priority: "High"
-  - Assign To: Select "Jane Smith"
-  - Deadline: Select date
-↓
-Click "Create Task"
-↓
-✅ Task created and employee notified
-```
-
-#### 4. **Employee Login and Task Management**
-
-```
-Employee logs in:
-  - Email: "jane@techsolutions.com"
-  - Password: "TempPass123"
-↓
-Redirected to: Employee Dashboard
-↓
-Views assigned task: "Setup Development Environment"
-↓
-Clicks "Accept" → Status: Active
-↓
-Completes work → Clicks "Complete" → Status: Completed
-```
+### Analytics Suite (Recharts Visualizations)
+- **Status Distribution:** Interactive Donut / Pie Chart showing live distribution of deliverables across `New`, `Active`, `Completed`, and `Failed`.
+- **Category Breakdown:** Bar chart displaying workload distribution across functional domains (Frontend, Backend, DevOps, etc.).
+- **Team Velocity & Throughput:** Individual member completion rates and workload capacity.
 
 ---
 
-## 🔑 Important Features
+## 7. Employee Workspace (`/employee`)
 
-### Password Reset Flow
+Designed specifically for individual contributors to focus on execution without administrative clutter.
 
-1. On login page, click **"Forgot Password?"**
-2. Enter your email address
-3. Click **"Send Reset Link"**
-4. Check your email for reset link
-5. Click the link (format: `/reset-password/:token`)
-6. Enter new password
-7. Click **"Reset Password"**
-8. ✅ Auto-logged in with new password
+### Dynamic Time-Aware Banner & Personal KPIs
+- Dynamic banner greets the employee based on their local time (*"Good morning"*, *"Good afternoon"*, *"Good evening"*).
+- Personal KPI counters showing **New Tasks**, **In Progress**, **Delivered**, and **Blocked**.
 
-### Data Isolation
+### Intelligent "Next Best Action" Engine
+An automated decision engine evaluates queue conditions to provide optimal focus:
+- **Condition 1 (Unaccepted Deliverables):** Highlights the highest-priority new task with a prominent **1-Click "Accept First Task"** button.
+- **Condition 2 (Tasks In-Flight):** Focuses the employee on their active task with real-time execution timer and direct completion controls.
+- **Condition 3 (Queue Clear):** Displays an achievement celebration banner indicating all deliverables for the sprint have been resolved.
 
-- **Your company's data is completely isolated**
-- Two companies can have employees with the same email
-- Uniqueness is enforced within each company only
-- Example:
-  - Company A: john@example.com ✅
-  - Company B: john@example.com ✅ (Different company, allowed)
-  - Company A: john@example.com ❌ (Duplicate in same company)
-
-### Email Notifications
-
-Automatic emails are sent for:
-
-- 📧 New task assignment
-- 📧 Employee account creation
-- 📧 Password reset requests
-- 📧 Task updates (accept, complete, fail)
+### Deliverable Execution & Blocker Triage
+- **1-Click Acceptance:** Transitions task from `new` ➔ `active`.
+- **Mark Complete:** Records timestamp and marks task `completed` with celebration toast.
+- **Document Blocker / Mark Failed:**
+  - Opens a dedicated blocker triage modal.
+  - Requires the employee to document the root cause / blocker description (e.g., *"Third-party API endpoint returning 502"*).
+  - Immediately flags the task as `failed` on the Admin board to trigger lead intervention.
 
 ---
 
-## 🛠️ Troubleshooting
+## 8. FlowAI Workspace Copilot
 
-### "Failed to fetch" Error
+Available via the global floating button across both Admin and Employee views.
 
-**Problem**: Frontend can't connect to backend
-
-**Solution**:
-
-```bash
-# Make sure backend is running:
-cd server
-npm run dev
-
-# Backend should show:
-✅ MongoDB Connected
-🚀 Server: http://localhost:5000
-```
-
-### "Email already exists" Error
-
-**Problem**: Trying to register with email already used in your company
-
-**Solution**:
-
-- Use a different email address
-- OR login with existing credentials
-- Remember: Same email can exist in different companies
-
-### Can't See Other Company's Data
-
-**This is by design!** Multi-tenancy ensures:
-
-- Company A cannot see Company B's employees
-- Company A cannot see Company B's tasks
-- Each company operates independently
-
-### Session Persistence
-
-Your login session is stored in:
-
-- **localStorage**: `loggedInUser`, `token`, `company`
-- **Automatic logout**: Token expires after 7 days
-- **Manual logout**: Clear session data
+### Copilot Capabilities
+- **Model:** Google Gemini 3.6 Flash.
+- **Context-Aware:** Reads active user role (`admin` vs `employee`), company workspace, and active route URL.
+- **Natural Language to Specification:** Say *"Draft a high-priority task for migrating user sessions to Redis"* and FlowAI will respond with a structured specification containing:
+  - Title & Category
+  - Priority & Due Date
+  - Technical Scope & Architecture Objectives
+  - Strict Acceptance Criteria
+- **1-Click Form Autofill:** Populates the Admin Create Deliverable form with one tap.
+- **Built-in Prompt Triggers:** Quick pills for Sprint Planning, Blocker Resolution, Architecture Review, and Code Quality audits.
+- **Docking Flexibility:** Minimize, expand full-screen, or quick-clear conversation state with graceful offline fallbacks.
 
 ---
 
-## 📊 What's Next?
+## 9. Multi-Tenant Architecture & Data Isolation
 
-### Currently Available ✅
-
-- ✅ Landing page with 3D animation
-- ✅ Company registration (multi-tenant)
-- ✅ Login/Logout
-- ✅ Password reset flow
-- ✅ Admin dashboard (tasks management)
-- ✅ Employee dashboard
-- ✅ Task CRUD operations
-
-### Coming Soon 🚧
-
-- 🚧 Employee Management UI (in Admin Dashboard)
-- 🚧 Employee List/Create/Edit/Delete
-- 🚧 Advanced statistics and charts
-- 🚧 Company profile management
-- 🚧 Employee performance reports
+### How Data Segregation Works
+1. **Tenant Anchor:** Every user record contains a mandatory `companyName` field.
+2. **Automatic Query Scoping:**
+   - Backend queries filter employees by `companyName: req.user.companyName`.
+   - Deliverables are filtered by verifying the assignee belongs to the caller's company.
+   - Cross-tenant data leakage is structurally impossible at the database query level.
+3. **Email Isolation:** The same employee email address can exist across different tenant companies without collision.
 
 ---
 
-## 📱 Quick Reference
+## 10. URL Routing & Navigation Reference
 
-### URLs
-
-| Route                    | Access        | Description            |
-| ------------------------ | ------------- | ---------------------- |
-| `/`                      | Public        | Landing page           |
-| `/register-company`      | Public        | Company signup         |
-| `/login`                 | Public        | Login page             |
-| `/forgot-password`       | Public        | Password reset request |
-| `/reset-password/:token` | Public        | Password reset form    |
-| `/admin-dashboard`       | Admin only    | Admin dashboard        |
-| `/employee-dashboard`    | Employee only | Employee dashboard     |
-
-### Default Ports
-
-- **Frontend**: `http://localhost:5173`
-- **Backend**: `http://localhost:5000`
-- **Database**: MongoDB Atlas (cloud)
-
-### Subscription Limits
-
-| Plan         | Employees | Tasks     |
-| ------------ | --------- | --------- |
-| Free         | 10        | 100       |
-| Professional | 100       | 1,000     |
-| Enterprise   | Unlimited | Unlimited |
+| Path | Access Guard | Description |
+| :--- | :--- | :--- |
+| `/` | Public | Modern landing page with interactive Sprint Simulator & features |
+| `/register-company` | Public (Guest) | Split-card company workspace provisioning (`POST /api/auth/register-admin`) |
+| `/login` | Public (Guest) | SaaS card login with 1-click demo role presets |
+| `/signup` | Public (Guest) | Employee sign up form |
+| `/forgot-password` | Public | Password recovery token request |
+| `/reset-password` | Public | Secure password reset form with token validation |
+| `/admin` | Protected (`admin`) | Admin Command Center (Tasks, Create Deliverable, Employees, Analytics) |
+| `/employee` | Protected (`employee`) | Employee Workspace (Greeting, KPIs, Next Best Action, TaskList) |
+| `*` | Any | Wildcard catch-all redirects automatically to `/` |
 
 ---
 
-## 💡 Tips
+## 11. Troubleshooting & Support
 
-1. **Strong Passwords**: Use passwords with at least 6 characters (mix of letters, numbers, symbols recommended)
-2. **Email Verification**: Make sure you have access to the email you register with
-3. **Company Slug**: Auto-generated from company name (e.g., "Tech Solutions" → "tech-solutions")
-4. **First User is Admin**: The person who registers the company becomes the admin
-5. **Add Employees**: Only admins can add new employees to the company
+### Common Questions & Solutions
+
+#### 1. Cannot connect to server ("Failed to fetch")
+- Verify that the backend is active on port `5000`:
+  ```bash
+  curl http://localhost:5000/api/health
+  # Returns: {"success": true, "message": "API is running"}
+  ```
+- Ensure Vite reverse proxy is enabled in `vite.config.js` (`/api` ➔ `http://localhost:5000`).
+
+#### 2. FlowAI Copilot says API key is missing
+- Ensure `VITE_GEMINI_API_KEY` is defined in your root `.env` or `.env.local`:
+  ```env
+  VITE_GEMINI_API_KEY=your_gemini_api_key_here
+  ```
+- Restart the Vite dev server (`npm run dev`) after updating `.env`.
+
+#### 3. Database reset & fresh demo seeding
+- To re-populate the complete Acme Corp organization with 20 demo deliverables:
+  ```bash
+  cd server
+  npm run seed
+  ```
+
+#### 4. Session expired or corrupted token
+- Click **"Sign Out"** in the top navigation header or clear browser storage:
+  - DevTools (F12) ➔ Application ➔ Local Storage ➔ Clear `token` and `loggedInUser`.
+- Sign back in at `/login`.
 
 ---
 
-## 🆘 Need Help?
-
-If you encounter issues:
-
-1. Check browser console (F12 → Console tab)
-2. Check backend terminal for error messages
-3. Verify MongoDB connection
-4. Ensure both frontend and backend are running
-5. Clear browser cache and localStorage if needed
-
----
-
-**Happy Managing! 🎉**
+**TeamFlow Workforce Operating System** • Built for high-velocity teams.

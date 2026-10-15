@@ -165,6 +165,10 @@ vercel --prod
    Key: VITE_API_URL
    Value: https://your-backend-url.onrender.com/api
    (Use URL from Step 2!)
+
+   Key: VITE_GEMINI_API_KEY
+   Value: your_gemini_api_key_here
+   (Required for FlowAI Workspace Copilot)
 7. Click "Deploy"
 8. Wait 2-3 minutes
 9. Copy your Vercel URL (looks like: https://employee-management-system.vercel.app)
@@ -191,15 +195,16 @@ vercel --prod
 
 ```bash
 1. Open your Vercel URL in browser
-2. Click "Register as Company"
-3. Fill in:
+2. Scroll to #simulator hero to test 1-click sprint transitions
+3. Click "Get Started" or go to /register-company
+4. Fill in:
    - Company: Test Corp
    - Name: Admin User
    - Email: admin@test.com
    - Password: Test123!
-4. Click Register
-5. Login with same credentials
-6. Should see Admin Dashboard ✅
+   - Confirm Password: Test123!
+5. Click "Create Workspace"
+6. Automatically logged in to Admin Command Center (/admin) ✅
 ```
 
 **Create Test Employee**:

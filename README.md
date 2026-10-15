@@ -122,11 +122,11 @@ Built directly into the workspace layout via a global floating copilot modal (`A
 
 ### 🏢 Multi-Tenant SaaS Onboarding
 
-- **3-Step Company Registration (`/register-company`):**
-  1. *Organization Profile:* Company name, reserved workspace subdomain (`[subdomain].teamflow.space`), industry vertical, and team size.
-  2. *Primary Administrator:* Full name, executive email, and password.
-  3. *Tiered Plan Confirmation:* Interactive selection between Starter, Growth, and Enterprise tiers.
-- **SaaS Card Suite Auth:** Modern card layouts for Login, Sign Up, Forgot Password, and Reset Password with secure token validation.
+- **Split-Card Workspace Registration (`/register-company`):**
+  - *Organization Identity:* Company name (establishes tenant data boundary).
+  - *Root Administrator:* Full name, executive email, and secure password.
+  - *Instant Provisioning:* Calls `POST /api/auth/register-admin`, stores session, and immediately launches into `/admin`.
+- **SaaS Card Suite Auth:** Modern card layouts for Login, Sign Up, Forgot Password, and Reset Password with secure token validation and 1-click demo role presets.
 
 ---
 
@@ -248,6 +248,9 @@ The database includes an automated seeder (`server/src/seeders/seedData.js`) con
 Employee_Management_System/
 │
 ├── 📂 src/                          # Frontend Application (React 19 + Vite 7)
+│   ├── 📂 assets/                   # Static icons & vectors
+│   │   └── react.svg
+│   │
 │   ├── 📂 components/
 │   │   ├── 📂 AI/                   # FlowAI Workspace Copilot
 │   │   │   └── AIAssistant.jsx      # Gemini 3.6 Flash copilot interface
@@ -260,24 +263,34 @@ Employee_Management_System/
 │   │   │   │   ├── CreateTaskTab.jsx    # Task composer with FlowAI injection
 │   │   │   │   ├── DeleteConfirmModal.jsx # Confirmation dialog
 │   │   │   │   ├── EmployeesTab.jsx # Team directory & credential reset
+│   │   │   │   ├── EmptyState.jsx   # Graceful empty state illustration
 │   │   │   │   ├── FilterPills.jsx  # Status filter toggles
+│   │   │   │   ├── FormInput.jsx    # Standardized form input field
+│   │   │   │   ├── Icons.jsx        # SVG category & priority icons
+│   │   │   │   ├── LoadingStates.jsx# Skeleton loaders
 │   │   │   │   ├── QuickActions.jsx # Fast shortcut buttons
+│   │   │   │   ├── RecentActivity.jsx # Activity stream
 │   │   │   │   ├── SearchBar.jsx    # Debounced task search
 │   │   │   │   ├── Sidebar.jsx      # Dark navy sidebar navigation
 │   │   │   │   ├── StatsCard.jsx    # Real-time sprint KPI cards
-│   │   │   │   ├── TaskCard.jsx     # Individual task card
+│   │   │   │   ├── TabNavigation.jsx# Mobile/tab switch controller
+│   │   │   │   ├── TaskCard.jsx     # Individual deliverable card
 │   │   │   │   ├── TasksTab.jsx     # Filtered deliverable board
+│   │   │   │   ├── Toast.jsx        # Inline toast notification
 │   │   │   │   └── index.js
-│   │   │   └── 📂 hooks/            # Custom hooks for state & API
-│   │   │       ├── useTaskManager.js
-│   │   │       ├── useEmployees.js
-│   │   │       └── useAnalytics.js
+│   │   │   ├── 📂 hooks/            # Custom hooks for state & API
+│   │   │   │   ├── useAnalytics.js  # Analytics data fetcher & transformer
+│   │   │   │   ├── useEmployees.js  # Team member query & mutation hook
+│   │   │   │   └── useTaskManager.js# Deliverable state machine
+│   │   │   ├── 📂 styles/           # animations.css
+│   │   │   └── 📂 utils/            # iconHelpers.js, taskHelpers.js
 │   │   │
 │   │   ├── 📂 Auth/                 # Authentication Card Suite
 │   │   │   ├── Login.jsx            # Sign in with quick role presets
 │   │   │   ├── Signup.jsx           # Account creation
 │   │   │   ├── ForgotPassword.jsx   # Reset token dispatch
-│   │   │   └── ResetPassword.jsx    # Password change form
+│   │   │   ├── ResetPassword.jsx    # Password change form
+│   │   │   └── index.js
 │   │   │
 │   │   ├── 📂 Dashboard/            # Employee Workspace
 │   │   │   └── EmployeeDashboard.jsx # Welcome banner, KPI cards & Next Best Action
@@ -288,49 +301,69 @@ Employee_Management_System/
 │   │   ├── 📂 ErrorBoundary/        # Fault isolation & crash guards
 │   │   │   └── RouteErrorBoundary.jsx
 │   │   │
-│   │   └── 📂 others/               # Shared interface components
-│   │       ├── Header.jsx           # Topbar with profile & logout
-│   │       └── TaskListNumber.jsx   # Numerical KPI counters
+│   │   ├── 📂 others/               # Shared interface components
+│   │   │   ├── Header.jsx           # Topbar with profile & logout
+│   │   │   └── TaskListNumber.jsx   # Numerical KPI counters
+│   │   │
+│   │   ├── ErrorBoundary.jsx        # Global error boundary
+│   │   ├── Toast.jsx                # Toast component
+│   │   └── ToastContainer.jsx       # Floating toast container
 │   │
 │   ├── 📂 pages/                    # Public Marketing & Onboarding Pages
 │   │   ├── LandingPage.jsx          # Hero arc, Sprint Simulator & feature matrix
-│   │   └── CompanyRegistration.jsx  # 3-step organization onboarding
+│   │   └── CompanyRegistration.jsx  # Split-card organization onboarding
 │   │
 │   ├── 📂 context/                  # React Contexts
 │   │   ├── AuthProvider.jsx         # Token persistence & user state
-│   │   └── ToastProvider.jsx        # Notification dispatch
+│   │   ├── ToastProvider.jsx        # Notification dispatch
+│   │   ├── contexts.js              # Context exports
+│   │   └── toastContext.js
+│   │
+│   ├── 📂 hooks/                    # Reusable React hooks
+│   │   ├── useAuth.js               # Auth context hook
+│   │   ├── useToast.js              # Notification dispatcher
+│   │   └── index.js
 │   │
 │   ├── 📂 services/                 # Centralized HTTP layer
-│   │   └── api.js                   # Fetch client configured for Vite proxy
+│   │   ├── api.js                   # Fetch client configured for Vite proxy
+│   │   └── index.js
+│   │
+│   ├── 📂 constants/                # App constants
+│   │   └── taskConstants.js         # Categories, statuses, priorities
 │   │
 │   ├── 📂 utils/                    # Shared utilities
+│   │   ├── localStorage.jsx         # Safe browser storage helper
 │   │   ├── logger.js                # Environment-aware logging
 │   │   └── validation.js            # Input check helpers
 │   │
 │   ├── App.jsx                      # App router & FlowAI copilot root
+│   ├── App.css                      # App layout styles
 │   ├── main.jsx                     # Application bootstrap
 │   └── index.css                    # Tailwind CSS v4 imports & design tokens
 │
 ├── 📂 server/                       # Backend Application (Node.js + Express)
 │   ├── 📂 src/
 │   │   ├── 📂 config/               # Database & environment configurations
-│   │   │   ├── db.js                # MongoDB connection handler
+│   │   │   ├── db.js                # MongoDB Mongoose connection handler
 │   │   │   ├── env.js               # Validated env configurations
 │   │   │   └── index.js
 │   │   │
 │   │   ├── 📂 controllers/          # Business logic handlers
 │   │   │   ├── authController.js    # Registration, login, password reset
 │   │   │   ├── taskController.js    # Task CRUD, status updates, stats
-│   │   │   └── employeeController.js# Team management, metrics
+│   │   │   ├── employeeController.js# Team management, metrics
+│   │   │   └── index.js
 │   │   │
 │   │   ├── 📂 middleware/           # Express middleware pipeline
 │   │   │   ├── auth.js              # JWT verification & tenant extraction
 │   │   │   ├── validate.js          # Express-validator error handler
-│   │   │   └── errorHandler.js      # Global error and 404 handlers
+│   │   │   ├── errorHandler.js      # Global error and 404 handlers
+│   │   │   └── index.js
 │   │   │
 │   │   ├── 📂 models/               # Mongoose Schemas with multi-tenancy
-│   │   │   ├── User.js              # User schema with bcrypt hooks
-│   │   │   └── Task.js              # Deliverable schema with status transitions
+│   │   │   ├── User.js              # User schema with bcrypt hooks & companyName
+│   │   │   ├── Task.js              # Deliverable schema with status transitions
+│   │   │   └── index.js
 │   │   │
 │   │   ├── 📂 routes/               # API endpoint definitions
 │   │   │   ├── authRoutes.js        # /api/auth/*
@@ -338,23 +371,67 @@ Employee_Management_System/
 │   │   │   ├── employeeRoutes.js    # /api/employees/*
 │   │   │   └── index.js             # Route aggregator & /api/health
 │   │   │
+│   │   ├── 📂 services/             # Domain services
+│   │   │   └── taskNotificationService.js # Email alerts on task events
+│   │   │
 │   │   ├── 📂 seeders/              # Database population scripts
 │   │   │   └── seedData.js          # Acme Corp seed generator
 │   │   │
-│   │   └── app.js                   # Express application setup
+│   │   ├── 📂 utils/                # Standardized utilities
+│   │   │   ├── ApiError.js          # Error response class
+│   │   │   ├── ApiResponse.js       # Success response class
+│   │   │   ├── asyncHandler.js      # Try-catch async wrapper
+│   │   │   ├── emailTemplates.js    # HTML email formatting templates
+│   │   │   ├── sendEmail.js         # Nodemailer transporter
+│   │   │   └── index.js
+│   │   │
+│   │   ├── 📂 validators/           # Express-validator request schemas
+│   │   │   ├── authValidator.js     # Login/registration schemas
+│   │   │   ├── employeeValidator.js # Employee management schemas
+│   │   │   ├── taskValidator.js     # Task CRUD schemas
+│   │   │   └── index.js
+│   │   │
+│   │   └── app.js                   # Express application setup & security stack
 │   │
-│   ├── server.js                    # Server entrypoint
+│   ├── 📂 scripts/                  # Utility scripts
+│   │   └── verify-db.js             # Database connectivity & diagnostic tool
+│   │
+│   ├── 📂 tests/                    # Automated integration test suite
+│   │   ├── auth.test.js             # Authentication endpoint tests
+│   │   ├── setup.js                 # Test database setup & teardown
+│   │   └── README.md                # Testing guide
+│   │
+│   ├── server.js                    # Server HTTP entrypoint
 │   ├── package.json                 # Backend dependencies & test scripts
-│   └── jest.config.js               # Unit and integration test config
+│   ├── jest.config.js               # Jest test runner configuration
+│   ├── .env.example                 # Backend environment variable template
+│   ├── .env.production              # Production backend environment template
+│   └── .env.test                    # Test database environment variables
 │
 ├── 📂 public/                       # Static public assets
 │   ├── TeamFlow_logo.png            # Official brand logo
 │   └── vite.svg
 │
-├── .env.example                     # Root environment variable template
+├── 📂 scripts/                      # Cross-platform deployment scripts
+│   ├── deploy.ps1                   # Windows deployment automation
+│   ├── deploy.sh                    # Linux/Mac deployment automation
+│   ├── pre-deploy-check.ps1         # Windows pre-flight check
+│   ├── pre-deploy-check.sh          # Linux/Mac pre-flight check
+│   └── ci-check.ps1                 # CI pipeline validation
+│
+├── 📂 .github/                      # CI/CD and GitHub automation
+│   ├── workflows/ci-cd.yml          # GitHub Actions pipeline
+│   ├── CICD_SETUP.md                # CI/CD configuration guide
+│   └── CI_FIX_REPORT.md             # Pipeline resolution report
+│
+├── .env.example                     # Root frontend environment template
+├── .env.production                  # Production frontend environment template
 ├── package.json                     # Frontend dependencies & build scripts
 ├── vite.config.js                   # Vite configuration with API reverse proxy
 ├── eslint.config.js                 # Modern ESLint configuration
+├── vercel.json                      # Vercel deployment configuration
+├── render.yaml                      # Render deployment configuration
+├── railway.json                     # Railway deployment configuration
 └── README.md                        # Project documentation (this file)
 ```
 

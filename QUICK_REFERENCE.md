@@ -1,237 +1,187 @@
-# ⚡ Quick Reference Card
+# ⚡ TeamFlow Quick Reference Card
 
-**Keep This Open While Coding**
+> **Keep This Open While Developing**  
+> Complete cheatsheet for architecture, folder structure, API endpoints, user flows, and code patterns.
 
 ---
 
-## 🗂️ Project Structure (What Goes Where)
+## 🗂️ Project Structure (What Lives Where)
 
 ```
-Backend (server/):
-├── models/         → Database schemas (User, Task)
-├── controllers/    → Business logic (what happens when API is called)
-├── routes/         → URL endpoints (define API paths)
-├── middleware/     → Code that runs between request & controller
-├── validators/     → Input validation rules
-└── utils/          → Helper functions (errors, responses)
-
 Frontend (src/):
-├── components/     → UI pieces (buttons, forms, dashboards)
-├── context/        → Global state (auth, toast)
-├── hooks/          → Reusable logic (useAuth, useTaskManager)
-├── services/       → API calls (backend communication)
-└── constants/      → Fixed values (categories, statuses)
+├── components/
+│   ├── AI/                 → FlowAI Copilot (AIAssistant.jsx with Gemini 3.6 Flash)
+│   ├── Admin/              → Admin Command Center
+│   │   ├── components/     → TasksTab, CreateTaskTab, EmployeesTab, AnalyticsTab, etc.
+│   │   ├── hooks/          → useTaskManager, useEmployees, useAnalytics
+│   │   └── utils/          → iconHelpers, taskHelpers
+│   ├── Auth/               → Login, Signup, ForgotPassword, ResetPassword
+│   ├── Dashboard/          → EmployeeDashboard (Next Best Action, Greeting banner)
+│   ├── TaskList/           → TaskList (1-click Accept, Complete, Blocker modal)
+│   ├── ErrorBoundary/      → RouteErrorBoundary
+│   └── others/             → Header, TaskListNumber
+├── pages/                  → LandingPage (Sprint Simulator), CompanyRegistration
+├── context/                → AuthProvider, ToastProvider
+├── hooks/                  → useAuth, useToast
+├── services/               → api.js (Centralized fetch client for Vite proxy)
+├── constants/              → taskConstants
+└── utils/                  → logger, validation
+
+Backend (server/):
+├── src/
+│   ├── config/             → db.js (MongoDB connection), env.js (schema validation)
+│   ├── controllers/        → authController, taskController, employeeController
+│   ├── middleware/         → auth (JWT verify), validate, errorHandler
+│   ├── models/             → User.js, Task.js (Mongoose multi-tenant schemas)
+│   ├── routes/             → authRoutes, taskRoutes, employeeRoutes, index.js
+│   ├── seeders/            → seedData.js (Acme Corp seed generator)
+│   ├── services/           → taskNotificationService.js
+│   ├── utils/              → ApiError, ApiResponse, asyncHandler, sendEmail
+│   └── validators/         → authValidator, taskValidator, employeeValidator
+├── tests/                  → auth.test.js, setup.js, README.md
+├── scripts/                → verify-db.js
+└── server.js               → Application entrypoint
 ```
 
 ---
 
-## 🔑 Key Concepts (One-Line Explanations)
+## 🔑 Demo Credentials (Acme Corp Workspace)
 
-### Backend:
-
-- **Controller:** Functions that handle API requests
-- **Model:** Database structure definition (schema + methods)
-- **Middleware:** Code that runs before controller (auth, validation)
-- **asyncHandler:** Wrapper that catches errors in async functions
-- **JWT:** Token that proves user is logged in
-- **bcrypt:** Library that hashes passwords securely
-
-### Frontend:
-
-- **useState:** Store data that changes and triggers re-render
-- **useEffect:** Run code when component mounts or data changes
-- **useCallback:** Prevent function from being recreated every render
-- **useMemo:** Prevent calculation from running every render
-- **Context:** Share data across components without prop drilling
-- **Custom Hook:** Reusable logic extracted into a function
+| Role | Email | Password | Scope |
+| :--- | :--- | :--- | :--- |
+| 👑 **Admin** | `admin@company.com` | `admin123` | Full Command Center (`/admin`) |
+| 👤 **Employee** | `john@company.com` | `123456` | Frontend & API tasks (`/employee`) |
+| 👤 **Employee** | `jane@company.com` | `123456` | Database & Schema tasks (`/employee`) |
+| 👤 **Employee** | `mike@company.com` | `123456` | Security & DevOps tasks (`/employee`) |
 
 ---
 
-## 🔄 Data Flow (How Things Connect)
+## 🌐 Client Routes & API Endpoints
 
-### User Login Flow:
+### Frontend Client Routes
+- `/` ➔ Landing Page with Interactive Sprint Simulator (`#simulator`)
+- `/register-company` ➔ Split-card Company Workspace Provisioning
+- `/login` ➔ SaaS Login Card with 1-click Demo Fillers
+- `/signup` ➔ Employee Account Creation
+- `/forgot-password` ➔ Password Reset Token Dispatch
+- `/reset-password` ➔ Secure Password Reset Form (`?token=...`)
+- `/admin` ➔ Admin Command Center (Protected: role `admin`)
+- `/employee` ➔ Employee Workspace (Protected: role `employee`)
 
+### Backend REST API Endpoints
+| Method | Route | Description | Auth Required |
+| :--- | :--- | :--- | :---: |
+| `POST` | `/api/auth/register-admin` | Register company workspace & root admin | No |
+| `POST` | `/api/auth/register` | Register employee into workspace | No |
+| `POST` | `/api/auth/login` | Login and obtain JWT session token | No |
+| `GET` | `/api/auth/me` | Fetch authenticated user profile & tenant | Yes |
+| `GET` | `/api/auth/logout` | Clear session and cookies | No |
+| `POST` | `/api/auth/forgot-password`| Send 10-minute reset token via email | No |
+| `PUT` | `/api/auth/reset-password` | Set new password with reset token | No |
+| `GET` | `/api/tasks` | Get tasks (Admin: all company; Employee: self) | Yes |
+| `POST` | `/api/tasks` | Create deliverable (Admin only) | Yes (`admin`) |
+| `GET` | `/api/tasks/stats` | Sprint deliverable statistics | Yes |
+| `PATCH`| `/api/tasks/:id/accept` | Accept deliverable (`new` ➔ `active`) | Yes |
+| `PATCH`| `/api/tasks/:id/complete`| Mark complete (`active` ➔ `completed`) | Yes |
+| `PATCH`| `/api/tasks/:id/fail` | Report blocker (`active` ➔ `failed`) | Yes |
+| `DELETE`| `/api/tasks/:id` | Delete deliverable (Admin only) | Yes (`admin`) |
+| `GET` | `/api/employees` | List company employees and workload metrics | Yes (`admin`) |
+| `POST` | `/api/employees` | Provision new employee into company | Yes (`admin`) |
+| `POST` | `/api/employees/:id/reset-password` | Admin reset employee password | Yes (`admin`) |
+| `DELETE`| `/api/employees/:id` | Remove employee from workspace | Yes (`admin`) |
+| `GET` | `/api/health` | Health check and uptime probe | No |
+
+---
+
+## 🔄 Core Architectural Data Flows
+
+### 1. Multi-Tenant Task Scoping
 ```
-1. Login.jsx → User types email/password
-2. handleLogin() → Calls api.auth.login()
-3. services/api.js → Makes POST to /api/auth/login
-4. Backend authRoutes.js → Routes to authController.login
-5. authController.login → Validates, checks password, generates JWT
-6. Returns → { user, token } to frontend
-7. AuthProvider → Stores token in localStorage, updates state
-8. App.jsx → Shows dashboard based on user role
+Admin requests /api/tasks:
+1. auth.js verifies JWT and attaches req.user
+2. taskController finds all employee IDs with companyName: req.user.companyName
+3. Task.find({ assignedTo: { $in: employeeIds } })
+4. Returns strictly isolated company deliverables
 ```
 
-### Task Creation Flow:
-
+### 2. FlowAI Copilot Injection
 ```
-1. CreateTaskTab → Admin fills form
-2. handleSubmit() → Calls api.tasks.create(taskData)
-3. services/api.js → POST to /api/tasks
-4. Backend taskRoutes.js → Routes to taskController.create
-5. taskController.create → Validates, saves to DB
-6. Returns → New task to frontend
-7. useTaskManager → Adds to tasks array, refreshes list
-8. TasksTab → Shows new task in UI
+1. AIAssistant.jsx captures user requirement + role/route context
+2. Calls Google Gemini 3.6 Flash API
+3. Emits JSON { task_draft: { title, category, priority, description } }
+4. Admin clicks "⚡ Insert into Composer"
+5. Dispatches custom event flowai:insert_task
+6. CreateTaskTab.jsx populates form fields automatically
+```
+
+### 3. Employee "Next Best Action"
+```
+1. EmployeeDashboard fetches assigned tasks
+2. Evaluates queue condition:
+   - Unaccepted tasks present ➔ Highlights #1 priority task with 1-Click "Accept"
+   - Active tasks in-flight ➔ Focuses view with execution timer & complete/blocker buttons
+   - All tasks completed ➔ Displays celebration banner
 ```
 
 ---
 
-## 🐛 Common Debugging Steps
+## 🛠️ Essential Terminal Commands
 
-### Backend Error:
+```bash
+# Start Frontend Development Server (Port 5173)
+npm run dev
 
-1. Check terminal for error message
-2. Look at stack trace (which file, which line)
-3. Add console.log before error line
-4. Check if data format is correct
-5. Verify database connection
+# Start Backend Development Server (Port 5000)
+cd server
+npm run dev
 
-### Frontend Error:
+# Seed Demo Data (Acme Corp with 20 deliverables)
+cd server
+npm run seed
 
-1. Open browser DevTools console (F12)
-2. Read error message and stack trace
-3. Check Network tab for failed API calls
-4. Add console.log to see data values
-5. Check if component is receiving correct props
+# Run Backend Automated Tests
+cd server
+npm test
 
-### Connection Error:
+# Run Tests in Watch Mode
+cd server
+npm run test:watch
 
-1. Backend running? (`npm run dev` in server/)
-2. Frontend running? (`npm run dev` in root)
-3. Correct ports? (Backend: 5000, Frontend: 5173)
-4. CORS enabled? (Check server/src/app.js)
-5. Correct API URL? (Check .env VITE_API_URL)
+# Run Test Coverage Report
+cd server
+npm run test:coverage
+
+# Pre-Deployment Validation Check
+npm run deploy:check
+```
 
 ---
 
-## 📝 Code Patterns to Remember
+## 📝 Common Code Patterns
 
-### Backend API Response:
-
+### Backend API Error & Response
 ```javascript
 // Success
-return ApiResponse.success({ data: result }, "Operation successful").send(res);
+return ApiResponse.success({ data: result }, "Deliverable created").send(res);
 
-// Error
-throw ApiError.badRequest("Invalid input");
+// Expected Error
+throw ApiError.badRequest("Invalid input payload");
+throw ApiError.notFound("Deliverable not found");
+throw ApiError.unauthorized("Access denied");
 ```
 
-### Frontend API Call:
-
+### Frontend API Invocation
 ```javascript
 try {
-  const response = await api.tasks.getAll();
-  if (response.success) {
-    // Handle success
+  const res = await api.tasks.getAll();
+  if (res?.success) {
+    setTasks(res.data?.tasks || []);
   }
 } catch (error) {
-  // Handle error
-  showToast(error.message, "error");
+  showToast(error.message || "Failed to load tasks", "error");
 }
 ```
 
-### React State Update:
-
-```javascript
-// Array: Add item
-setTasks([...tasks, newTask]);
-
-// Array: Update item
-setTasks(
-  tasks.map((t) => (t.id === taskId ? { ...t, status: "completed" } : t)),
-);
-
-// Array: Remove item
-setTasks(tasks.filter((t) => t.id !== taskId));
-```
-
 ---
 
-## 🔒 Security Checklist
-
-- [ ] Never store passwords in plain text (use bcrypt)
-- [ ] Never send passwords in API responses (use .select('+password') only when needed)
-- [ ] Always validate user input (use validators)
-- [ ] Check authentication before protected routes (use protect middleware)
-- [ ] Check authorization for actions (verify user owns resource)
-- [ ] Sanitize data before saving to DB
-- [ ] Use HTTPS in production
-- [ ] Don't expose sensitive errors to frontend
-
----
-
-## 🎯 When You Get Stuck
-
-### Ask Yourself:
-
-1. What am I trying to do?
-2. What is happening instead?
-3. What have I tried so far?
-4. Where exactly is it failing? (add console.logs!)
-
-### Then:
-
-1. Google the error message
-2. Read error stack trace carefully
-3. Check relevant documentation
-4. Try similar code that works, compare differences
-5. Ask AI with context (what you tried, what failed, what you think)
-
----
-
-## 💡 Learning Tips
-
-### When Reading Code:
-
-- Don't just read → Explain out loud
-- Add comments to understand better
-- Change values, see what breaks
-- Ask "why" for every pattern
-
-### When Writing Code:
-
-- Start simple, add complexity gradually
-- Test after every small change
-- Keep functions small (one responsibility)
-- Name variables clearly (no "x", "temp", "data")
-
-### When Debugging:
-
-- console.log is your friend
-- Binary search: Comment out half, see if error persists
-- Read error messages completely
-- Take breaks when frustrated (fresh eyes help!)
-
----
-
-## 📚 Quick Links
-
-### Documentation:
-
-- **React:** https://react.dev
-- **Express:** https://expressjs.com
-- **Mongoose:** https://mongoosejs.com
-- **JWT:** https://jwt.io
-
-### Your Learning Files:
-
-- **START_HERE.md** → Overview & motivation
-- **DAY_1_STUDY_GUIDE.md** → Today's study plan
-- **LEARNING_JOURNAL.md** → Your daily notes
-- **TODO.md** → Features to implement
-
----
-
-## ⚡ Keyboard Shortcuts (VS Code)
-
-- `Ctrl + P` → Quick file open
-- `Ctrl + Shift + F` → Search in all files
-- `Ctrl + /` → Comment/uncomment
-- `F12` → Go to definition
-- `Shift + Alt + F` → Format document
-- `Ctrl + ` ` → Toggle terminal
-
----
-
-**Print this page and keep it visible while coding!**
+**TeamFlow Workforce Operating System** • Quick Reference Card
