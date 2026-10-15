@@ -128,6 +128,10 @@ git push -u origin main
    | `JWT_SECRET`  | Generate: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` |
    | `JWT_EXPIRE`  | `7d`                                                                                 |
    | `CLIENT_URL`  | `https://your-app.vercel.app` (update after frontend deployment)                     |
+   | `GEMINI_API_KEY` | (Optional) Google Gemini API Key for server AI capabilities                       |
+   | `GMAIL_USER`  | (Optional) Gmail address for password reset emails                                   |
+   | `GMAIL_APP_PASSWORD` | (Optional) Gmail 16-char app password for SMTP                                 |
+   | `EMAIL_FROM`  | (Optional) e.g., `"TeamFlow Support" <noreply@yourdomain.com>`                        |
 
 5. Click **"Create Web Service"**
 
