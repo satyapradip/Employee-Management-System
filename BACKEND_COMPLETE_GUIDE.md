@@ -60,39 +60,43 @@ User is logged in!
 
 ```
 server/
-├── server.js              ← Entry point (starts everything)
-├── package.json           ← Project dependencies & scripts
-├── .env                   ← Secret configuration (passwords, API keys)
+├── server.js              ← Entry point (starts HTTP server & connects DB)
+├── package.json           ← Project dependencies, scripts (test, seed, start)
+├── jest.config.js         ← Test runner configuration for Jest & Supertest
+├── .env                   ← Secret local configuration (passwords, JWT, MongoDB)
+├── .env.example           ← Template of required environment variables
+├── .env.production        ← Production environment configuration
+├── .env.test              ← Isolated test database configuration
 │
 ├── src/                   ← All source code lives here
-│   ├── app.js            ← Express app setup (middleware, routes)
+│   ├── app.js            ← Express app setup (security stack, middleware, routes)
 │   │
 │   ├── config/           ← Configuration files
-│   │   ├── db.js        ← MongoDB connection logic
-│   │   ├── env.js       ← Environment variables (PORT, JWT_SECRET, etc.)
+│   │   ├── db.js        ← MongoDB Mongoose connection logic
+│   │   ├── env.js       ← Environment variables validation (PORT, JWT_SECRET, etc.)
 │   │   └── index.js     ← Export all configs
 │   │
-│   ├── models/          ← Database schemas (data structure)
-│   │   ├── User.js      ← User schema (name, email, password, role)
-│   │   ├── Task.js      ← Task schema (title, description, status)
+│   ├── models/          ← Database schemas (multi-tenant data structure)
+│   │   ├── User.js      ← User schema (name, email, password, companyName, role)
+│   │   ├── Task.js      ← Task schema (title, description, category, status, priority)
 │   │   └── index.js     ← Export all models
 │   │
 │   ├── controllers/     ← Business logic (what to do with requests)
-│   │   ├── authController.js     ← Login, register, logout logic
-│   │   ├── employeeController.js ← Employee CRUD operations
-│   │   ├── taskController.js     ← Task CRUD operations
+│   │   ├── authController.js     ← Login, register-admin, register, logout logic
+│   │   ├── employeeController.js ← Employee CRUD & workload metrics operations
+│   │   ├── taskController.js     ← Task CRUD & status transitions (accept, complete, fail)
 │   │   └── index.js              ← Export all controllers
 │   │
 │   ├── routes/          ← URL definitions (which URL calls which controller)
-│   │   ├── authRoutes.js         ← POST /api/auth/login → login controller
-│   │   ├── employeeRoutes.js     ← GET /api/employees → getEmployees
-│   │   ├── taskRoutes.js         ← GET /api/tasks → getTasks
-│   │   └── index.js              ← Combine all routes
+│   │   ├── authRoutes.js         ← /api/auth/* endpoints
+│   │   ├── employeeRoutes.js     ← /api/employees/* endpoints
+│   │   ├── taskRoutes.js         ← /api/tasks/* endpoints
+│   │   └── index.js              ← Combine all routes & /api/health
 │   │
 │   ├── middleware/      ← Functions that run BEFORE controllers
-│   │   ├── auth.js              ← Check if user is logged in
-│   │   ├── validate.js          ← Validate request data
-│   │   ├── errorHandler.js      ← Catch and format errors
+│   │   ├── auth.js              ← Verify JWT token & attach req.user
+│   │   ├── validate.js          ← Validate request data from express-validator
+│   │   ├── errorHandler.js      ← Catch and format errors (404 and global)
 │   │   └── index.js             ← Export all middleware
 │   │
 │   ├── validators/      ← Input validation rules
@@ -101,37 +105,72 @@ server/
 │   │   ├── taskValidator.js     ← Title required, due date valid
 │   │   └── index.js             ← Export all validators
 │   │
+│   ├── services/        ← Background domain services
+│   │   └── taskNotificationService.js ← Email alerts on deliverable status changes
+│   │
 │   ├── utils/           ← Helper functions (reusable utilities)
 │   │   ├── ApiError.js          ← Standardized error creation
 │   │   ├── ApiResponse.js       ← Standardized success responses
 │   │   ├── asyncHandler.js      ← Removes try-catch boilerplate
-│   │   ├── sendEmail.js         ← Send password reset emails
+│   │   ├── emailTemplates.js    ← HTML email styling templates
+│   │   ├── sendEmail.js         ← Send password reset & notification emails
 │   │   └── index.js             ← Export all utils
 │   │
 │   └── seeders/         ← Sample data to populate database
-│       └── seedData.js          ← Create demo users and tasks
+│       └── seedData.js          ← Create demo Acme Corp users and tasks
+│
+├── tests/               ← Automated integration test suite
+│   ├── auth.test.js     ← Jest & Supertest tests for authentication endpoints
+│   ├── setup.js         ← Test database setup & teardown hooks
+│   └── README.md        ← Testing instructions & documentation
 │
 └── scripts/             ← Utility scripts
-    └── verify-db.js     ← Check database connection
+    └── verify-db.js     ← Check database connection & diagnostics
 ```
+
+### 🏢 Multi-Tenant Architecture & Data Isolation (`companyName`)
+
+The backend is built with **multi-tenancy at its core**:
+- Every `User` document belongs to a specific company defined by `companyName`.
+- When an administrator queries deliverables via `GET /api/tasks`, the backend dynamically finds all employee IDs in `req.user.companyName`:
+  ```javascript
+  const employeeIds = await User.find({
+    companyName: req.user.companyName,
+    role: "employee",
+  }).distinct("_id");
+  query.assignedTo = { $in: employeeIds };
+  ```
+- This ensures that Company A and Company B can share the exact same database cluster without ever seeing or interfering with each other's deliverables, employees, or metrics.
+
+### 🛡️ Enterprise Security Stack (Configured in `app.js`)
+
+The backend includes a comprehensive, multi-layer security pipeline:
+1. **Tiered Rate Limiting:** `express-rate-limit` prevents brute force and DoS attacks (100 req/15m globally, 20 req/15m on auth endpoints).
+2. **Data Sanitization:** `express-mongo-sanitize` strips NoSQL injection characters (`$`, `.`) from request payloads; `xss-clean` neutralizes malicious HTML script injection.
+3. **HTTP Security Headers:** `helmet` applies essential security headers (HSTS, CSP, X-Frame-Options, DNS prefetch control).
+4. **Parameter Pollution Prevention:** `hpp` protects against malicious query string pollution.
+5. **Payload Compression:** `compression` automatically gzips HTTP response payloads.
+6. **Request Auditing:** `morgan` provides structured HTTP request logging.
 
 ### 🎯 Why This Structure?
 
 **Separation of Concerns** - Each folder has ONE job:
 
-- Models = Data structure
-- Controllers = Business logic
-- Routes = URL mapping
-- Middleware = Request processing
-- Validators = Data validation
-- Utils = Helper functions
+- Models = Data structure & validation
+- Controllers = Business logic & response formatting
+- Routes = URL mapping & middleware attachment
+- Middleware = Request authentication, authorization, and error filtering
+- Validators = Strict request body and parameter validation
+- Services = Cross-cutting domain logic (notifications, email)
+- Utils = Reusable helper classes and formatting
+- Tests = Automated verification with isolated database
 
 **Benefits:**
 
-- Easy to find code
-- Easy to test
-- Easy to maintain
-- Easy for teams to collaborate
+- Easy to navigate and debug
+- Strict multi-tenant isolation at the query level
+- Production-grade security against OWASP vulnerabilities
+- Fully testable with automated integration test suites
 
 ---
 
